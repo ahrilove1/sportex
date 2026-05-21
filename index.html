@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>溪地假日 | XIDI HOLIDAY</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --text: #2c2c2c;
+    --muted: #8c8c8c;
+    --accent: #b8977e;
+    --accent-deep: #8b5e3c;
+    --card-bg: #ffffff;
+    --border: #e8e4dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Nav */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(250,248,245,0.85); backdrop-filter: blur(10px);
+    transition: all 0.3s;
+  }
+  .nav.scrolled { box-shadow: 0 1px 0 var(--border); }
+  .nav-logo { font-size: 20px; font-weight: 600; letter-spacing: 2px; color: var(--accent-deep); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--muted); font-size: 14px;
+    letter-spacing: 1px; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent-deep); }
+
+  /* Hero */
+  .hero {
+    height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    padding: 0 40px;
+  }
+  .hero-badge {
+    font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 24px;
+    border: 1px solid var(--accent); padding: 6px 20px;
+    border-radius: 2px;
+  }
+  .hero h1 {
+    font-family: "Times New Roman", "Songti SC", serif;
+    font-size: clamp(42px, 7vw, 80px); font-weight: 400;
+    color: var(--accent-deep); letter-spacing: 8px;
+    margin-bottom: 16px;
+  }
+  .hero .sub {
+    font-size: clamp(14px, 2vw, 18px); color: var(--muted);
+    letter-spacing: 3px; margin-bottom: 40px;
+  }
+  .hero-scroll {
+    position: absolute; bottom: 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .hero-scroll span { font-size: 11px; letter-spacing: 2px; color: var(--muted); }
+  .hero-scroll .line {
+    width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  /* Section titles */
+  .section-title {
+    text-align: center; padding: 80px 20px 40px;
+  }
+  .section-title h2 {
+    font-family: "Times New Roman", "Songti SC", serif;
+    font-size: clamp(28px, 4vw, 40px); font-weight: 400;
+    color: var(--accent-deep); letter-spacing: 4px; margin-bottom: 8px;
+  }
+  .section-title p { color: var(--muted); font-size: 14px; letter-spacing: 2px; }
+
+  /* Products */
+  .products {
+    max-width: 1200px; margin: 0 auto; padding: 0 20px 80px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .product-card {
+    background: var(--card-bg); border-radius: 4px; overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+  .product-card .img-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden; position: relative;
+    background: var(--bg);
+  }
+  .product-card .img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .product-card:hover .img-wrap img { transform: scale(1.03); }
+  .product-card .placeholder-label {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    font-size: 12px; color: var(--muted); letter-spacing: 2px;
+    padding: 8px 16px; border: 1px solid var(--border);
+    border-radius: 2px; background: rgba(255,255,255,0.8);
+    pointer-events: none; transition: opacity 0.3s;
+  }
+  .product-card:hover .placeholder-label { opacity: 0; }
+  .product-card .info { padding: 20px; }
+  .product-card .info .name { font-size: 15px; letter-spacing: 1px; margin-bottom: 4px; }
+  .product-card .info .cat { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+
+  /* About */
+  .about {
+    max-width: 720px; margin: 0 auto; padding: 80px 20px;
+    text-align: center;
+  }
+  .about h3 {
+    font-family: "Times New Roman", "Songti SC", serif;
+    font-size: 24px; font-weight: 400; color: var(--accent-deep);
+    letter-spacing: 3px; margin-bottom: 24px;
+  }
+  .about p {
+    color: var(--muted); font-size: 15px; line-height: 2;
+    letter-spacing: 0.5px;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border); padding: 60px 40px 40px;
+    text-align: center;
+  }
+  .footer .brand {
+    font-family: "Times New Roman", "Songti SC", serif;
+    font-size: 22px; color: var(--accent-deep); letter-spacing: 6px;
+    margin-bottom: 12px;
+  }
+  .footer .info-line { font-size: 13px; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; }
+  .footer .copy { font-size: 11px; color: #bfbfbf; margin-top: 32px; letter-spacing: 1px; }
+
+  /* Fade-in animation */
+  .fade-in {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav { padding: 16px 20px; }
+    .nav-links { gap: 20px; }
+    .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .hero { padding: 0 20px; }
+    .about { padding: 60px 20px; }
+  }
+  @media (max-width: 480px) {
+    .nav-links { display: none; }
+    .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo">XIDI HOLIDAY</div>
+  <ul class="nav-links">
+    <li><a href="#products">产品</a></li>
+    <li><a href="#about">关于</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">SUMMER RESORT WEAR</div>
+  <h1>溪地假日</h1>
+  <p class="sub">源于自然的度假风服装</p>
+  <div class="hero-scroll">
+    <span>向下探索</span>
+    <div class="line"></div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="section-title">
+    <h2>当季新品</h2>
+    <p>NEW COLLECTION</p>
+  </div>
+  <div class="products">
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-title">
+    <h2>关于品牌</h2>
+    <p>BRAND STORY</p>
+  </div>
+  <div class="about fade-in">
+    <h3>自然与舒适，是我们的设计语言</h3>
+    <p>
+      南京溪地假日服装有限公司创立于南京，专注于度假风服装的设计与生产。<br>
+      我们从自然中汲取灵感，选用亲肤透气的高品质面料，<br>
+      打造适合假日出行、日常穿着的舒适服饰。<br>
+      让每一位穿上溪地假日的你，都感受到如度假般的放松与自在。
+    </p>
+  </div>
+</section>
+
+<footer class="footer" id="contact">
+  <div class="brand">XIDI HOLIDAY</div>
+  <p class="info-line">南京溪地假日服装有限公司</p>
+  <p class="info-line">Nanjing Xidi Holiday Clothing Co., Ltd.</p>
+  <p class="copy">&copy; 2025 XIDI HOLIDAY. All rights reserved.</p>
+</footer>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Product data (placeholder — replace with real products later)
+const products = [
+  { name: '亚麻度假衬衫', cat: '衬衫 / Shirt', img: 'https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '宽松棉麻长裤', cat: '裤装 / Pants', img: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '碎花连衣裙', cat: '连衣裙 / Dress', img: 'https://images.pexels.com/photos/985635/pexels-photo-985635.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '轻薄防晒外套', cat: '外套 / Jacket', img: 'https://images.pexels.com/photos/6311390/pexels-photo-6311390.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '棉质休闲T恤', cat: 'T恤 / T-Shirt', img: 'https://images.pexels.com/photos/4066292/pexels-photo-4066292.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '度假风短裤', cat: '短裤 / Shorts', img: 'https://images.pexels.com/photos/5704716/pexels-photo-5704716.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '真丝围巾', cat: '配饰 / Accessories', img: 'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=600' },
+  { name: '草编遮阳帽', cat: '配饰 / Accessories', img: 'https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg?auto=compress&cs=tinysrgb&w=600' },
+];
+
+// Render products
+const grid = document.getElementById('productGrid');
+products.forEach((p) => {
+  const card = document.createElement('div');
+  card.className = 'product-card fade-in';
+  card.innerHTML = `
+    <div class="img-wrap">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+      <span class="placeholder-label">预览图</span>
+    </div>
+    <div class="info">
+      <div class="name">${p.name}</div>
+      <div class="cat">${p.cat}</div>
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+// IntersectionObserver — fade in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>
