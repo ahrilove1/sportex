@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Women's Collection | SPORTEX</title>
+<style>
+  :root {
+    --navy: #1a1f2e; --navy-light: #2a3348;
+    --white: #ffffff; --off-white: #f5f4f1;
+    --gray: #6b7280; --gray-light: #e5e7eb;
+    --accent: #d4944e; --accent-dark: #b87830;
+    --text: #1f2937;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--white); color: var(--text); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .top-bar {
+    background: var(--navy); color: var(--white);
+    text-align: center; padding: 8px 16px;
+    font-size: 13px; letter-spacing: 0.5px;
+  }
+
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white); border-bottom: 1px solid var(--gray-light);
+    padding: 0 40px; display: flex; justify-content: space-between;
+    align-items: center; height: 64px;
+  }
+  .nav-logo {
+    font-size: 22px; font-weight: 700; letter-spacing: 3px;
+    color: var(--navy); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a {
+    text-decoration: none; color: var(--text); font-size: 14px;
+    font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent-dark); }
+  .nav-links a.active { color: var(--accent-dark); border-bottom: 2px solid var(--accent-dark); padding-bottom: 4px; }
+
+  .page-hero {
+    position: relative; height: 45vh; min-height: 360px;
+    background: url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1920&q=80') center 35%/cover no-repeat;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .page-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(26,31,46,0.3), rgba(26,31,46,0.6));
+  }
+  .page-hero-content { position: relative; text-align: center; color: var(--white); }
+  .page-hero-content h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 700; letter-spacing: 4px; margin-bottom: 8px; }
+  .page-hero-content p { font-size: 16px; opacity: 0.85; letter-spacing: 2px; }
+
+  .breadcrumb {
+    max-width: 1200px; margin: 0 auto; padding: 20px 40px;
+    font-size: 13px; color: var(--gray);
+  }
+  .breadcrumb a { color: var(--gray); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--accent-dark); }
+  .breadcrumb span { color: var(--text); }
+
+  .section { padding: 0 40px 80px; }
+  .section-header { text-align: center; margin-bottom: 48px; }
+  .section-header h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: var(--navy); letter-spacing: 2px; margin-bottom: 8px; }
+  .section-header p { color: var(--gray); font-size: 15px; letter-spacing: 1px; }
+
+  .product-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .product-card {
+    background: var(--white); transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
+  .product-card .img-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--off-white);
+  }
+  .product-card .img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .product-card:hover .img-wrap img { transform: scale(1.04); }
+  .product-card .info { padding: 16px; }
+  .product-card .info .p-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; margin-bottom: 2px; }
+  .product-card .info .p-cat { font-size: 12px; color: var(--gray); letter-spacing: 0.5px; }
+  .product-card .info .p-code { font-size: 11px; color: var(--accent-dark); font-weight: 600; margin-top: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .back-link {
+    text-align: center; padding: 0 40px 80px;
+  }
+  .back-link a {
+    display: inline-block; padding: 14px 36px;
+    font-size: 13px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none;
+    color: var(--navy); border: 2px solid var(--navy);
+    transition: all 0.3s;
+  }
+  .back-link a:hover { background: var(--navy); color: var(--white); }
+
+  .footer { background: var(--navy); color: var(--white); padding: 64px 40px 40px; }
+  .footer-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+    padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .footer-col h4 { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-col p, .footer-col a { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 2.2; text-decoration: none; display: block; }
+  .footer-col a:hover { color: var(--white); }
+  .footer-brand { font-size: 22px; font-weight: 700; letter-spacing: 4px; margin-bottom: 12px; }
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto; padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: rgba(255,255,255,0.45);
+  }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) {
+    .nav { padding: 0 16px; }
+    .nav-links { gap: 18px; }
+    .page-hero { height: 35vh; min-height: 280px; }
+    .breadcrumb { padding: 16px 20px; }
+    .section { padding: 0 16px 48px; }
+    .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">Premium Outdoor Apparel Manufacturer | AATCC Certified | Jiangsu, China</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">SPORTEX</a>
+  <ul class="nav-links">
+    <li><a href="men.html">Men</a></li>
+    <li><a href="women.html" class="active">Women</a></li>
+    <li><a href="index.html#technology">Technology</a></li>
+    <li><a href="index.html#about">About</a></li>
+  </ul>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-content">
+    <h1>WOMEN'S COLLECTION</h1>
+    <p>Resort Blouses & Outdoor Apparel</p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <a href="index.html">Home</a> / <span>Women's Collection</span>
+</div>
+
+<section class="section">
+  <div class="section-header reveal">
+    <h2>Women's Outdoor Resort Wear</h2>
+    <p>Breathable, elegant designs for sun-drenched destinations</p>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<div class="back-link reveal">
+  <a href="index.html">← Back to Home</a>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">SPORTEX</div>
+      <p>Premium outdoor resort wear.<br>Designed in Nanjing. Made for the world.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Collections</h4>
+      <a href="men.html">Men's Wear</a>
+      <a href="women.html">Women's Wear</a>
+      <a href="#">Accessories</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="index.html#about">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Certifications</a>
+    </div>
+    <div class="footer-col">
+      <h4>Business</h4>
+      <a href="#">OEM / ODM</a>
+      <a href="#">Custom Design</a>
+      <a href="#">Quality Standards</a>
+      <a href="#">Inquiry</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 SPORTEX. All rights reserved.</span>
+    <span>Nanjing Sportex Clothing Co., Ltd.</span>
+  </div>
+</footer>
+
+<script>
+const womenProducts = [
+  { name: 'Outdoor Light Blouse', cat: 'COD 50 · UPF 50+ · Antibacterial', code: 'COD 50-01', img: 'https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80' },
+  { name: 'Floral Midi Dress', cat: 'Breathable · Relaxed Fit', code: 'COD 50-02', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80' },
+  { name: 'Sun Protection Top', cat: 'Antibacterial · UPF 50+', code: 'COD 50-03', img: 'https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80' },
+  { name: 'Linen Blend Trousers', cat: 'Relaxed Fit · Breathable', code: 'COD 50-04', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80' },
+  { name: 'Resort Maxi Skirt', cat: 'Flowy Fit · Lightweight', code: 'COD 50-05', img: 'https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80' },
+  { name: 'Lightweight Jacket', cat: 'Packable · UV Protection', code: 'COD 50-06', img: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80' },
+  { name: 'Boho Beach Top', cat: 'Cotton Blend · Relaxed Fit', code: 'COD 50-07', img: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80' },
+  { name: 'Adventure Capris', cat: 'Stretch Fit · Quick-Dry', code: 'COD 50-08', img: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80' },
+];
+
+const grid = document.getElementById('productGrid');
+womenProducts.forEach((p) => {
+  const card = document.createElement('div');
+  card.className = 'product-card reveal';
+  card.innerHTML = `
+    <div class="img-wrap">
+      <img src="${p.img}" alt="${p.name}" loading="lazy">
+    </div>
+    <div class="info">
+      <div class="p-name">${p.name}</div>
+      <div class="p-cat">${p.cat}</div>
+      <div class="p-code">${p.code}</div>
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
