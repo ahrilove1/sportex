@@ -3,267 +3,478 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPORTEX | Resort Wear</title>
+<title>SPORTEX | Outdoor Resort Wear</title>
 <style>
   :root {
-    --bg: #faf8f5;
-    --text: #2c2c2c;
-    --muted: #8c8c8c;
-    --accent: #b8977e;
-    --accent-deep: #8b5e3c;
-    --card-bg: #ffffff;
-    --border: #e8e4dc;
+    --navy: #1a1f2e;
+    --navy-light: #2a3348;
+    --white: #ffffff;
+    --off-white: #f5f4f1;
+    --gray: #6b7280;
+    --gray-light: #e5e7eb;
+    --accent: #d4944e;
+    --accent-dark: #b87830;
+    --text: #1f2937;
+    --text-light: #6b7280;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: var(--bg);
+    font-family: "Helvetica Neue", "Arial", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--white);
     color: var(--text);
     line-height: 1.6;
-    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Nav */
-  .nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 20px 40px;
-    display: flex; justify-content: space-between; align-items: center;
-    background: rgba(250,248,245,0.85); backdrop-filter: blur(10px);
-    transition: all 0.3s;
-  }
-  .nav.scrolled { box-shadow: 0 1px 0 var(--border); }
-  .nav-logo { font-size: 20px; font-weight: 600; letter-spacing: 2px; color: var(--accent-deep); }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a {
-    text-decoration: none; color: var(--muted); font-size: 14px;
-    letter-spacing: 1px; transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--accent-deep); }
-
-  /* Hero */
-  .hero {
-    height: 100vh; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center;
-    padding: 0 40px;
-  }
-  .hero-badge {
-    font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 24px;
-    border: 1px solid var(--accent); padding: 6px 20px;
-    border-radius: 2px;
-  }
-  .hero h1 {
-    font-family: "Times New Roman", "Songti SC", serif;
-    font-size: clamp(42px, 7vw, 80px); font-weight: 400;
-    color: var(--accent-deep); letter-spacing: 8px;
-    margin-bottom: 16px;
-  }
-  .hero .sub {
-    font-size: clamp(14px, 2vw, 18px); color: var(--muted);
-    letter-spacing: 3px; margin-bottom: 40px;
-  }
-  .hero-scroll {
-    position: absolute; bottom: 40px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-  }
-  .hero-scroll span { font-size: 11px; letter-spacing: 2px; color: var(--muted); }
-  .hero-scroll .line {
-    width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent);
-  }
-
-  /* Section titles */
-  .section-title {
-    text-align: center; padding: 80px 20px 40px;
-  }
-  .section-title h2 {
-    font-family: "Times New Roman", "Songti SC", serif;
-    font-size: clamp(28px, 4vw, 40px); font-weight: 400;
-    color: var(--accent-deep); letter-spacing: 4px; margin-bottom: 8px;
-  }
-  .section-title p { color: var(--muted); font-size: 14px; letter-spacing: 2px; }
-
-  /* Products */
-  .products {
-    max-width: 1200px; margin: 0 auto; padding: 0 20px 80px;
-  }
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-  }
-  .product-card {
-    background: var(--card-bg); border-radius: 4px; overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-  .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-  }
-  .product-card .img-wrap {
-    width: 100%; aspect-ratio: 3/4; overflow: hidden; position: relative;
-    background: var(--bg);
-  }
-  .product-card .img-wrap img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.4s ease;
-  }
-  .product-card:hover .img-wrap img { transform: scale(1.03); }
-  .product-card .placeholder-label {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    font-size: 12px; color: var(--muted); letter-spacing: 2px;
-    padding: 8px 16px; border: 1px solid var(--border);
-    border-radius: 2px; background: rgba(255,255,255,0.8);
-    pointer-events: none; transition: opacity 0.3s;
-  }
-  .product-card:hover .placeholder-label { opacity: 0; }
-  .product-card .info { padding: 20px; }
-  .product-card .info .name { font-size: 15px; letter-spacing: 1px; margin-bottom: 4px; }
-  .product-card .info .cat { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
-
-  /* About */
-  .about {
-    max-width: 720px; margin: 0 auto; padding: 80px 20px;
+  /* ── Top Bar ── */
+  .top-bar {
+    background: var(--navy);
+    color: var(--white);
     text-align: center;
-  }
-  .about h3 {
-    font-family: "Times New Roman", "Songti SC", serif;
-    font-size: 24px; font-weight: 400; color: var(--accent-deep);
-    letter-spacing: 3px; margin-bottom: 24px;
-  }
-  .about p {
-    color: var(--muted); font-size: 15px; line-height: 2;
+    padding: 8px 16px;
+    font-size: 13px;
     letter-spacing: 0.5px;
   }
 
-  /* Footer */
-  .footer {
-    border-top: 1px solid var(--border); padding: 60px 40px 40px;
+  /* ── Nav ── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-light);
+    padding: 0 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 64px;
+  }
+  .nav-logo {
+    font-size: 22px; font-weight: 700; letter-spacing: 3px;
+    color: var(--navy); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a {
+    text-decoration: none; color: var(--text); font-size: 14px;
+    font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent-dark); }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    height: 85vh; min-height: 600px;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80') center/cover no-repeat;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(26,31,46,0.35), rgba(26,31,46,0.55));
+  }
+  .hero-content {
+    position: relative; text-align: center; color: var(--white);
+    max-width: 720px; padding: 0 20px;
+  }
+  .hero-content h1 {
+    font-size: clamp(36px, 6vw, 64px); font-weight: 700;
+    letter-spacing: 4px; margin-bottom: 16px; line-height: 1.15;
+  }
+  .hero-content p {
+    font-size: clamp(16px, 2vw, 20px); opacity: 0.9;
+    margin-bottom: 36px; letter-spacing: 1px;
+  }
+  .btn {
+    display: inline-block; padding: 14px 40px;
+    font-size: 14px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; text-decoration: none;
+    border: 2px solid var(--white); color: var(--white);
+    transition: all 0.3s;
+  }
+  .btn:hover { background: var(--white); color: var(--navy); }
+  .btn-dark {
+    border-color: var(--navy); color: var(--navy);
+  }
+  .btn-dark:hover { background: var(--navy); color: var(--white); }
+
+  /* ── Section ── */
+  .section { padding: 80px 40px; }
+  .section-header {
+    text-align: center; margin-bottom: 56px;
+  }
+  .section-header h2 {
+    font-size: clamp(26px, 4vw, 36px); font-weight: 700;
+    color: var(--navy); letter-spacing: 2px; margin-bottom: 8px;
+  }
+  .section-header p {
+    color: var(--gray); font-size: 15px; letter-spacing: 1px;
+  }
+
+  /* ── Categories ── */
+  .categories {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .cat-card {
+    position: relative; overflow: hidden; cursor: pointer;
+    aspect-ratio: 4/5;
+  }
+  .cat-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .cat-card:hover img { transform: scale(1.05); }
+  .cat-card .cat-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 32px 24px;
+    background: linear-gradient(to top, rgba(26,31,46,0.8), transparent);
+    color: var(--white);
+  }
+  .cat-label h3 { font-size: 22px; letter-spacing: 2px; margin-bottom: 4px; }
+  .cat-label span { font-size: 13px; opacity: 0.8; letter-spacing: 1px; }
+
+  /* ── Features ── */
+  .features-bg { background: var(--off-white); }
+  .features {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
     text-align: center;
   }
-  .footer .brand {
-    font-family: "Times New Roman", "Songti SC", serif;
-    font-size: 22px; color: var(--accent-deep); letter-spacing: 6px;
+  .feature-item .feat-icon {
+    font-size: 36px; margin-bottom: 16px;
+  }
+  .feature-item h4 {
+    font-size: 16px; font-weight: 700; color: var(--navy);
+    letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .feature-item p {
+    font-size: 13px; color: var(--gray); line-height: 1.7;
+  }
+
+  /* ── Products ── */
+  .products-wrap {
+    max-width: 1200px; margin: 0 auto;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .product-card {
+    background: var(--white); cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
+  .product-card .img-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden;
+    background: var(--off-white);
+  }
+  .product-card .img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .product-card:hover .img-wrap img { transform: scale(1.04); }
+  .product-card .info { padding: 16px; }
+  .product-card .info .p-name {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    letter-spacing: 0.5px; margin-bottom: 2px;
+  }
+  .product-card .info .p-cat {
+    font-size: 12px; color: var(--gray); letter-spacing: 0.5px;
+  }
+  .product-card .info .p-price {
+    font-size: 14px; font-weight: 700; color: var(--navy);
+    margin-top: 8px; letter-spacing: 0.5px;
+  }
+
+  /* ── Banner CTA ── */
+  .banner-cta {
+    background: var(--navy); color: var(--white);
+    text-align: center; padding: 80px 40px;
+  }
+  .banner-cta h2 {
+    font-size: clamp(24px, 4vw, 34px); font-weight: 700;
+    letter-spacing: 3px; margin-bottom: 12px;
+  }
+  .banner-cta p {
+    font-size: 15px; opacity: 0.8; margin-bottom: 32px; letter-spacing: 1px;
+  }
+
+  /* ── About ── */
+  .about-wrap {
+    max-width: 700px; margin: 0 auto; text-align: center;
+  }
+  .about-wrap h3 {
+    font-size: 22px; font-weight: 700; color: var(--navy);
+    letter-spacing: 2px; margin-bottom: 20px;
+  }
+  .about-wrap p {
+    font-size: 15px; color: var(--gray); line-height: 2; letter-spacing: 0.5px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    background: var(--navy); color: var(--white);
+    padding: 64px 40px 40px;
+  }
+  .footer-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; padding-bottom: 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .footer-col h4 {
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .footer-col p, .footer-col a {
+    font-size: 13px; color: rgba(255,255,255,0.65);
+    line-height: 2.2; text-decoration: none; display: block;
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-brand {
+    font-size: 22px; font-weight: 700; letter-spacing: 4px;
     margin-bottom: 12px;
   }
-  .footer .info-line { font-size: 13px; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; }
-  .footer .copy { font-size: 11px; color: #bfbfbf; margin-top: 32px; letter-spacing: 1px; }
-
-  /* Fade-in animation */
-  .fade-in {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto; padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: rgba(255,255,255,0.45);
   }
-  .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .nav { padding: 16px 20px; }
-    .nav-links { gap: 20px; }
-    .product-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-    .hero { padding: 0 20px; }
-    .about { padding: 60px 20px; }
+  /* ── Scroll animations ── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
   }
-  @media (max-width: 480px) {
-    .nav-links { display: none; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .categories { grid-template-columns: repeat(3, 1fr); }
+    .features { grid-template-columns: repeat(2, 1fr); }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .nav { padding: 0 16px; }
+    .nav-links { gap: 18px; }
+    .nav-links a { font-size: 13px; }
+    .hero { height: 70vh; min-height: 480px; }
+    .section { padding: 48px 16px; }
+    .categories { grid-template-columns: 1fr; gap: 12px; }
+    .cat-card { aspect-ratio: 16/9; }
+    .features { grid-template-columns: 1fr; gap: 24px; }
     .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
   }
 </style>
 </head>
 <body>
 
-<nav class="nav" id="nav">
-  <div class="nav-logo">SPORTEX</div>
+<div class="top-bar">Free Shipping on Orders Over $99 | UPF 50+ Certified Outdoor Apparel</div>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">SPORTEX</a>
   <ul class="nav-links">
-    <li><a href="#products">Products</a></li>
+    <li><a href="#men">Men</a></li>
+    <li><a href="#women">Women</a></li>
+    <li><a href="#technology">Technology</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
 <section class="hero">
-  <div class="hero-badge">SUMMER RESORT WEAR</div>
-  <h1>SPORTEX</h1>
-  <p class="sub">Resort Wear Inspired by Nature</p>
-  <div class="hero-scroll">
-    <span>Explore</span>
-    <div class="line"></div>
+  <div class="hero-content reveal">
+    <h1>OUTDOOR<br>RESORT WEAR</h1>
+    <p>Engineered for sun, sea, and adventure — lightweight, breathable, UPF 50+ protection.</p>
+    <a href="#men" class="btn">Explore Collection</a>
   </div>
 </section>
 
-<section id="products">
-  <div class="section-title">
-    <h2>New Collection</h2>
-    <p>SS 2025</p>
+<!-- Categories -->
+<section class="section">
+  <div class="section-header reveal">
+    <h2>Shop by Category</h2>
+    <p>Resort-ready styles for every journey</p>
   </div>
-  <div class="products">
-    <div class="product-grid" id="productGrid"></div>
+  <div class="categories">
+    <div class="cat-card reveal" onclick="document.getElementById('men').scrollIntoView({behavior:'smooth'})">
+      <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=800&q=80" alt="Men's" loading="lazy">
+      <div class="cat-label"><h3>Men's</h3><span>Shirts · Trousers · Outerwear</span></div>
+    </div>
+    <div class="cat-card reveal" onclick="document.getElementById('women').scrollIntoView({behavior:'smooth'})">
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80" alt="Women's" loading="lazy">
+      <div class="cat-label"><h3>Women's</h3><span>Blouses · Dresses · Jackets</span></div>
+    </div>
+    <div class="cat-card reveal">
+      <img src="https://images.unsplash.com/photo-1479064555552-3ef4979f8908?w=800&q=80" alt="Accessories" loading="lazy">
+      <div class="cat-label"><h3>Accessories</h3><span>Hats · Scarves · More</span></div>
+    </div>
   </div>
 </section>
 
-<section id="about">
-  <div class="section-title">
-    <h2>About the Brand</h2>
-    <p>OUR STORY</p>
+<!-- Features / Technology -->
+<section class="section features-bg" id="technology">
+  <div class="section-header reveal">
+    <h2>Built for the Outdoors</h2>
+    <p>Every SPORTEX garment is engineered with performance technology</p>
   </div>
-  <div class="about fade-in">
-    <h3>Nature & Comfort — Our Design Language</h3>
+  <div class="features">
+    <div class="feature-item reveal">
+      <div class="feat-icon">☀️</div>
+      <h4>UPF 50+ Protection</h4>
+      <p>AATCC 183-2014 certified. Blocks 98% of harmful UV rays for all-day sun safety.</p>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feat-icon">🛡️</div>
+      <h4>Antibacterial</h4>
+      <p>AATCC 100-2019 certified. Stays fresh longer with built-in antibacterial treatment.</p>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feat-icon">💨</div>
+      <h4>Breathable Mesh</h4>
+      <p>Ventilation openings with inner mesh lining keep you cool in warm climates.</p>
+    </div>
+    <div class="feature-item reveal">
+      <div class="feat-icon">🪶</div>
+      <h4>Ultra Lightweight</h4>
+      <p>100% polyester at just 105 g/m². Packs light, dries fast, moves freely.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Men's Products -->
+<section class="section" id="men">
+  <div class="section-header reveal">
+    <h2>Men's Collection</h2>
+    <p>Lightweight outdoor shirts & resort wear for men</p>
+  </div>
+  <div class="products-wrap">
+    <div class="product-grid" id="menGrid"></div>
+  </div>
+</section>
+
+<!-- Women's Products -->
+<section class="section features-bg" id="women">
+  <div class="section-header reveal">
+    <h2>Women's Collection</h2>
+    <p>Breathable resort blouses & outdoor apparel for women</p>
+  </div>
+  <div class="products-wrap">
+    <div class="product-grid" id="womenGrid"></div>
+  </div>
+</section>
+
+<!-- Banner CTA -->
+<section class="banner-cta">
+  <div class="reveal">
+    <h2>READY FOR YOUR NEXT ADVENTURE</h2>
+    <p>Discover the full SPORTEX outdoor resort wear collection</p>
+    <a href="#men" class="btn">Shop Now</a>
+  </div>
+</section>
+
+<!-- About -->
+<section class="section" id="about">
+  <div class="section-header reveal">
+    <h2>About SPORTEX</h2>
+    <p>Our Story</p>
+  </div>
+  <div class="about-wrap reveal">
+    <h3>Designed for the Journey</h3>
     <p>
-      SPORTEX was founded in Nanjing, specializing in resort wear design and manufacturing.<br>
-      We draw inspiration from nature, selecting breathable, high-quality fabrics<br>
-      to create comfortable clothing perfect for holidays and everyday wear.<br>
-      Every SPORTEX piece is designed to bring you ease and freedom.
+      SPORTEX was founded in Nanjing with a clear mission: to create premium outdoor resort wear
+      that blends performance technology with effortless style. We source only the finest lightweight
+      fabrics — our signature 100% polyester at 105 g/m² delivers unmatched breathability and packability.
+      Every garment meets rigorous AATCC standards for UV protection and antibacterial performance,
+      so you can focus on the adventure. From sun-drenched coastlines to mountain trails,
+      SPORTEX keeps you protected, comfortable, and looking sharp.
     </p>
   </div>
 </section>
 
-<footer class="footer" id="contact">
-  <div class="brand">SPORTEX</div>
-  <p class="info-line">Nanjing Sportex Clothing Co., Ltd.</p>
-  <p class="info-line">hello@sportex.com</p>
-  <p class="copy">&copy; 2025 SPORTEX. All rights reserved.</p>
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">SPORTEX</div>
+      <p>Premium outdoor resort wear.<br>Designed in Nanjing. Made for the world.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <a href="#men">Men's</a>
+      <a href="#women">Women's</a>
+      <a href="#">Accessories</a>
+      <a href="#">New Arrivals</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#about">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Size Guide</a>
+      <a href="#">Shipping</a>
+      <a href="#">Returns</a>
+      <a href="#">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 SPORTEX. All rights reserved.</span>
+    <span>Nanjing Sportex Clothing Co., Ltd.</span>
+  </div>
 </footer>
 
 <script>
-// Nav scroll effect
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 20);
-});
-
-// Product data (placeholder — replace with real products later)
-const products = [
-  { name: 'Linen Resort Shirt', cat: 'Shirts', img: 'https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Relaxed Linen Trousers', cat: 'Trousers', img: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Floral Midi Dress', cat: 'Dresses', img: 'https://images.pexels.com/photos/985635/pexels-photo-985635.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Lightweight UV Jacket', cat: 'Outerwear', img: 'https://images.pexels.com/photos/6311390/pexels-photo-6311390.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Cotton Relaxed Tee', cat: 'T-Shirts', img: 'https://images.pexels.com/photos/4066292/pexels-photo-4066292.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Resort Shorts', cat: 'Shorts', img: 'https://images.pexels.com/photos/5704716/pexels-photo-5704716.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Silk Scarf', cat: 'Accessories', img: 'https://images.pexels.com/photos/1457983/pexels-photo-1457983.jpeg?auto=compress&cs=tinysrgb&w=600' },
-  { name: 'Straw Sun Hat', cat: 'Accessories', img: 'https://images.pexels.com/photos/984619/pexels-photo-984619.jpeg?auto=compress&cs=tinysrgb&w=600' },
+// ── Product Data ──
+const menProducts = [
+  { name: 'Outdoor Light Shirt', cat: 'COD 51 · Quick-Dry', price: '$59.00', img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80' },
+  { name: 'Linen Resort Shirt', cat: 'Relaxed Fit', price: '$55.00', img: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80' },
+  { name: 'UV Protection Polo', cat: 'UPF 50+', price: '$49.00', img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80' },
+  { name: 'Lightweight Cargo Pants', cat: 'Breathable', price: '$65.00', img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80' },
+  { name: 'Adventure Shorts', cat: 'Quick-Dry', price: '$45.00', img: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=80' },
+  { name: 'Packable Windbreaker', cat: 'Ultra Light', price: '$79.00', img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80' },
+  { name: 'Resort Camp Shirt', cat: 'Printed', price: '$52.00', img: 'https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&q=80' },
+  { name: 'Travel Chinos', cat: 'Stretch Fit', price: '$62.00', img: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80' },
 ];
 
-// Render products
-const grid = document.getElementById('productGrid');
-products.forEach((p) => {
-  const card = document.createElement('div');
-  card.className = 'product-card fade-in';
-  card.innerHTML = `
-    <div class="img-wrap">
-      <img src="${p.img}" alt="${p.name}" loading="lazy">
-      <span class="placeholder-label">Preview</span>
-    </div>
-    <div class="info">
-      <div class="name">${p.name}</div>
-      <div class="cat">${p.cat}</div>
-    </div>
-  `;
-  grid.appendChild(card);
-});
+const womenProducts = [
+  { name: 'Outdoor Light Blouse', cat: 'COD 50 · UPF 50+', price: '$55.00', img: 'https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80' },
+  { name: 'Floral Midi Dress', cat: 'Breathable', price: '$69.00', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80' },
+  { name: 'Sun Protection Top', cat: 'Antibacterial', price: '$48.00', img: 'https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80' },
+  { name: 'Linen Blend Trousers', cat: 'Relaxed Fit', price: '$58.00', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80' },
+  { name: 'Resort Maxi Skirt', cat: 'Flowy Fit', price: '$52.00', img: 'https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80' },
+  { name: 'Lightweight Jacket', cat: 'Packable', price: '$75.00', img: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80' },
+  { name: 'Boho Beach Top', cat: 'Cotton Blend', price: '$42.00', img: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80' },
+  { name: 'Adventure Capris', cat: 'Stretch Fit', price: '$55.00', img: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80' },
+];
 
-// IntersectionObserver — fade in on scroll
+function renderProducts(containerId, products) {
+  const grid = document.getElementById(containerId);
+  products.forEach((p) => {
+    const card = document.createElement('div');
+    card.className = 'product-card reveal';
+    card.innerHTML = `
+      <div class="img-wrap">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="info">
+        <div class="p-name">${p.name}</div>
+        <div class="p-cat">${p.cat}</div>
+        <div class="p-price">${p.price}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+renderProducts('menGrid', menProducts);
+renderProducts('womenGrid', womenProducts);
+
+// ── Scroll reveal ──
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -273,9 +484,9 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// Smooth scroll for nav links
+// ── Smooth scroll ──
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
