@@ -181,9 +181,9 @@
   .product-card .info .p-cat {
     font-size: 12px; color: var(--gray); letter-spacing: 0.5px;
   }
-  .product-card .info .p-price {
-    font-size: 14px; font-weight: 700; color: var(--navy);
-    margin-top: 8px; letter-spacing: 0.5px;
+  .product-card .info .p-code {
+    font-size: 11px; color: var(--accent-dark); font-weight: 600;
+    margin-top: 6px; letter-spacing: 0.5px; text-transform: uppercase;
   }
 
   /* ── Banner CTA ── */
@@ -272,7 +272,7 @@
 </head>
 <body>
 
-<div class="top-bar">Free Shipping on Orders Over $99 | UPF 50+ Certified Outdoor Apparel</div>
+<div class="top-bar">Premium Outdoor Apparel Manufacturer | AATCC Certified | Jiangsu, China</div>
 
 <nav class="nav">
   <a href="#" class="nav-logo">SPORTEX</a>
@@ -295,8 +295,8 @@
 <!-- Categories -->
 <section class="section">
   <div class="section-header reveal">
-    <h2>Shop by Category</h2>
-    <p>Resort-ready styles for every journey</p>
+    <h2>Our Collections</h2>
+    <p>Premium resort wear categories for international buyers</p>
   </div>
   <div class="categories">
     <div class="cat-card reveal" onclick="document.getElementById('men').scrollIntoView({behavior:'smooth'})">
@@ -369,9 +369,9 @@
 <!-- Banner CTA -->
 <section class="banner-cta">
   <div class="reveal">
-    <h2>READY FOR YOUR NEXT ADVENTURE</h2>
-    <p>Discover the full SPORTEX outdoor resort wear collection</p>
-    <a href="#men" class="btn">Shop Now</a>
+    <h2>PARTNER WITH SPORTEX</h2>
+    <p>Premium outdoor resort wear manufacturing for global brands</p>
+    <a href="#about" class="btn">Learn More</a>
   </div>
 </section>
 
@@ -402,24 +402,24 @@
       <p>Premium outdoor resort wear.<br>Designed in Nanjing. Made for the world.</p>
     </div>
     <div class="footer-col">
-      <h4>Shop</h4>
-      <a href="#men">Men's</a>
-      <a href="#women">Women's</a>
+      <h4>Collections</h4>
+      <a href="#men">Men's Wear</a>
+      <a href="#women">Women's Wear</a>
       <a href="#">Accessories</a>
-      <a href="#">New Arrivals</a>
+      <a href="#technology">Technology</a>
     </div>
     <div class="footer-col">
       <h4>Company</h4>
       <a href="#about">About Us</a>
       <a href="#">Contact</a>
-      <a href="#">Careers</a>
+      <a href="#">Certifications</a>
     </div>
     <div class="footer-col">
-      <h4>Support</h4>
-      <a href="#">Size Guide</a>
-      <a href="#">Shipping</a>
-      <a href="#">Returns</a>
-      <a href="#">FAQ</a>
+      <h4>Business</h4>
+      <a href="#">OEM / ODM</a>
+      <a href="#">Custom Design</a>
+      <a href="#">Quality Standards</a>
+      <a href="#">Inquiry</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -431,25 +431,25 @@
 <script>
 // ── Product Data ──
 const menProducts = [
-  { name: 'Outdoor Light Shirt', cat: 'COD 51 · Quick-Dry', price: '$59.00', img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80' },
-  { name: 'Linen Resort Shirt', cat: 'Relaxed Fit', price: '$55.00', img: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80' },
-  { name: 'UV Protection Polo', cat: 'UPF 50+', price: '$49.00', img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80' },
-  { name: 'Lightweight Cargo Pants', cat: 'Breathable', price: '$65.00', img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80' },
-  { name: 'Adventure Shorts', cat: 'Quick-Dry', price: '$45.00', img: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=80' },
-  { name: 'Packable Windbreaker', cat: 'Ultra Light', price: '$79.00', img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80' },
-  { name: 'Resort Camp Shirt', cat: 'Printed', price: '$52.00', img: 'https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&q=80' },
-  { name: 'Travel Chinos', cat: 'Stretch Fit', price: '$62.00', img: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80' },
+  { name: 'Outdoor Light Shirt', cat: 'COD 51 · Quick-Dry', code: 'COD 51-01', img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80' },
+  { name: 'Linen Resort Shirt', cat: 'Relaxed Fit', code: 'COD 51-02', img: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80' },
+  { name: 'UV Protection Polo', cat: 'UPF 50+', code: 'COD 51-03', img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80' },
+  { name: 'Lightweight Cargo Pants', cat: 'Breathable', code: 'COD 51-04', img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80' },
+  { name: 'Adventure Shorts', cat: 'Quick-Dry', code: 'COD 51-05', img: 'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=80' },
+  { name: 'Packable Windbreaker', cat: 'Ultra Light', code: 'COD 51-06', img: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80' },
+  { name: 'Resort Camp Shirt', cat: 'Printed', code: 'COD 51-07', img: 'https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&q=80' },
+  { name: 'Travel Chinos', cat: 'Stretch Fit', code: 'COD 51-08', img: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80' },
 ];
 
 const womenProducts = [
-  { name: 'Outdoor Light Blouse', cat: 'COD 50 · UPF 50+', price: '$55.00', img: 'https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80' },
-  { name: 'Floral Midi Dress', cat: 'Breathable', price: '$69.00', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80' },
-  { name: 'Sun Protection Top', cat: 'Antibacterial', price: '$48.00', img: 'https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80' },
-  { name: 'Linen Blend Trousers', cat: 'Relaxed Fit', price: '$58.00', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80' },
-  { name: 'Resort Maxi Skirt', cat: 'Flowy Fit', price: '$52.00', img: 'https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80' },
-  { name: 'Lightweight Jacket', cat: 'Packable', price: '$75.00', img: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80' },
-  { name: 'Boho Beach Top', cat: 'Cotton Blend', price: '$42.00', img: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80' },
-  { name: 'Adventure Capris', cat: 'Stretch Fit', price: '$55.00', img: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80' },
+  { name: 'Outdoor Light Blouse', cat: 'COD 50 · UPF 50+', code: 'COD 50-01', img: 'https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80' },
+  { name: 'Floral Midi Dress', cat: 'Breathable', code: 'COD 50-02', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80' },
+  { name: 'Sun Protection Top', cat: 'Antibacterial', code: 'COD 50-03', img: 'https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80' },
+  { name: 'Linen Blend Trousers', cat: 'Relaxed Fit', code: 'COD 50-04', img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80' },
+  { name: 'Resort Maxi Skirt', cat: 'Flowy Fit', code: 'COD 50-05', img: 'https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80' },
+  { name: 'Lightweight Jacket', cat: 'Packable', code: 'COD 50-06', img: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80' },
+  { name: 'Boho Beach Top', cat: 'Cotton Blend', code: 'COD 50-07', img: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80' },
+  { name: 'Adventure Capris', cat: 'Stretch Fit', code: 'COD 50-08', img: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80' },
 ];
 
 function renderProducts(containerId, products) {
@@ -464,7 +464,7 @@ function renderProducts(containerId, products) {
       <div class="info">
         <div class="p-name">${p.name}</div>
         <div class="p-cat">${p.cat}</div>
-        <div class="p-price">${p.price}</div>
+        <div class="p-code">${p.code}</div>
       </div>
     `;
     grid.appendChild(card);
