@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Men's Collection | SPORTEX</title>
-<meta name="description" content="SPORTEX Men's Outdoor Resort Wear — lightweight, breathable shirts, trousers, and outerwear with UPF 50+ protection for warm climates.">
-<meta property="og:title" content="Men's Collection | SPORTEX">
-<meta property="og:description" content="Lightweight outdoor shirts and resort wear engineered for warm climates. UPF 50+, antibacterial, quick-dry.">
+<title>Contact | SPORTEX</title>
+<meta name="description" content="Contact SPORTEX — premium outdoor resort wear manufacturer based in Nanjing, China. Get in touch for OEM/ODM inquiries and partnership opportunities.">
+<meta property="og:title" content="Contact | SPORTEX">
+<meta property="og:description" content="Get in touch with SPORTEX for premium outdoor resort wear manufacturing.">
 <meta property="og:type" content="website">
 <link rel="icon" href="favicon.svg">
 <style>
@@ -55,17 +55,13 @@
   .lang-toggle button:hover { border-color: var(--accent-dark); color: var(--accent-dark); }
 
   .page-hero {
-    position: relative; height: 45vh; min-height: 360px;
-    background: url('https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1920&q=80') center 30%/cover no-repeat;
+    position: relative; height: 35vh; min-height: 280px;
+    background: var(--navy-light);
     display: flex; align-items: center; justify-content: center;
   }
-  .page-hero::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(26,31,46,0.3), rgba(26,31,46,0.6));
-  }
-  .page-hero-content { position: relative; text-align: center; color: var(--white); }
+  .page-hero-content { text-align: center; color: var(--white); }
   .page-hero-content h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 700; letter-spacing: 4px; margin-bottom: 8px; }
-  .page-hero-content p { font-size: 16px; opacity: 0.85; letter-spacing: 2px; }
+  .page-hero-content p { font-size: 16px; opacity: 0.8; letter-spacing: 2px; }
 
   .breadcrumb {
     max-width: 1200px; margin: 0 auto; padding: 20px 40px;
@@ -76,32 +72,29 @@
   .breadcrumb span { color: var(--text); }
 
   .section { padding: 0 40px 80px; }
-  .section-header { text-align: center; margin-bottom: 48px; }
-  .section-header h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: var(--navy); letter-spacing: 2px; margin-bottom: 8px; }
-  .section-header p { color: var(--gray); font-size: 15px; letter-spacing: 1px; }
-
-  .product-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  .contact-wrap {
+    max-width: 800px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
   }
-  .product-card {
-    background: var(--white); transition: transform 0.3s ease, box-shadow 0.3s ease;
+  .contact-wrap h2 {
+    font-size: 22px; font-weight: 700; color: var(--navy);
+    letter-spacing: 2px; margin-bottom: 32px;
+    grid-column: 1 / -1;
   }
-  .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  .contact-card {
+    background: var(--off-white); padding: 32px; border-radius: 2px;
   }
-  .product-card .img-wrap {
-    width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--off-white);
+  .contact-card h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 8px;
   }
-  .product-card .img-wrap img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.5s ease;
+  .contact-card .info-value {
+    font-size: 16px; color: var(--text); line-height: 1.8;
   }
-  .product-card:hover .img-wrap img { transform: scale(1.04); }
-  .product-card .info { padding: 16px; }
-  .product-card .info .p-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; margin-bottom: 2px; }
-  .product-card .info .p-cat { font-size: 12px; color: var(--gray); letter-spacing: 0.5px; }
+  .contact-card .info-value a {
+    color: var(--accent-dark); text-decoration: none;
+  }
+  .contact-card .info-value a:hover { text-decoration: underline; }
 
   .back-link {
     text-align: center; padding: 0 40px 80px;
@@ -141,21 +134,31 @@
 
 <section class="page-hero">
   <div class="page-hero-content">
-    <h1 data-lkey="menHeroTitle">MEN'S COLLECTION</h1>
-    <p data-lkey="menHeroSub">Outdoor Shirts & Resort Wear</p>
+    <h1 data-lkey="contactHeroTitle">CONTACT US</h1>
+    <p data-lkey="contactHeroSub">Get in touch with SPORTEX</p>
   </div>
 </section>
 
 <div class="breadcrumb">
-  <a href="index.html">Home</a> / <span data-lkey="menBreadcrumb">Men's Collection</span>
+  <a href="index.html">Home</a> / <span>Contact</span>
 </div>
 
 <section class="section">
-  <div class="section-header reveal">
-    <h2 data-lkey="menSectionTitle">Men's Outdoor Resort Wear</h2>
-    <p data-lkey="menSectionSub">Lightweight, breathable designs engineered for warm climates</p>
+  <div class="contact-wrap reveal">
+    <h2 data-lkey="contactInfoTitle">Company Information</h2>
+    <div class="contact-card">
+      <h3 data-lkey="contactAddressLabel">Address</h3>
+      <div class="info-value" data-lkey="contactAddress">Nanjing, Jiangsu, China</div>
+    </div>
+    <div class="contact-card">
+      <h3 data-lkey="contactEmailLabel">Email</h3>
+      <div class="info-value"><a href="mailto:info@sportex.com" data-lkey="contactEmail">info@sportex.com</a></div>
+    </div>
+    <div class="contact-card">
+      <h3 data-lkey="contactPhoneLabel">Phone</h3>
+      <div class="info-value" data-lkey="contactPhone">+86 25 XXXX XXXX</div>
+    </div>
   </div>
-  <div class="product-grid" id="productGrid"></div>
 </section>
 
 <div class="back-link reveal">
@@ -164,32 +167,11 @@
 
 <footer id="siteFooter" class="footer"></footer>
 
-<script src="products.js"></script>
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
-renderNav('men');
+renderNav('contact');
 renderFooter();
-
-const grid = document.getElementById('productGrid');
-getProductsByCategory('men').forEach((p) => {
-  const card = document.createElement('a');
-  card.className = 'product-card reveal';
-  card.href = 'product.html?id=' + p.id;
-  card.style.textDecoration = 'none';
-  card.style.color = 'inherit';
-  card.style.display = 'block';
-  card.innerHTML = `
-    <div class="img-wrap">
-      <img src="${p.thumbnail}" alt="${p.name}" loading="lazy">
-    </div>
-    <div class="info">
-      <div class="p-name">${p.name}</div>
-      <div class="p-cat">${p.tags}</div>
-    </div>
-  `;
-  grid.appendChild(card);
-});
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {

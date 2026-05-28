@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Men's Collection | SPORTEX</title>
-<meta name="description" content="SPORTEX Men's Outdoor Resort Wear — lightweight, breathable shirts, trousers, and outerwear with UPF 50+ protection for warm climates.">
-<meta property="og:title" content="Men's Collection | SPORTEX">
-<meta property="og:description" content="Lightweight outdoor shirts and resort wear engineered for warm climates. UPF 50+, antibacterial, quick-dry.">
+<title>About | SPORTEX</title>
+<meta name="description" content="About SPORTEX — premium outdoor resort wear manufacturer founded in Nanjing, China. AATCC certified, serving 20+ countries worldwide.">
+<meta property="og:title" content="About | SPORTEX">
+<meta property="og:description" content="SPORTEX — premium outdoor resort wear manufacturer. Founded in Nanjing, serving 20+ countries.">
 <meta property="og:type" content="website">
 <link rel="icon" href="favicon.svg">
 <style>
@@ -55,17 +55,13 @@
   .lang-toggle button:hover { border-color: var(--accent-dark); color: var(--accent-dark); }
 
   .page-hero {
-    position: relative; height: 45vh; min-height: 360px;
-    background: url('https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1920&q=80') center 30%/cover no-repeat;
+    position: relative; height: 35vh; min-height: 280px;
+    background: var(--navy-light);
     display: flex; align-items: center; justify-content: center;
   }
-  .page-hero::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(26,31,46,0.3), rgba(26,31,46,0.6));
-  }
-  .page-hero-content { position: relative; text-align: center; color: var(--white); }
+  .page-hero-content { text-align: center; color: var(--white); }
   .page-hero-content h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 700; letter-spacing: 4px; margin-bottom: 8px; }
-  .page-hero-content p { font-size: 16px; opacity: 0.85; letter-spacing: 2px; }
+  .page-hero-content p { font-size: 16px; opacity: 0.8; letter-spacing: 2px; }
 
   .breadcrumb {
     max-width: 1200px; margin: 0 auto; padding: 20px 40px;
@@ -76,32 +72,42 @@
   .breadcrumb span { color: var(--text); }
 
   .section { padding: 0 40px 80px; }
-  .section-header { text-align: center; margin-bottom: 48px; }
-  .section-header h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: var(--navy); letter-spacing: 2px; margin-bottom: 8px; }
-  .section-header p { color: var(--gray); font-size: 15px; letter-spacing: 1px; }
+  .content-wrap { max-width: 750px; margin: 0 auto; }
+  .content-wrap h2 {
+    font-size: 22px; font-weight: 700; color: var(--navy);
+    letter-spacing: 2px; margin-bottom: 20px;
+  }
+  .content-wrap p {
+    font-size: 15px; color: var(--gray); line-height: 2;
+    margin-bottom: 48px; letter-spacing: 0.5px;
+  }
 
-  .product-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  .mission-box {
+    background: var(--off-white); padding: 40px; margin-bottom: 48px;
+    border-left: 4px solid var(--accent);
   }
-  .product-card {
-    background: var(--white); transition: transform 0.3s ease, box-shadow 0.3s ease;
+  .mission-box h3 {
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--navy); margin-bottom: 12px;
   }
-  .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  .mission-box p {
+    font-size: 15px; color: var(--text); line-height: 1.9; margin-bottom: 0;
   }
-  .product-card .img-wrap {
-    width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--off-white);
+
+  .timeline {
+    position: relative; padding-left: 32px; border-left: 2px solid var(--gray-light);
   }
-  .product-card .img-wrap img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform 0.5s ease;
+  .timeline-item { margin-bottom: 32px; position: relative; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -38px; top: 4px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--white);
   }
-  .product-card:hover .img-wrap img { transform: scale(1.04); }
-  .product-card .info { padding: 16px; }
-  .product-card .info .p-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; margin-bottom: 2px; }
-  .product-card .info .p-cat { font-size: 12px; color: var(--gray); letter-spacing: 0.5px; }
+  .timeline-item .t-year {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    color: var(--accent-dark); margin-bottom: 4px;
+  }
+  .timeline-item .t-text { font-size: 15px; color: var(--text); letter-spacing: 0.5px; }
 
   .back-link {
     text-align: center; padding: 0 40px 80px;
@@ -141,21 +147,53 @@
 
 <section class="page-hero">
   <div class="page-hero-content">
-    <h1 data-lkey="menHeroTitle">MEN'S COLLECTION</h1>
-    <p data-lkey="menHeroSub">Outdoor Shirts & Resort Wear</p>
+    <h1 data-lkey="aboutHeroTitle">ABOUT SPORTEX</h1>
+    <p data-lkey="aboutHeroSub">Our Story &amp; Mission</p>
   </div>
 </section>
 
 <div class="breadcrumb">
-  <a href="index.html">Home</a> / <span data-lkey="menBreadcrumb">Men's Collection</span>
+  <a href="index.html">Home</a> / <span>About</span>
 </div>
 
 <section class="section">
-  <div class="section-header reveal">
-    <h2 data-lkey="menSectionTitle">Men's Outdoor Resort Wear</h2>
-    <p data-lkey="menSectionSub">Lightweight, breathable designs engineered for warm climates</p>
+  <div class="content-wrap reveal">
+    <h2 data-lkey="aboutStoryTitle">Designed for the Journey</h2>
+    <p data-lkey="aboutStoryText">SPORTEX was founded in Nanjing with a clear mission: to create premium outdoor resort wear that blends performance technology with effortless style. We source only the finest lightweight fabrics — our signature 100% polyester at 105 g/m² delivers unmatched breathability and packability. Every garment meets rigorous AATCC standards for UV protection and antibacterial performance, so you can focus on the adventure. From sun-drenched coastlines to mountain trails, SPORTEX keeps you protected, comfortable, and looking sharp.</p>
+
+    <div class="mission-box">
+      <h3 data-lkey="aboutMissionTitle">Our Mission</h3>
+      <p data-lkey="aboutMissionText">To deliver premium outdoor resort wear that combines innovative fabric technology, responsible manufacturing, and timeless design — empowering our global partners to succeed in the outdoor apparel market.</p>
+    </div>
+
+    <h2 data-lkey="aboutMilestonesTitle">Milestones</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="t-year" data-lkey="aboutM1Year">2018</div>
+        <div class="t-text" data-lkey="aboutM1Text">SPORTEX founded in Nanjing, Jiangsu</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-year" data-lkey="aboutM2Year">2019</div>
+        <div class="t-text" data-lkey="aboutM2Text">First export order to European market</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-year" data-lkey="aboutM3Year">2020</div>
+        <div class="t-text" data-lkey="aboutM3Text">Achieved AATCC 183 &amp; 100 certifications</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-year" data-lkey="aboutM4Year">2022</div>
+        <div class="t-text" data-lkey="aboutM4Text">Expanded production capacity to 50,000 pcs/month</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-year" data-lkey="aboutM5Year">2024</div>
+        <div class="t-text" data-lkey="aboutM5Text">Launched proprietary lightweight fabric (105 g/m²)</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-year" data-lkey="aboutM6Year">2026</div>
+        <div class="t-text" data-lkey="aboutM6Text">Serving 20+ countries worldwide</div>
+      </div>
+    </div>
   </div>
-  <div class="product-grid" id="productGrid"></div>
 </section>
 
 <div class="back-link reveal">
@@ -164,32 +202,11 @@
 
 <footer id="siteFooter" class="footer"></footer>
 
-<script src="products.js"></script>
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
-renderNav('men');
+renderNav('about');
 renderFooter();
-
-const grid = document.getElementById('productGrid');
-getProductsByCategory('men').forEach((p) => {
-  const card = document.createElement('a');
-  card.className = 'product-card reveal';
-  card.href = 'product.html?id=' + p.id;
-  card.style.textDecoration = 'none';
-  card.style.color = 'inherit';
-  card.style.display = 'block';
-  card.innerHTML = `
-    <div class="img-wrap">
-      <img src="${p.thumbnail}" alt="${p.name}" loading="lazy">
-    </div>
-    <div class="info">
-      <div class="p-name">${p.name}</div>
-      <div class="p-cat">${p.tags}</div>
-    </div>
-  `;
-  grid.appendChild(card);
-});
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {

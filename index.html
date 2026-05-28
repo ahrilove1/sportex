@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPORTEX | Outdoor Resort Wear Manufacturer</title>
+<meta name="description" content="SPORTEX is a premium outdoor resort wear manufacturer based in Nanjing, China. AATCC certified, specializing in lightweight, breathable, UPF 50+ outdoor apparel for global brands.">
+<meta property="og:title" content="SPORTEX | Outdoor Resort Wear Manufacturer">
+<meta property="og:description" content="Premium outdoor resort wear manufacturer. AATCC certified. Lightweight, breathable, UPF 50+ protection.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg">
 <style>
   :root {
     --navy: #1a1f2e; --navy-light: #2a3348;
@@ -41,6 +46,13 @@
     font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s;
   }
   .nav-links a:hover { color: var(--accent-dark); }
+  .nav-links a.active { color: var(--accent-dark); border-bottom: 2px solid var(--accent-dark); padding-bottom: 4px; }
+  .lang-toggle button {
+    background: none; border: 1px solid var(--gray-light);
+    padding: 4px 10px; font-size: 12px; cursor: pointer;
+    color: var(--gray); letter-spacing: 0.5px; transition: all 0.2s;
+  }
+  .lang-toggle button:hover { border-color: var(--accent-dark); color: var(--accent-dark); }
 
   .hero {
     position: relative; height: 85vh; min-height: 600px;
@@ -104,6 +116,31 @@
   .banner-cta h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 700; letter-spacing: 3px; margin-bottom: 12px; }
   .banner-cta p { font-size: 15px; opacity: 0.8; margin-bottom: 32px; letter-spacing: 1px; }
 
+  /* Featured Products */
+  .featured-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .product-card {
+    background: var(--white); transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
+  .product-card .img-wrap {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--off-white);
+  }
+  .product-card .img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .product-card:hover .img-wrap img { transform: scale(1.04); }
+  .product-card .info { padding: 16px; }
+  .product-card .info .p-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; margin-bottom: 2px; }
+  .product-card .info .p-cat { font-size: 12px; color: var(--gray); letter-spacing: 0.5px; }
+
   .footer { background: var(--navy); color: var(--white); padding: 64px 40px 40px; }
   .footer-grid {
     max-width: 1100px; margin: 0 auto;
@@ -122,59 +159,38 @@
 
   .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 768px) {
-    .nav { padding: 0 16px; }
-    .nav-links { gap: 18px; }
-    .hero { height: 70vh; min-height: 480px; }
-    .section { padding: 48px 16px; }
-    .categories { grid-template-columns: 1fr; }
-    .features { grid-template-columns: 1fr 1fr; gap: 24px; }
-    .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
-    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
-  }
 </style>
 </head>
 <body>
 
-<div class="top-bar">Premium Outdoor Apparel Manufacturer | AATCC Certified | Jiangsu, China</div>
-
-<nav class="nav">
-  <a href="index.html" class="nav-logo">SPORTEX</a>
-  <ul class="nav-links">
-    <li><a href="men.html">Men</a></li>
-    <li><a href="women.html">Women</a></li>
-    <li><a href="#technology">Technology</a></li>
-    <li><a href="#about">About</a></li>
-  </ul>
-</nav>
+<header id="siteNav"></header>
 
 <section class="hero">
   <div class="hero-content reveal">
-    <h1>OUTDOOR<br>RESORT WEAR</h1>
-    <p>Engineered for sun, sea, and adventure — lightweight, breathable, UPF 50+ protection.</p>
-    <a href="#collections" class="btn">Explore Collections</a>
+    <h1 data-lkey="homeHeroTitle">OUTDOOR<br>RESORT WEAR</h1>
+    <p data-lkey="homeHeroSub">Engineered for sun, sea, and adventure — lightweight, breathable, UPF 50+ protection.</p>
+    <a href="#collections" class="btn" data-lkey="homeHeroBtn">Explore Collections</a>
   </div>
 </section>
 
 <section class="section" id="collections">
   <div class="section-header reveal">
-    <h2>Our Collections</h2>
-    <p>Premium resort wear categories for international buyers</p>
+    <h2 data-lkey="homeCollectionsTitle">Our Collections</h2>
+    <p data-lkey="homeCollectionsSub">Premium resort wear categories for international buyers</p>
   </div>
   <div class="categories">
     <a href="men.html" class="cat-card reveal">
       <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=800&q=80" alt="Men's" loading="lazy">
       <div class="cat-label">
-        <h3>Men's Collection <span class="arrow">→</span></h3>
-        <span>Outdoor Shirts · Trousers · Outerwear</span>
+        <h3>Men's Collection <span class="arrow">&rarr;</span></h3>
+        <span>Outdoor Shirts &middot; Trousers &middot; Outerwear</span>
       </div>
     </a>
     <a href="women.html" class="cat-card reveal">
       <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80" alt="Women's" loading="lazy">
       <div class="cat-label">
-        <h3>Women's Collection <span class="arrow">→</span></h3>
-        <span>Blouses · Dresses · Jackets</span>
+        <h3>Women's Collection <span class="arrow">&rarr;</span></h3>
+        <span>Blouses &middot; Dresses &middot; Jackets</span>
       </div>
     </a>
   </div>
@@ -182,92 +198,90 @@
 
 <section class="section features-bg" id="technology">
   <div class="section-header reveal">
-    <h2>Built for the Outdoors</h2>
-    <p>Every SPORTEX garment is engineered with performance technology</p>
+    <h2 data-lkey="homeTechTitle">Built for the Outdoors</h2>
+    <p data-lkey="homeTechSub">Every SPORTEX garment is engineered with performance technology</p>
   </div>
   <div class="features">
     <div class="feature-item reveal">
-      <div class="feat-icon">☀️</div>
-      <h4>UPF 50+ Protection</h4>
-      <p>AATCC 183-2014 certified. Blocks 98% of harmful UV rays for all-day sun safety.</p>
+      <div class="feat-icon">&#9728;&#65039;</div>
+      <h4 data-lkey="homeTech1Title">UPF 50+ Protection</h4>
+      <p data-lkey="homeTech1Desc">AATCC 183-2014 certified. Blocks 98% of harmful UV rays for all-day sun safety.</p>
     </div>
     <div class="feature-item reveal">
-      <div class="feat-icon">🛡️</div>
-      <h4>Antibacterial</h4>
-      <p>AATCC 100-2019 certified. Stays fresh longer with built-in antibacterial treatment.</p>
+      <div class="feat-icon">&#128737;&#65039;</div>
+      <h4 data-lkey="homeTech2Title">Antibacterial</h4>
+      <p data-lkey="homeTech2Desc">AATCC 100-2019 certified. Stays fresh longer with built-in antibacterial treatment.</p>
     </div>
     <div class="feature-item reveal">
-      <div class="feat-icon">💨</div>
-      <h4>Breathable Mesh</h4>
-      <p>Ventilation openings with inner mesh lining keep you cool in warm climates.</p>
+      <div class="feat-icon">&#128168;</div>
+      <h4 data-lkey="homeTech3Title">Breathable Mesh</h4>
+      <p data-lkey="homeTech3Desc">Ventilation openings with inner mesh lining keep you cool in warm climates.</p>
     </div>
     <div class="feature-item reveal">
-      <div class="feat-icon">🪶</div>
-      <h4>Ultra Lightweight</h4>
-      <p>100% polyester at just 105 g/m². Packs light, dries fast, moves freely.</p>
+      <div class="feat-icon">&#129682;</div>
+      <h4 data-lkey="homeTech4Title">Ultra Lightweight</h4>
+      <p data-lkey="homeTech4Desc">100% polyester at just 105 g/m&sup2;. Packs light, dries fast, moves freely.</p>
     </div>
   </div>
 </section>
 
 <section class="banner-cta">
   <div class="reveal">
-    <h2>PARTNER WITH SPORTEX</h2>
-    <p>Premium outdoor resort wear manufacturing for global brands</p>
-    <a href="#about" class="btn">Learn More</a>
+    <h2 data-lkey="homeCtaTitle">PARTNER WITH SPORTEX</h2>
+    <p data-lkey="homeCtaSub">Premium outdoor resort wear manufacturing for global brands</p>
+    <a href="about.html" class="btn" data-lkey="homeCtaBtn">Learn More</a>
   </div>
 </section>
 
 <section class="section" id="about">
   <div class="section-header reveal">
-    <h2>About SPORTEX</h2>
-    <p>Our Story</p>
+    <h2 data-lkey="homeAboutTitle">About SPORTEX</h2>
+    <p data-lkey="homeAboutSub">Our Story</p>
   </div>
   <div class="about-wrap reveal">
-    <h3>Designed for the Journey</h3>
-    <p>
-      SPORTEX was founded in Nanjing with a clear mission: to create premium outdoor resort wear
-      that blends performance technology with effortless style. We source only the finest lightweight
-      fabrics — our signature 100% polyester at 105 g/m² delivers unmatched breathability and packability.
-      Every garment meets rigorous AATCC standards for UV protection and antibacterial performance,
-      so you can focus on the adventure. From sun-drenched coastlines to mountain trails,
-      SPORTEX keeps you protected, comfortable, and looking sharp.
-    </p>
+    <h3 data-lkey="homeAboutHeading">Designed for the Journey</h3>
+    <p data-lkey="homeAboutText">SPORTEX was founded in Nanjing with a clear mission: to create premium outdoor resort wear that blends performance technology with effortless style. We source only the finest lightweight fabrics — our signature 100% polyester at 105 g/m² delivers unmatched breathability and packability. Every garment meets rigorous AATCC standards for UV protection and antibacterial performance, so you can focus on the adventure. From sun-drenched coastlines to mountain trails, SPORTEX keeps you protected, comfortable, and looking sharp.</p>
   </div>
 </section>
 
-<footer class="footer">
-  <div class="footer-grid">
-    <div class="footer-col">
-      <div class="footer-brand">SPORTEX</div>
-      <p>Premium outdoor resort wear.<br>Designed in Nanjing. Made for the world.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Collections</h4>
-      <a href="men.html">Men's Wear</a>
-      <a href="women.html">Women's Wear</a>
-      <a href="#">Accessories</a>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <a href="#about">About Us</a>
-      <a href="#">Contact</a>
-      <a href="#">Certifications</a>
-    </div>
-    <div class="footer-col">
-      <h4>Business</h4>
-      <a href="#">OEM / ODM</a>
-      <a href="#">Custom Design</a>
-      <a href="#">Quality Standards</a>
-      <a href="#">Inquiry</a>
-    </div>
+<section class="section" id="featured">
+  <div class="section-header reveal">
+    <h2 data-lkey="homeFeaturedTitle">Featured Products</h2>
+    <p data-lkey="homeFeaturedSub">Explore our best-selling outdoor resort wear</p>
   </div>
-  <div class="footer-bottom">
-    <span>&copy; 2025 SPORTEX. All rights reserved.</span>
-    <span>Nanjing Sportex Clothing Co., Ltd.</span>
-  </div>
-</footer>
+  <div class="featured-grid" id="featuredGrid"></div>
+</section>
 
+<footer id="siteFooter" class="footer"></footer>
+
+<script src="products.js"></script>
+<script src="common.js"></script>
+<script src="lang.js"></script>
 <script>
+renderNav('home');
+renderFooter();
+
+// Featured products — 4 picks (2 men, 2 women)
+const featuredIds = ['m-01', 'm-04', 'w-01', 'w-04'];
+const featuredGrid = document.getElementById('featuredGrid');
+featuredIds.forEach(id => {
+  const p = getProductById(id);
+  if (!p) return;
+  const card = document.createElement('a');
+  card.className = 'product-card reveal';
+  card.href = 'product.html?id=' + p.id;
+  card.innerHTML = `
+    <div class="img-wrap">
+      <img src="${p.thumbnail}" alt="${p.name}" loading="lazy">
+    </div>
+    <div class="info">
+      <div class="p-name">${p.name}</div>
+      <div class="p-cat">${p.tags}</div>
+    </div>
+  `;
+  featuredGrid.appendChild(card);
+});
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
