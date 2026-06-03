@@ -647,24 +647,6 @@
       "sizes": "XS / S / M / L / XL",
       "moq": "500 pcs per color",
       "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
-    },
-    {
-      "id": "1",
-      "name": "1",
-      "category": "men",
-      "tags": "1",
-      "thumbnail": "",
-      "images": [
-        {
-          "url": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780477358940_841fae22c5e94c08809156df951d4b78.png"
-        }
-      ],
-      "description": "",
-      "features": [],
-      "fabric": "",
-      "sizes": "",
-      "moq": "",
-      "care": ""
     }
   ]
 }
