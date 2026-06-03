@@ -400,15 +400,18 @@ async function uploadFiles(files){
       try{
         var optimized=await resizeImage(f);
         var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(optimized)});
-        var ts=Date.now(),safeName=ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
+        var ts=Date.now()+Math.floor(Math.random()*9999),safeName=ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
         var result=await ghUploadBuf(path,base64,'content: upload '+f.name);
         var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
         return {name:f.name,url:url,path:path,sha:result.content.sha};
       }catch(e){toast('Failed: '+f.name+' - '+e.message,'err');return null}
     })());
   })(files[i]);}
-  var results=(await Promise.all(tasks)).filter(function(r){return r!==null});
-  results.forEach(function(r){imagesData.push({name:r.name,url:r.url,path:r.path,sha:r.sha,date:new Date().toISOString()})});
+  var allResults=await Promise.all(tasks);
+  var okResults=allResults.filter(function(r){return r!==null});
+  var failed=allResults.length-okResults.length;
+  if(failed>0)toast(failed+'/'+allResults.length+' failed — retry those','err');
+  okResults.forEach(function(r){imagesData.push({name:r.name,url:r.url,path:r.path,sha:r.sha,date:new Date().toISOString()})});
   if(results.length>0){
     document.getElementById('save-status').textContent='Saving image database…';
     var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+results.length+' images)',imagesSha);imagesSha=r.content.sha;
@@ -425,7 +428,7 @@ async function uploadFileAndSet(fieldId){
       try{
         var optimized=await resizeImage(f[i]);
         var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(optimized)});
-        var ts=Date.now(),safeName=ts+'_'+f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
+        var ts=Date.now()+Math.floor(Math.random()*9999),safeName=ts+'_'+f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
         var result=await ghUploadBuf(path,base64,'content: upload '+f[i].name);
         var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
         imagesData.push({name:f[i].name,url:url,path:path,sha:result.content.sha,date:new Date().toISOString()});
