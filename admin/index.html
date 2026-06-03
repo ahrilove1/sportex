@@ -163,7 +163,12 @@ tr:hover{background:var(--off-white)}
 <div id="panel-products" class="panel on">
 <div class="card">
 <h2>Products</h2>
-<button class="btn btn-primary" id="btn-add-product" style="margin-bottom:16px">+ Add Product</button>
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+<input id="prod-search" type="text" placeholder="Search products…" style="flex:1;min-width:200px;padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none" oninput="onProdSearch()">
+<select id="prod-cat" onchange="onProdSearch()" style="padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none"><option value="all">All</option><option value="men">Men</option><option value="women">Women</option></select>
+<button class="btn btn-primary" id="btn-add-product">+ Add Product</button>
+<span style="font-size:12px;color:var(--gray)" id="prod-count"></span>
+</div>
 <div id="product-list"></div>
 <div id="product-edit" style="display:none"></div>
 </div>
@@ -277,6 +282,12 @@ document.querySelectorAll('.nav-links a').forEach(function(a){a.onclick=function
 var prodSearch='',prodCat='all',prodPage=1,prodPerPage=10;
 
 function renderProducts(){
+  // Read current values from static inputs
+  var searchEl=document.getElementById('prod-search');
+  var catEl=document.getElementById('prod-cat');
+  if(searchEl)prodSearch=searchEl.value;
+  if(catEl)prodCat=catEl.value;
+
   // Filter
   var filtered=productsData;
   if(prodCat!=='all')filtered=filtered.filter(function(p){return p.category===prodCat});
@@ -291,15 +302,10 @@ function renderProducts(){
   var start=(prodPage-1)*prodPerPage;
   var pageItems=filtered.slice(start,start+prodPerPage);
 
-  // Build search bar
-  var h='<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">';
-  h+='<input id="prod-search" type="text" placeholder="Search products…" value="'+esc(prodSearch)+'" style="flex:1;min-width:200px;padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none" oninput="onProdSearch()">';
-  h+='<select id="prod-cat" onchange="onProdSearch()" style="padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none">';
-  h+='<option value="all"'+(prodCat==='all'?' selected':'')+'>All</option><option value="men"'+(prodCat==='men'?' selected':'')+'>Men</option><option value="women"'+(prodCat==='women'?' selected':'')+'>Women</option></select>';
-  h+='<span style="font-size:12px;color:var(--gray)">'+filtered.length+' products</span></div>';
+  document.getElementById('prod-count').textContent=filtered.length+' products';
 
   // Table
-  h+='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th style="width:130px"></th></tr></thead><tbody>';
+  var h='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th style="width:130px"></th></tr></thead><tbody>';
   if(!pageItems.length){h+='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">No products found</td></tr>'}
   else{pageItems.forEach(function(p,i){var realIdx=productsData.indexOf(p);h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td>'+p.tags+'</td><td><button class="btn-xs" onclick="editProduct('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delProduct('+realIdx+')">Del</button></td></tr>'})}
   h+='</tbody></table>';
@@ -316,13 +322,14 @@ function renderProducts(){
     h+='<button class="btn-xs" onclick="prodPage='+totalPages+';renderProducts()" '+(prodPage===totalPages?'disabled':'')+'>Last »</button>';
     h+='<span style="margin-left:8px;color:var(--gray)">Page</span><input id="prod-jump" type="number" min="1" max="'+totalPages+'" value="'+prodPage+'" style="width:50px;padding:4px 8px;font-size:12px;border:1px solid var(--gray-light);border-radius:2px;text-align:center" onkeydown="if(event.key===\'Enter\')jumpPage()"><span style="color:var(--gray)">of '+totalPages+'</span>';
     h+='</div>';
-  }
+  } else { h+=''; }
 
   document.getElementById('product-list').innerHTML=h;
   document.getElementById('product-list').style.display='block';
   document.getElementById('product-edit').style.display='none';
 }
-function onProdSearch(){prodSearch=document.getElementById('prod-search').value;prodCat=document.getElementById('prod-cat').value;prodPage=1;renderProducts()}
+var _prodTimer=null;
+function onProdSearch(){clearTimeout(_prodTimer);_prodTimer=setTimeout(function(){prodPage=1;renderProducts()},300)}
 function jumpPage(){var v=parseInt(document.getElementById('prod-jump').value);if(v>=1){prodPage=v;renderProducts()}}
 function delProduct(idx){if(!confirm('Delete '+productsData[idx].name+'?'))return;productsData.splice(idx,1);saveProducts()}
 document.getElementById('btn-add-product').onclick=function(){editProduct(-1)};
