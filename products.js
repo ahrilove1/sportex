@@ -31,3 +31,8 @@ function getProductsByCategory(cat) {
 function getProductById(id) {
   return allProducts.find(p => p.id === id);
 }
+
+// Helper: img tag with placeholder fallback
+function imgTag(src, alt, cls) {
+  return '<img src="' + (src || PLACEHOLDER) + '" alt="' + (alt || '') + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
+}

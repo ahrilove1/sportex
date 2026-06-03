@@ -223,13 +223,13 @@ if (!product) {
     galleryHTML = `
       <div class="gallery">
         <div class="gallery-main">
-          <img src="${product.images[0]}" alt="${product.name}" id="mainImg">
+          <img src="${product.images[0] || 'images/placeholder.svg'}" alt="${product.name}" id="mainImg" onerror="this.onerror=null;this.src='images/placeholder.svg'">
         </div>
         ${product.images.length > 1 ? `
           <div class="gallery-thumbs">
             ${product.images.map((img, i) => `
               <button class="${i === 0 ? 'active' : ''}" data-img="${img}">
-                <img src="${img}" alt="${product.name} view ${i + 1}" loading="lazy">
+                ${imgTag(img, product.name + ' view ' + (i + 1))}
               </button>
             `).join('')}
           </div>
