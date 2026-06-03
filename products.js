@@ -1,17 +1,22 @@
 // SPORTEX Product Data
 // Data loaded from data/products.json — editable via CMS
 
+const PLACEHOLDER = 'images/placeholder.svg';
+
 let allProducts = [];
 let productsLoaded = (async () => {
   try {
     const r = await fetch('data/products.json');
     const data = await r.json();
-    // Transform CMS format to site format
+    // Transform CMS format to site format + apply placeholder for empty images
     allProducts = (data.products_list || []).map(p => ({
       ...p,
-      images: (p.images || []).map(i => typeof i === 'string' ? i : (i.url || i.image || '')),
+      thumbnail: p.thumbnail || PLACEHOLDER,
+      images: (p.images || []).map(i => typeof i === 'string' ? i : (i.url || i.image || '')).filter(u => u),
       features: (p.features || []).map(f => typeof f === 'string' ? f : (f.text || f.feature || '')),
     }));
+    // If all gallery images are empty, use placeholder
+    allProducts.forEach(p => { if (!p.images.length) p.images = [PLACEHOLDER]; });
   } catch (e) {
     console.error('Failed to load products data', e);
   }

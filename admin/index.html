@@ -357,7 +357,20 @@ function renderImages(){
 }
 function viewImage(url){document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('on')}
 function copyUrl(url){navigator.clipboard.writeText(url).then(function(){toast('URL copied! 📋')})}
-async function delImage(idx){if(!confirm('Delete '+imagesData[idx].name+'?'))return;
+async function delImage(idx){
+  var img=imagesData[idx];
+  // Check if image is used in any product
+  var usedIn=[];
+  productsData.forEach(function(p){
+    if(p.thumbnail===img.url)usedIn.push(p.name+' (thumbnail)');
+    (p.images||[]).forEach(function(pi){var u=typeof pi==='string'?pi:(pi.url||'');if(u===img.url)usedIn.push(p.name+' (gallery)')});
+  });
+  // Check settings
+  if(settingsData.hero===img.url)usedIn.push('Hero banner');
+  if(settingsData.men_hero===img.url)usedIn.push('Men page banner');
+  if(settingsData.women_hero===img.url)usedIn.push('Women page banner');
+  var warn=usedIn.length?'\n\n⚠ Used in: '+usedIn.join(', '):'';
+  if(!confirm('Delete '+img.name+'?'+warn))return;
   try{await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+imagesData[idx].name.replace(/[^a-zA-Z0-9._-]/g,'_'),{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})});
   imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}}
 
