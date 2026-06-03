@@ -151,6 +151,7 @@ tr:hover{background:var(--off-white)}
 <a href="#" class="active" data-tab="products">Products</a>
 <a href="#" data-tab="company">Company</a>
 <a href="#" data-tab="images">Images</a>
+<a href="#" data-tab="labels">Labels</a>
 <a href="#" data-tab="settings">Settings</a>
 </span>
 <span class="status" id="save-status"></span>
@@ -187,6 +188,18 @@ tr:hover{background:var(--off-white)}
 </div>
 </div>
 
+<!-- LABELS PANEL -->
+<div id="panel-labels" class="panel">
+<div class="card"><h2>Term Labels</h2>
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+<input id="lbl-search" type="text" placeholder="Filter labels…" style="flex:1;min-width:200px;padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none" oninput="renderLabels()">
+<select id="lbl-section" onchange="renderLabels()" style="padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none"></select>
+<button class="btn btn-primary" id="btn-add-label">+ Add Label</button>
+</div>
+<div id="label-list"></div>
+<div id="label-edit" style="display:none"></div>
+</div></div>
+
 <!-- SETTINGS PANEL -->
 <div id="panel-settings" class="panel">
 <div class="card"><h2>Site Images</h2><form id="settings-form"></form><div class="btn-group"><button class="btn btn-primary" id="btn-save-settings">Save Settings</button></div></div>
@@ -214,11 +227,11 @@ var PASS_HASH='84837a82c6313982cc78a6ca36cea7c82194dd939aaa42a8d066df85b5b22b72'
 var REPO='ahrilove1/sportex';
 var LS='spex_gh_token'; var PW='spex_pw';
 var token=localStorage.getItem(LS);
-var PRODUCTS_FILE='data/products.json', COMPANY_FILE='data/company.json', IMAGES_FILE='data/images.json', SETTINGS_FILE='data/settings.json', IMG_DIR='images/uploads/';
+var PRODUCTS_FILE='data/products.json', COMPANY_FILE='data/company.json', IMAGES_FILE='data/images.json', SETTINGS_FILE='data/settings.json', LABELS_FILE='data/labels.json', IMG_DIR='images/uploads/';
 
 // ═══ DATA ═══
-var productsData=[],companyData={},imagesData=[],settingsData={};
-var productsSha=null,companySha=null,imagesSha=null,settingsSha=null;
+var productsData=[],companyData={},imagesData=[],settingsData={},labelsData=[];
+var productsSha=null,companySha=null,imagesSha=null,settingsSha=null,labelsSha=null;
 
 // ═══ LOGIN ═══
 if(token&&localStorage.getItem(PW)==='1'){loadData();}
@@ -263,6 +276,7 @@ async function loadData(){
     var cd=await ghRead(COMPANY_FILE);companyData=cd.content;companySha=cd.sha;
     try{var id=await ghRead(IMAGES_FILE);imagesData=id.content.images;imagesSha=id.sha}catch(e){imagesData=[]}
     try{var sd=await ghRead(SETTINGS_FILE);settingsData=sd.content;settingsSha=sd.sha}catch(e){settingsData={hero:'',men_hero:'',women_hero:''}}
+    try{var ld=await ghRead(LABELS_FILE);labelsData=ld.content.labels;labelsSha=ld.sha}catch(e){labelsData=[]}
     document.getElementById('save-status').textContent='Ready';
     renderAll();
   }catch(e){document.getElementById('save-status').textContent='Error: '+e.message;toast('Failed to load data: '+e.message,'err')}
@@ -272,6 +286,7 @@ function renderAll(){
   renderProducts();
   renderCompanyForm();
   renderImages();
+  renderLabels();
   renderSettings();
 }
 
@@ -531,6 +546,56 @@ async function uploadFileAndSet(fieldId){
     document.getElementById('save-status').textContent='Ready';
   };
   inp.click();
+}
+
+// ═══ LABELS ═══
+function renderLabels(){
+  var q=(document.getElementById('lbl-search')?document.getElementById('lbl-search').value:'').toLowerCase();
+  var sec=document.getElementById('lbl-section')?document.getElementById('lbl-section').value:'all';
+  // Build section dropdown
+  var sections={};
+  labelsData.forEach(function(l){sections[l.section]=1});
+  var secOpts='<option value="all">All Sections</option>';
+  Object.keys(sections).sort().forEach(function(s){secOpts+='<option value="'+s+'"'+(sec===s?' selected':'')+'>'+s+'</option>'});
+  document.getElementById('lbl-section').innerHTML=secOpts;
+  // Filter
+  var filtered=labelsData;
+  if(sec!=='all')filtered=filtered.filter(function(l){return l.section===sec});
+  if(q)filtered=filtered.filter(function(l){return l.key.toLowerCase().indexOf(q)!==-1||l.en.toLowerCase().indexOf(q)!==-1||l.zh.toLowerCase().indexOf(q)!==-1});
+  // Render
+  var h='<table><thead><tr><th>Key</th><th>English</th><th>中文</th><th>Section</th><th style="width:130px"></th></tr></thead><tbody>';
+  filtered.forEach(function(l,i){var realIdx=labelsData.indexOf(l);h+='<tr><td style="font-family:monospace;font-size:11px">'+l.key+'</td><td>'+esc(l.en)+'</td><td>'+esc(l.zh)+'</td><td><span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--off-white);color:var(--gray)">'+l.section+'</span></td><td><button class="btn-xs" onclick="editLabel('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delLabel('+realIdx+')">Del</button></td></tr>'});
+  h+='</tbody></table>';
+  document.getElementById('label-list').innerHTML=h;
+}
+function editLabel(idx){
+  var l=idx>=0?labelsData[idx]:{key:'',en:'',zh:'',section:'General'};
+  var h='<h3>'+(idx>=0?'Edit':'Add')+' Label</h3>';
+  h+='<div class="form-row"><div class="form-group"><label>Key</label><input id="el-key" value="'+esc(l.key)+'"></div><div class="form-group"><label>Section</label><input id="el-section" value="'+esc(l.section)+'"></div></div>';
+  h+='<div class="form-row"><div class="form-group"><label>English</label><input id="el-en" value="'+esc(l.en)+'"></div><div class="form-group"><label>中文</label><input id="el-zh" value="'+esc(l.zh)+'"></div></div>';
+  h+='<div class="btn-group"><button class="btn btn-primary" id="btn-save-label" data-idx="'+idx+'">Save Label</button><button class="btn btn-secondary" onclick="renderLabels()">Cancel</button></div>';
+  document.getElementById('label-list').style.display='none';
+  document.getElementById('label-edit').innerHTML=h;
+  document.getElementById('label-edit').style.display='block';
+  document.getElementById('btn-save-label').onclick=saveLabel;
+}
+async function saveLabel(){
+  var idx=parseInt(document.getElementById('btn-save-label').dataset.idx);
+  var l={key:document.getElementById('el-key').value,en:document.getElementById('el-en').value,zh:document.getElementById('el-zh').value,section:document.getElementById('el-section').value};
+  if(idx>=0)labelsData[idx]=l;else labelsData.push(l);
+  document.getElementById('label-edit').style.display='none';
+  document.getElementById('label-list').style.display='block';
+  await saveLabels();
+}
+function delLabel(idx){if(!confirm('Delete label '+labelsData[idx].key+'?'))return;labelsData.splice(idx,1);saveLabels()}
+document.getElementById('btn-add-label').onclick=function(){editLabel(-1)};
+async function saveLabels(){
+  document.getElementById('save-status').textContent='Saving labels…';
+  try{
+    var r=await ghWrite(LABELS_FILE,{labels:labelsData},'content: update labels',labelsSha);
+    labelsSha=r.content.sha;document.getElementById('save-status').textContent='Deploying…';
+    trackDeploy(r.commit.sha);renderLabels();toast('Labels saved ✅');
+  }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 }
 
 // ═══ SETTINGS ═══

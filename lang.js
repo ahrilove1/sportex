@@ -231,5 +231,22 @@ function toggleLang() {
   location.reload();
 }
 
+// Load custom labels from backend and merge into LANG
+let labelsLoaded = (async () => {
+  try {
+    const r = await fetch('data/labels.json');
+    const data = await r.json();
+    (data.labels || []).forEach(l => {
+      if (l.en) LANG.en[l.key] = l.en;
+      if (l.zh) LANG.zh[l.key] = l.zh;
+    });
+  } catch (e) {
+    console.warn('Failed to load custom labels, using defaults');
+  }
+})();
+
 // Apply saved language on load
-document.addEventListener('DOMContentLoaded', () => applyLang(currentLang));
+document.addEventListener('DOMContentLoaded', async () => {
+  await labelsLoaded;
+  applyLang(currentLang);
+});
