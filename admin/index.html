@@ -3,22 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Manager | SPORTEX</title>
+  <title>SPORTEX Admin</title>
   <style>
-    body { margin: 0; padding: 0; }
-    #nc-root { height: 100vh; }
-    /* Custom logo in Decap CMS header */
-    .nc-root .css-1v08j4e-LoginButton-button-default-bold-sizeDefault-large-Text,
-    .nc-root [class*="AppHeader"] {
-      /* Decap CMS uses automatic class names, these are for reference */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: #1a1f2e;
     }
+    #login-screen {
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh; flex-direction: column;
+    }
+    .login-box {
+      background: #fff; padding: 48px 40px; border-radius: 4px;
+      text-align: center; max-width: 380px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-box .logo {
+      font-size: 28px; font-weight: 700; letter-spacing: 4px;
+      color: #1a1f2e; margin-bottom: 8px;
+    }
+    .login-box .sub {
+      font-size: 13px; color: #6b7280; margin-bottom: 28px;
+    }
+    .login-box input {
+      width: 100%; padding: 12px 16px; font-size: 15px;
+      border: 1px solid #e5e7eb; border-radius: 2px; outline: none;
+      text-align: center; letter-spacing: 1px;
+      transition: border-color 0.2s;
+    }
+    .login-box input:focus { border-color: #d4944e; }
+    .login-box button {
+      width: 100%; margin-top: 16px; padding: 12px;
+      background: #1a1f2e; color: #fff; border: none;
+      font-size: 14px; font-weight: 600; letter-spacing: 2px;
+      cursor: pointer; border-radius: 2px; transition: background 0.2s;
+    }
+    .login-box button:hover { background: #2a3348; }
+    .login-box .error {
+      color: #dc2626; font-size: 13px; margin-top: 12px; display: none;
+    }
+    #cms-root { height: 100vh; display: none; }
   </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js"></script>
-  <script>
-    // Custom preview styles for products
-    CMS.registerPreviewStyle('/admin/preview.css');
-  </script>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">SPORTEX</div>
+    <div class="sub">Content Manager</div>
+    <input type="password" id="pw-input" placeholder="Enter password" autofocus>
+    <button id="pw-btn">UNLOCK</button>
+    <div class="error" id="pw-error">Incorrect password</div>
+  </div>
+</div>
+
+<div id="cms-root"></div>
+
+<script>
+const PASS_HASH = '61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
+const SESSION_KEY = 'sportex_admin_session';
+
+// Check if already authenticated
+if (sessionStorage.getItem(SESSION_KEY) === PASS_HASH) {
+  showCMS();
+} else {
+  document.getElementById('pw-btn').addEventListener('click', verifyPassword);
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') verifyPassword();
+  });
+}
+
+async function sha256(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyPassword() {
+  const input = document.getElementById('pw-input').value;
+  if (!input) return;
+  const hash = await sha256(input);
+  if (hash === PASS_HASH) {
+    sessionStorage.setItem(SESSION_KEY, hash);
+    showCMS();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function showCMS() {
+  document.getElementById('login-screen').style.display = 'none';
+  var cmsRoot = document.getElementById('cms-root');
+  cmsRoot.style.display = 'block';
+
+  // Load Decap CMS
+  var script = document.createElement('script');
+  script.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
+  script.onload = function() {
+    try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
+  };
+  document.body.appendChild(script);
+}
+</script>
 </body>
 </html>
