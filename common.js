@@ -1,13 +1,15 @@
 // SPORTEX Shared Components
-// 梓豪 — 修改公司信息只需改这里
+// Company data loaded from data/company.json — editable via CMS
 
-const COMPANY = {
-  name: 'SPORTEX',
-  fullName: 'Nanjing Sportex Clothing Co., Ltd.',
-  address: 'Nanjing, Jiangsu, China',
-  email: 'info@sportex.com',
-  phone: '+86 25 XXXX XXXX',
-};
+let COMPANY = {};
+let companyLoaded = (async () => {
+  try {
+    const r = await fetch('data/company.json');
+    COMPANY = await r.json();
+  } catch (e) {
+    console.error('Failed to load company data', e);
+  }
+})();
 
 function renderNav(currentPage) {
   const pages = [

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Manager | SPORTEX</title>
+  <style>
+    body { margin: 0; padding: 0; }
+    #nc-root { height: 100vh; }
+    /* Custom logo in Decap CMS header */
+    .nc-root .css-1v08j4e-LoginButton-button-default-bold-sizeDefault-large-Text,
+    .nc-root [class*="AppHeader"] {
+      /* Decap CMS uses automatic class names, these are for reference */
+    }
+  </style>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js"></script>
+  <script>
+    // Custom preview styles for products
+    CMS.registerPreviewStyle('/admin/preview.css');
+  </script>
+</body>
+</html>

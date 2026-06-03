@@ -258,6 +258,8 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
+(async () => {
+await Promise.all([productsLoaded, companyLoaded]);
 renderNav('home');
 renderFooter();
 
@@ -295,6 +297,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) target.scrollIntoView({ behavior: 'smooth' });
   });
 });
+})();
 </script>
 </body>
 </html>

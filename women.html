@@ -168,6 +168,8 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
+(async () => {
+await Promise.all([productsLoaded, companyLoaded]);
 renderNav('women');
 renderFooter();
 
@@ -197,6 +199,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
 </script>
 </body>
 </html>

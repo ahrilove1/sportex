@@ -189,6 +189,8 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
+(async () => {
+await Promise.all([productsLoaded, companyLoaded]);
 renderNav(); // product pages don't highlight a specific nav item
 renderFooter();
 
@@ -284,6 +286,7 @@ if (!product) {
     });
   });
 }
+})();
 </script>
 </body>
 </html>
