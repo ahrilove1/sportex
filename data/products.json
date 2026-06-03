@@ -654,7 +654,11 @@
       "category": "men",
       "tags": "1",
       "thumbnail": "",
-      "images": [],
+      "images": [
+        {
+          "url": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780477358940_841fae22c5e94c08809156df951d4b78.png"
+        }
+      ],
       "description": "",
       "features": [],
       "fabric": "",
