@@ -219,8 +219,8 @@ function editProduct(idx){
   var html='<h3>'+(idx>=0?'Edit':'Add')+' Product</h3>';
   html+='<div class="form-row"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+p.id+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+p.name+'"></div></div>';
   html+='<div class="form-row"><div class="form-group"><label>Category</label><select id="ep-category"><option value="men" '+(p.category==='men'?'selected':'')+'>Men</option><option value="women" '+(p.category==='women'?'selected':'')+'>Women</option></select></div><div class="form-group"><label>Tags</label><input id="ep-tags" value="'+p.tags+'"></div></div>';
-  html+='<div class="form-group"><label>Thumbnail URL</label><input id="ep-thumbnail" value="'+p.thumbnail+'"></div>';
-  html+='<div class="form-group"><label>Gallery Images (one URL per line)</label><textarea id="ep-images" rows="3">'+p._images+'</textarea></div>';
+  html+='<div class="form-group"><label>Thumbnail URL</label><div style="display:flex;gap:8px"><input id="ep-thumbnail" value="'+p.thumbnail+'" style="flex:1"><button class="btn btn-secondary" onclick="uploadAndInsert(\'ep-thumbnail\')" type="button" style="white-space:nowrap">📸 Upload</button></div></div>';
+  html+='<div class="form-group"><label>Gallery Images (one URL per line)</label><div style="display:flex;gap:8px"><textarea id="ep-images" rows="3" style="flex:1">'+p._images+'</textarea><button class="btn btn-secondary" onclick="uploadAndInsert(\'ep-images\')" type="button" style="white-space:nowrap;height:fit-content">📸 Upload</button></div></div>';
   html+='<div class="form-group"><label>Description</label><textarea id="ep-desc">'+p.description+'</textarea></div>';
   html+='<div class="form-group"><label>Features (one per line)</label><textarea id="ep-features" rows="4">'+p._features+'</textarea></div>';
   html+='<div class="form-row"><div class="form-group"><label>Fabric</label><input id="ep-fabric" value="'+p.fabric+'"></div><div class="form-group"><label>Sizes</label><input id="ep-sizes" value="'+p.sizes+'"></div></div>';
@@ -294,6 +294,32 @@ document.getElementById('btn-save-company').onclick=async function(){
     toast('Company info saved ✅');
   }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
 };
+
+// ═══ UPLOAD HELPER ═══
+async function uploadAndInsert(fieldId){
+  var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=(fieldId==='ep-images');
+  inp.onchange=async function(){
+    var files=inp.files;
+    for(var i=0;i<files.length;i++){
+      var f=files[i];
+      document.getElementById('save-status').textContent='Uploading '+f.name+'...';
+      try{
+        var base64=await new Promise(function(ok){ var r=new FileReader(); r.onload=function(){ ok(r.result.split(',')[1]); }; r.readAsDataURL(f); });
+        var ts=new Date().getTime();
+        var path=IMG_DIR+ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+        var result=await ghUpload(path,base64,'content: upload '+f.name);
+        var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
+        var el=document.getElementById(fieldId);
+        if(fieldId==='ep-images') el.value=el.value+'\n'+url;
+        else el.value=url;
+        toast('Uploaded: '+f.name+' ✅');
+      }catch(e){ toast('Upload failed: '+e.message,'error'); }
+    }
+    document.getElementById('save-status').textContent='Ready';
+    loadImages();
+  };
+  inp.click();
+}
 
 // ═══ IMAGES ═══
 document.getElementById('upload-zone').onclick=function(){ document.getElementById('file-input').click(); };
