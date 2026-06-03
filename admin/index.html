@@ -274,16 +274,56 @@ function renderAll(){
 document.querySelectorAll('.nav-links a').forEach(function(a){a.onclick=function(e){e.preventDefault();document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});document.getElementById('panel-'+this.dataset.tab).classList.add('on')}});
 
 // ═══ PRODUCTS ═══
+var prodSearch='',prodCat='all',prodPage=1,prodPerPage=10;
+
 function renderProducts(){
-  var h='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th style="width:130px"></th></tr></thead><tbody>';
-  productsData.forEach(function(p,i){
-    h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td>'+p.tags+'</td><td><button class="btn-xs" onclick="editProduct('+i+')">Edit</button><button class="btn-xs red" onclick="delProduct('+i+')">Del</button></td></tr>';
-  });
+  // Filter
+  var filtered=productsData;
+  if(prodCat!=='all')filtered=filtered.filter(function(p){return p.category===prodCat});
+  if(prodSearch){
+    var q=prodSearch.toLowerCase();
+    filtered=filtered.filter(function(p){
+      return (p.id||'').toLowerCase().indexOf(q)!==-1||(p.name||'').toLowerCase().indexOf(q)!==-1||(p.tags||'').toLowerCase().indexOf(q)!==-1||(p.fabric||'').toLowerCase().indexOf(q)!==-1||(p.description||'').toLowerCase().indexOf(q)!==-1;
+    });
+  }
+  var totalPages=Math.max(1,Math.ceil(filtered.length/prodPerPage));
+  if(prodPage>totalPages)prodPage=totalPages;
+  var start=(prodPage-1)*prodPerPage;
+  var pageItems=filtered.slice(start,start+prodPerPage);
+
+  // Build search bar
+  var h='<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">';
+  h+='<input id="prod-search" type="text" placeholder="Search products…" value="'+esc(prodSearch)+'" style="flex:1;min-width:200px;padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none" oninput="onProdSearch()">';
+  h+='<select id="prod-cat" onchange="onProdSearch()" style="padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none">';
+  h+='<option value="all"'+(prodCat==='all'?' selected':'')+'>All</option><option value="men"'+(prodCat==='men'?' selected':'')+'>Men</option><option value="women"'+(prodCat==='women'?' selected':'')+'>Women</option></select>';
+  h+='<span style="font-size:12px;color:var(--gray)">'+filtered.length+' products</span></div>';
+
+  // Table
+  h+='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th style="width:130px"></th></tr></thead><tbody>';
+  if(!pageItems.length){h+='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">No products found</td></tr>'}
+  else{pageItems.forEach(function(p,i){var realIdx=productsData.indexOf(p);h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td>'+p.tags+'</td><td><button class="btn-xs" onclick="editProduct('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delProduct('+realIdx+')">Del</button></td></tr>'})}
   h+='</tbody></table>';
+
+  // Pagination
+  if(totalPages>1){
+    h+='<div style="display:flex;gap:6px;align-items:center;justify-content:center;margin-top:16px;font-size:12px">';
+    h+='<button class="btn-xs" onclick="prodPage=1;renderProducts()" '+(prodPage===1?'disabled':'')+'>« First</button>';
+    h+='<button class="btn-xs" onclick="prodPage=Math.max(1,prodPage-1);renderProducts()" '+(prodPage===1?'disabled':'')+'>‹ Prev</button>';
+    var maxShow=7,pageStart=Math.max(1,prodPage-Math.floor(maxShow/2)),pageEnd=Math.min(totalPages,pageStart+maxShow-1);
+    if(pageEnd-pageStart<maxShow-1)pageStart=Math.max(1,pageEnd-maxShow+1);
+    for(var pi=pageStart;pi<=pageEnd;pi++){h+='<button class="btn-xs" onclick="prodPage='+pi+';renderProducts()" style="'+(pi===prodPage?'background:var(--navy);color:#fff;border-color:var(--navy)':'')+'">'+pi+'</button>'}
+    h+='<button class="btn-xs" onclick="prodPage=Math.min(totalPages,prodPage+1);renderProducts()" '+(prodPage===totalPages?'disabled':'')+'>Next ›</button>';
+    h+='<button class="btn-xs" onclick="prodPage='+totalPages+';renderProducts()" '+(prodPage===totalPages?'disabled':'')+'>Last »</button>';
+    h+='<span style="margin-left:8px;color:var(--gray)">Page</span><input id="prod-jump" type="number" min="1" max="'+totalPages+'" value="'+prodPage+'" style="width:50px;padding:4px 8px;font-size:12px;border:1px solid var(--gray-light);border-radius:2px;text-align:center" onkeydown="if(event.key===\'Enter\')jumpPage()"><span style="color:var(--gray)">of '+totalPages+'</span>';
+    h+='</div>';
+  }
+
   document.getElementById('product-list').innerHTML=h;
   document.getElementById('product-list').style.display='block';
   document.getElementById('product-edit').style.display='none';
 }
+function onProdSearch(){prodSearch=document.getElementById('prod-search').value;prodCat=document.getElementById('prod-cat').value;prodPage=1;renderProducts()}
+function jumpPage(){var v=parseInt(document.getElementById('prod-jump').value);if(v>=1){prodPage=v;renderProducts()}}
 function delProduct(idx){if(!confirm('Delete '+productsData[idx].name+'?'))return;productsData.splice(idx,1);saveProducts()}
 document.getElementById('btn-add-product').onclick=function(){editProduct(-1)};
 
