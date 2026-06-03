@@ -115,6 +115,12 @@ tr:hover{background:var(--off-white)}
 .upload-zone:hover{border-color:var(--accent);background:var(--off-white)}
 .upload-zone p{color:var(--gray);font-size:13px;letter-spacing:.5px}
 
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2000;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.on{display:flex}
+.lightbox img{max-width:95vw;max-height:95vh;object-fit:contain}
+.lightbox .lb-close{position:absolute;top:20px;right:30px;color:#fff;font-size:32px;cursor:pointer;z-index:2001}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:2px;color:#fff;font-size:13px;font-weight:600;letter-spacing:.5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2)}
 .toast.ok{background:var(--accent-dark)}
@@ -194,6 +200,7 @@ tr:hover{background:var(--off-white)}
 </div>
 </div>
 
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><span class="lb-close">&times;</span><img id="lightbox-img" src=""></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -344,10 +351,11 @@ function renderImages(){
   if(!imagesData.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:32px">No images yet — upload some!</p>';return}
   var h='';
   imagesData.forEach(function(img,i){
-    h+='<div class="img-card"><img src="'+img.url+'" alt="'+img.name+'"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
+    h+='<div class="img-card"><img src="'+img.url+'" alt="'+img.name+'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
   });
   g.innerHTML=h;
 }
+function viewImage(url){document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('on')}
 function copyUrl(url){navigator.clipboard.writeText(url).then(function(){toast('URL copied! 📋')})}
 async function delImage(idx){if(!confirm('Delete '+imagesData[idx].name+'?'))return;
   try{await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+imagesData[idx].name.replace(/[^a-zA-Z0-9._-]/g,'_'),{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})});
@@ -360,7 +368,7 @@ function openImgPicker(targetId){
   var g=document.getElementById('img-select-grid');
   var h='';
   imagesData.forEach(function(img,i){
-    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'" onclick="toggleImgPick(this)"><img src="'+img.url+'" alt="'+img.name+'"><div class="img-name">'+img.name+'</div></div>';
+    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+img.url+'" alt="'+img.name+'" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
   });
   if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
   g.innerHTML=h;
