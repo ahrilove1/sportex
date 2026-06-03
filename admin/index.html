@@ -201,26 +201,26 @@ function startCMS() {
 
       // Auto-authenticate: dispatch AUTH_SUCCESS to CMS Redux store
       var tok = localStorage.getItem(LS_KEY);
-      if (tok) {
-        var store = CMS.getStore();
-        if (store) {
-          store.dispatch({
+      if (tok && CMS.store) {
+        try {
+          CMS.store.dispatch({
             type: 'AUTH_SUCCESS',
             payload: {
-              user: {
-                token: tok,
-                name: 'SPORTEX Admin',
-                login: 'ahrilove1',
-                email: 'admin@sportexproduction.com',
-                avatar_url: '',
-                html_url: 'https://github.com/ahrilove1',
-                backendName: 'github'
-              }
+              token: tok,
+              name: 'SPORTEX Admin',
+              login: 'ahrilove1',
+              email: 'admin@sportexproduction.com',
+              avatar_url: '',
+              html_url: 'https://github.com/ahrilove1',
+              backendName: 'github'
             }
           });
-        }
+          console.log('[SPORTEX] AUTH_SUCCESS dispatched');
+        } catch(e) { console.log('[SPORTEX] store dispatch error:', e); }
+      } else {
+        console.log('[SPORTEX] no store or no token, store:', !!CMS.store, 'token:', !!tok);
       }
-    } catch(e) { console.log('CMS init:', e); }
+    } catch(e) { console.log('[SPORTEX] CMS init error:', e); }
   };
   document.body.appendChild(s);
 }
