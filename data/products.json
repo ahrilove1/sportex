@@ -7,23 +7,43 @@
       "tags": "Quick-Dry · UPF 50+",
       "thumbnail": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1200&q=80"
+        }
       ],
       "description": "Engineered for warm-weather adventures, this lightweight shirt combines UPF 50+ sun protection with quick-dry technology. The relaxed fit ensures all-day comfort whether on the trail or at the resort.",
       "features": [
-        {"text": "UPF 50+ certified UV protection (AATCC 183-2014)"},
-        {"text": "Quick-dry fabric wicks moisture away"},
-        {"text": "Antibacterial treatment stays fresh longer"},
-        {"text": "Ventilation mesh panels under arms"},
-        {"text": "Hidden zip chest pocket"},
-        {"text": "Reinforced double-stitch seams"}
+        {
+          "text": "UPF 50+ certified UV protection (AATCC 183-2014)"
+        },
+        {
+          "text": "Quick-dry fabric wicks moisture away"
+        },
+        {
+          "text": "Antibacterial treatment stays fresh longer"
+        },
+        {
+          "text": "Ventilation mesh panels under arms"
+        },
+        {
+          "text": "Hidden zip chest pocket"
+        },
+        {
+          "text": "Reinforced double-stitch seams"
+        }
       ],
       "fabric": "100% Polyester, 105 g/m²",
       "sizes": "S / M / L / XL / XXL",
       "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron",
+      "_images": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80\nhttps://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80\nhttps://images.unsplash.com/photo-1488161628813-04466f872be2?w=1200&q=80",
+      "_features": "UPF 50+ certified UV protection (AATCC 183-2014)\nQuick-dry fabric wicks moisture away\nAntibacterial treatment stays fresh longer\nVentilation mesh panels under arms\nHidden zip chest pocket\nReinforced double-stitch seams"
     },
     {
       "id": "m-02",
@@ -32,17 +52,33 @@
       "tags": "Relaxed Fit · Breathable",
       "thumbnail": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+        }
       ],
       "description": "A relaxed-fit resort shirt crafted from breathable linen-blend fabric. Perfect for beachside evenings and tropical getaways, with a soft hand feel and effortless drape.",
       "features": [
-        {"text": "Breathable linen-polyester blend"},
-        {"text": "Relaxed camp collar design"},
-        {"text": "Side-slit hem for ease of movement"},
-        {"text": "Natural wrinkle texture for casual look"},
-        {"text": "Coconut button detailing"}
+        {
+          "text": "Breathable linen-polyester blend"
+        },
+        {
+          "text": "Relaxed camp collar design"
+        },
+        {
+          "text": "Side-slit hem for ease of movement"
+        },
+        {
+          "text": "Natural wrinkle texture for casual look"
+        },
+        {
+          "text": "Coconut button detailing"
+        }
       ],
       "fabric": "55% Linen / 45% Polyester",
       "sizes": "S / M / L / XL / XXL",
@@ -56,17 +92,33 @@
       "tags": "UPF 50+ · Antibacterial",
       "thumbnail": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1200&q=80"
+        }
       ],
       "description": "A performance polo built for the outdoor lifestyle. Anti-bacterial treatment keeps odors at bay, while the UPF 50+ rating provides serious sun protection on the course or the deck.",
       "features": [
-        {"text": "UPF 50+ UV protection"},
-        {"text": "Anti-bacterial AATCC 100-2019 certified"},
-        {"text": "Rib-knit collar retains shape"},
-        {"text": "Moisture-wicking finish"},
-        {"text": "Side-slit hem"}
+        {
+          "text": "UPF 50+ UV protection"
+        },
+        {
+          "text": "Anti-bacterial AATCC 100-2019 certified"
+        },
+        {
+          "text": "Rib-knit collar retains shape"
+        },
+        {
+          "text": "Moisture-wicking finish"
+        },
+        {
+          "text": "Side-slit hem"
+        }
       ],
       "fabric": "100% Polyester Piqué, 120 g/m²",
       "sizes": "S / M / L / XL / XXL",
@@ -80,17 +132,33 @@
       "tags": "Breathable · Quick-Dry",
       "thumbnail": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"
+        }
       ],
       "description": "Versatile cargo pants designed for travel and outdoor exploration. Ultra-lightweight fabric with quick-dry properties makes them ideal for humid climates and active days.",
       "features": [
-        {"text": "Quick-dry breathable fabric"},
-        {"text": "Multiple zip-secure cargo pockets"},
-        {"text": "Elastic waistband with drawcord"},
-        {"text": "Articulated knees for mobility"},
-        {"text": "Tapered ankle with zip opening"}
+        {
+          "text": "Quick-dry breathable fabric"
+        },
+        {
+          "text": "Multiple zip-secure cargo pockets"
+        },
+        {
+          "text": "Elastic waistband with drawcord"
+        },
+        {
+          "text": "Articulated knees for mobility"
+        },
+        {
+          "text": "Tapered ankle with zip opening"
+        }
       ],
       "fabric": "94% Nylon / 6% Spandex",
       "sizes": "S / M / L / XL / XXL",
@@ -104,17 +172,33 @@
       "tags": "Quick-Dry · Lightweight",
       "thumbnail": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+        }
       ],
       "description": "Built for hiking, swimming, and everything in between. These amphibious shorts dry in minutes and pack down to nothing — the ultimate adventure companion.",
       "features": [
-        {"text": "Amphibious quick-dry fabric"},
-        {"text": "Zippered security pockets"},
-        {"text": "Integrated webbing belt"},
-        {"text": "Mesh pocket lining for drainage"},
-        {"text": "UPF 50+ rated"}
+        {
+          "text": "Amphibious quick-dry fabric"
+        },
+        {
+          "text": "Zippered security pockets"
+        },
+        {
+          "text": "Integrated webbing belt"
+        },
+        {
+          "text": "Mesh pocket lining for drainage"
+        },
+        {
+          "text": "UPF 50+ rated"
+        }
       ],
       "fabric": "100% Nylon Ripstop",
       "sizes": "S / M / L / XL / XXL",
@@ -128,18 +212,36 @@
       "tags": "Ultra Light · Windproof",
       "thumbnail": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+        }
       ],
       "description": "A packable windbreaker that weighs less than 200g and folds into its own pocket. Essential protection against unexpected weather, always ready in your daypack.",
       "features": [
-        {"text": "Under 200g total weight"},
-        {"text": "Packs into own chest pocket"},
-        {"text": "DWR water-repellent finish"},
-        {"text": "Adjustable hood with visor"},
-        {"text": "Elastic cuffs and hem"},
-        {"text": "Reflective logo print"}
+        {
+          "text": "Under 200g total weight"
+        },
+        {
+          "text": "Packs into own chest pocket"
+        },
+        {
+          "text": "DWR water-repellent finish"
+        },
+        {
+          "text": "Adjustable hood with visor"
+        },
+        {
+          "text": "Elastic cuffs and hem"
+        },
+        {
+          "text": "Reflective logo print"
+        }
       ],
       "fabric": "100% Nylon Micro Ripstop",
       "sizes": "S / M / L / XL / XXL",
@@ -153,17 +255,33 @@
       "tags": "Printed · Relaxed Fit",
       "thumbnail": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+        }
       ],
       "description": "A bold printed camp shirt for those who want to make a statement. The relaxed silhouette and lightweight fabric make it the go-to choice for resort evenings and tropical vacations.",
       "features": [
-        {"text": "Custom print-ready fabric"},
-        {"text": "Open camp collar"},
-        {"text": "Relaxed boxy fit"},
-        {"text": "Breathable lightweight weave"},
-        {"text": "Coconut buttons"}
+        {
+          "text": "Custom print-ready fabric"
+        },
+        {
+          "text": "Open camp collar"
+        },
+        {
+          "text": "Relaxed boxy fit"
+        },
+        {
+          "text": "Breathable lightweight weave"
+        },
+        {
+          "text": "Coconut buttons"
+        }
       ],
       "fabric": "100% Viscose Rayon",
       "sizes": "S / M / L / XL / XXL",
@@ -177,17 +295,33 @@
       "tags": "Stretch Fit · Wrinkle-Free",
       "thumbnail": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"
+        }
       ],
       "description": "Smart-casual chinos engineered for travel. Wrinkle-resistant fabric keeps you looking sharp straight out of the suitcase, while the stretch construction moves with you.",
       "features": [
-        {"text": "4-way stretch for full mobility"},
-        {"text": "Wrinkle-resistant finish"},
-        {"text": "Hidden security zip pocket"},
-        {"text": "Moisture-wicking treatment"},
-        {"text": "Classic chino cut"}
+        {
+          "text": "4-way stretch for full mobility"
+        },
+        {
+          "text": "Wrinkle-resistant finish"
+        },
+        {
+          "text": "Hidden security zip pocket"
+        },
+        {
+          "text": "Moisture-wicking treatment"
+        },
+        {
+          "text": "Classic chino cut"
+        }
       ],
       "fabric": "68% Cotton / 29% Polyester / 3% Spandex",
       "sizes": "S / M / L / XL / XXL",
@@ -201,17 +335,33 @@
       "tags": "UPF 50+ · Antibacterial",
       "thumbnail": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1200&q=80"
+        }
       ],
       "description": "A lightweight outdoor blouse that blends feminine style with technical performance. UPF 50+ protection and anti-bacterial treatment make it perfect for resort wear in sunny destinations.",
       "features": [
-        {"text": "UPF 50+ UV protection"},
-        {"text": "Anti-bacterial AATCC 100-2019 certified"},
-        {"text": "Flattering relaxed silhouette"},
-        {"text": "Roll-tab sleeves with button"},
-        {"text": "Breathable lightweight fabric"}
+        {
+          "text": "UPF 50+ UV protection"
+        },
+        {
+          "text": "Anti-bacterial AATCC 100-2019 certified"
+        },
+        {
+          "text": "Flattering relaxed silhouette"
+        },
+        {
+          "text": "Roll-tab sleeves with button"
+        },
+        {
+          "text": "Breathable lightweight fabric"
+        }
       ],
       "fabric": "100% Polyester, 105 g/m²",
       "sizes": "XS / S / M / L / XL",
@@ -225,17 +375,33 @@
       "tags": "Breathable · Relaxed Fit",
       "thumbnail": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+        }
       ],
       "description": "An elegant floral midi dress designed for warm-weather escapes. The breathable fabric drapes beautifully while keeping you cool, from beachside brunch to sunset dinners.",
       "features": [
-        {"text": "All-over floral print option"},
-        {"text": "Adjustable waist tie"},
-        {"text": "Side seam pockets"},
-        {"text": "Fully lined bodice"},
-        {"text": "Flattering A-line silhouette"}
+        {
+          "text": "All-over floral print option"
+        },
+        {
+          "text": "Adjustable waist tie"
+        },
+        {
+          "text": "Side seam pockets"
+        },
+        {
+          "text": "Fully lined bodice"
+        },
+        {
+          "text": "Flattering A-line silhouette"
+        }
       ],
       "fabric": "100% Viscose Rayon",
       "sizes": "XS / S / M / L / XL",
@@ -249,17 +415,33 @@
       "tags": "Antibacterial · UPF 50+",
       "thumbnail": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+        }
       ],
       "description": "A versatile sun protection top engineered for extended outdoor wear. The high neckline and longer back hem provide extra coverage without sacrificing style.",
       "features": [
-        {"text": "UPF 50+ full coverage rated"},
-        {"text": "Anti-bacterial odor control"},
-        {"text": "High neck with half-zip placket"},
-        {"text": "Extended back hem for coverage"},
-        {"text": "Thumbhole cuffs"}
+        {
+          "text": "UPF 50+ full coverage rated"
+        },
+        {
+          "text": "Anti-bacterial odor control"
+        },
+        {
+          "text": "High neck with half-zip placket"
+        },
+        {
+          "text": "Extended back hem for coverage"
+        },
+        {
+          "text": "Thumbhole cuffs"
+        }
       ],
       "fabric": "92% Polyester / 8% Spandex",
       "sizes": "XS / S / M / L / XL",
@@ -273,17 +455,33 @@
       "tags": "Relaxed Fit · Breathable",
       "thumbnail": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"
+        }
       ],
       "description": "Effortlessly elegant linen-blend trousers with a relaxed wide-leg cut. The breathable fabric and elastic waistband deliver comfort without compromising on resort-ready style.",
       "features": [
-        {"text": "Wide-leg relaxed silhouette"},
-        {"text": "Elasticated back waistband"},
-        {"text": "Side seam pockets"},
-        {"text": "Breathable linen blend"},
-        {"text": "Ankle-length crop"}
+        {
+          "text": "Wide-leg relaxed silhouette"
+        },
+        {
+          "text": "Elasticated back waistband"
+        },
+        {
+          "text": "Side seam pockets"
+        },
+        {
+          "text": "Breathable linen blend"
+        },
+        {
+          "text": "Ankle-length crop"
+        }
       ],
       "fabric": "55% Linen / 45% Viscose",
       "sizes": "XS / S / M / L / XL",
@@ -297,17 +495,33 @@
       "tags": "Flowy Fit · Lightweight",
       "thumbnail": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+        }
       ],
       "description": "A flowy maxi skirt that moves with the breeze. Lightweight and effortlessly chic, it pairs perfectly with any of our resort tops for a complete vacation look.",
       "features": [
-        {"text": "Tiered flowy silhouette"},
-        {"text": "Elastic smocked waistband"},
-        {"text": "Lightweight breathable fabric"},
-        {"text": "Maxi length for sun coverage"},
-        {"text": "Custom print ready"}
+        {
+          "text": "Tiered flowy silhouette"
+        },
+        {
+          "text": "Elastic smocked waistband"
+        },
+        {
+          "text": "Lightweight breathable fabric"
+        },
+        {
+          "text": "Maxi length for sun coverage"
+        },
+        {
+          "text": "Custom print ready"
+        }
       ],
       "fabric": "100% Viscose Rayon",
       "sizes": "XS / S / M / L / XL",
@@ -321,17 +535,33 @@
       "tags": "Packable · UV Protection",
       "thumbnail": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+        }
       ],
       "description": "A packable lightweight jacket that combines UV protection with wind resistance. Stows in its own pocket for unpredictable weather days — stylish protection that goes anywhere.",
       "features": [
-        {"text": "UPF 50+ full coverage"},
-        {"text": "Packs into built-in pocket"},
-        {"text": "DWR water-repellent finish"},
-        {"text": "Adjustable drawcord hood"},
-        {"text": "Two-way front zipper"}
+        {
+          "text": "UPF 50+ full coverage"
+        },
+        {
+          "text": "Packs into built-in pocket"
+        },
+        {
+          "text": "DWR water-repellent finish"
+        },
+        {
+          "text": "Adjustable drawcord hood"
+        },
+        {
+          "text": "Two-way front zipper"
+        }
       ],
       "fabric": "100% Nylon Micro Ripstop",
       "sizes": "XS / S / M / L / XL",
@@ -345,17 +575,33 @@
       "tags": "Cotton Blend · Relaxed Fit",
       "thumbnail": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"
+        }
       ],
       "description": "A bohemian-inspired beach top with delicate embroidery details. The relaxed fit and soft cotton blend make it an easy throw-on piece for seaside days.",
       "features": [
-        {"text": "Embroidery detail at neckline"},
-        {"text": "Tassel tie front closure"},
-        {"text": "Bell sleeve with elastic cuff"},
-        {"text": "Soft cotton-blend hand feel"},
-        {"text": "Cropped relaxed length"}
+        {
+          "text": "Embroidery detail at neckline"
+        },
+        {
+          "text": "Tassel tie front closure"
+        },
+        {
+          "text": "Bell sleeve with elastic cuff"
+        },
+        {
+          "text": "Soft cotton-blend hand feel"
+        },
+        {
+          "text": "Cropped relaxed length"
+        }
       ],
       "fabric": "85% Cotton / 15% Linen",
       "sizes": "XS / S / M / L / XL",
@@ -369,22 +615,52 @@
       "tags": "Stretch Fit · Quick-Dry",
       "thumbnail": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80",
       "images": [
-        {"url": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"},
-        {"url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"}
+        {
+          "url": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"
+        }
       ],
       "description": "Performance capris built for active outdoor days. The stretch-fit fabric moves with you on hikes and trails, while the quick-dry finish handles unexpected splashes.",
       "features": [
-        {"text": "4-way stretch fabric"},
-        {"text": "Quick-dry moisture wicking"},
-        {"text": "Zip-secure side pocket"},
-        {"text": "UPF 50+ rated"},
-        {"text": "Gusseted crotch for mobility"}
+        {
+          "text": "4-way stretch fabric"
+        },
+        {
+          "text": "Quick-dry moisture wicking"
+        },
+        {
+          "text": "Zip-secure side pocket"
+        },
+        {
+          "text": "UPF 50+ rated"
+        },
+        {
+          "text": "Gusseted crotch for mobility"
+        }
       ],
       "fabric": "88% Nylon / 12% Spandex",
       "sizes": "XS / S / M / L / XL",
       "moq": "500 pcs per color",
       "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+    },
+    {
+      "id": "1",
+      "name": "1",
+      "category": "men",
+      "tags": "1",
+      "thumbnail": "",
+      "images": [],
+      "description": "",
+      "features": [],
+      "fabric": "",
+      "sizes": "",
+      "moq": "",
+      "care": ""
     }
   ]
 }
