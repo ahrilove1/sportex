@@ -68,21 +68,13 @@
 var PASS_HASH = '61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
 var LS_KEY = 'spex_gh_token';
 var PW_KEY = 'spex_pw';
-
-// ── Auto-login if returning from OAuth redirect ──
-if (window.location.hash.indexOf('access_token=') !== -1) {
-  var t = window.location.hash.split('access_token=')[1].split('&')[0];
-  localStorage.setItem(LS_KEY, t);
-  localStorage.setItem(PW_KEY, '1');
-  window.location.hash = '';
-  window.location.replace('/admin/');
-}
-
-// ── Already have token + pw? Skip to CMS ──
 var token = localStorage.getItem(LS_KEY);
+
+// ── Already authenticated? Skip to CMS ──
 if (token && localStorage.getItem(PW_KEY) === '1') {
-  overrideFetch(token);
+  injectFetch(token);
   startCMS();
+  return;
 }
 
 // ── Step 1: Password ──
@@ -124,19 +116,17 @@ async function checkToken() {
     });
     if (r.ok) {
       localStorage.setItem(LS_KEY, t);
-      overrideFetch(t);
+      injectFetch(t);
       document.getElementById('token-ok').style.display = 'block';
-      setTimeout(startCMS, 500);
+      startCMS();
       return;
     }
   } catch(e) {}
   document.getElementById('token-btn').disabled = false;
   document.getElementById('token-error').style.display = 'block';
-  document.getElementById('token-input').value = '';
 }
 
-// ── Inject token into all GitHub API calls ──
-function overrideFetch(t) {
+function injectFetch(t) {
   var _f = window.fetch;
   window.fetch = function(u, o) {
     if (typeof u === 'string' && u.indexOf('api.github.com') !== -1) {
@@ -148,85 +138,49 @@ function overrideFetch(t) {
   };
 }
 
-// ── Start CMS ──
 function startCMS() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('cms-root').style.display = 'block';
 
-  // Intercept window.open: when Decap CMS tries to open OAuth popup,
-  // dispatch fake postMessage with our stored token instead
+  // Minimal window.open override: intercept popup, complete handshake, then auth
   var _origOpen = window.open;
   window.open = function(url, target, features) {
     if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
       var tok = localStorage.getItem(LS_KEY);
-      console.log('[SPORTEX] window.open intercepted, hasToken:', !!tok);
-      if (tok) {
-        // Decap CMS listens on window for 'message' events from popup
-        // Use native postMessage (self-targeted) to ensure it reaches listeners
-        setTimeout(function(){
-          // The format Decap CMS expects: "authorization:github:success:..."
-          var authData = 'authorization:github:success:' + JSON.stringify({token: tok, provider: 'github'});
-          console.log('[SPORTEX] dispatching auth:', authData.substring(0, 60) + '...');
-          window.postMessage(authData, '*');
-          // Also try dispatchEvent as fallback
-          try {
-            window.dispatchEvent(new MessageEvent('message', {
-              data: authData,
-              origin: location.origin
-            }));
-          } catch(e) { console.log('[SPORTEX] dispatchEvent error:', e); }
-        }, 500);
-        // Return a fake window object with all methods Decap CMS might call
-        return { close: function(){ console.log('[SPORTEX] fakeWindow.close'); }, focus: function(){ console.log('[SPORTEX] fakeWindow.focus'); }, closed: false, location: { href: '' } };
-      }
-      console.log('[SPORTEX] no token, redirecting to OAuth');
-      // No token — fallback: redirect page to OAuth
-      window.location.href = url;
-      return null;
+      var fakeWin = {
+        close: function(){},
+        focus: function(){},
+        closed: false,
+        location: { href: '' },
+        postMessage: function(data, origin) {
+          // Main window is sending us (popup) the initial handshake payload
+          console.log('[POPUP] received handshake from main:', data);
+          // Respond back to main window with a handshake acknowledgment
+          setTimeout(function() {
+            window.postMessage('handshake:' + JSON.stringify(data), '*');
+            console.log('[POPUP] sent handshake back');
+            // Now send the authorization
+            setTimeout(function() {
+              var authData = 'authorization:github:success:' + JSON.stringify({token: tok, provider: 'github'});
+              console.log('[POPUP] sending auth data');
+              window.postMessage(authData, '*');
+            }, 200);
+          }, 200);
+        }
+      };
+      return fakeWin;
     }
     return _origOpen.call(window, url, target, features);
   };
-
-  // Debug: log all postMessage events
-  window.addEventListener('message', function(e) {
-    if (e.data && e.data.token) {
-      console.log('[SPORTEX] message event WITH token received!', e.data.provider);
-    }
-  });
 
   // Load Decap CMS
   var s = document.createElement('script');
   s.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
   s.onload = function() {
-    try {
-      CMS.registerPreviewStyle('/admin/preview.css');
-
-      // Auto-authenticate: dispatch AUTH_SUCCESS to CMS Redux store
-      var tok = localStorage.getItem(LS_KEY);
-      if (tok && CMS.store) {
-        try {
-          CMS.store.dispatch({
-            type: 'AUTH_SUCCESS',
-            payload: {
-              token: tok,
-              name: 'SPORTEX Admin',
-              login: 'ahrilove1',
-              email: 'admin@sportexproduction.com',
-              avatar_url: '',
-              html_url: 'https://github.com/ahrilove1',
-              backendName: 'github'
-            }
-          });
-          console.log('[SPORTEX] AUTH_SUCCESS dispatched');
-        } catch(e) { console.log('[SPORTEX] store dispatch error:', e); }
-      } else {
-        console.log('[SPORTEX] no store or no token, store:', !!CMS.store, 'token:', !!tok);
-      }
-    } catch(e) { console.log('[SPORTEX] CMS init error:', e); }
+    try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
   };
   document.body.appendChild(s);
 }
-
 })();
 </script>
 </body>
