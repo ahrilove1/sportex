@@ -16,48 +16,30 @@
       text-align: center; max-width: 400px; width: 90%;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    .login-box .logo {
-      font-size: 28px; font-weight: 700; letter-spacing: 4px;
-      color: #1a1f2e; margin-bottom: 8px;
-    }
-    .login-box .sub {
-      font-size: 13px; color: #6b7280; margin-bottom: 28px;
-    }
-    .login-box input, .login-box textarea {
+    .login-box .logo { font-size: 28px; font-weight: 700; letter-spacing: 4px; color: #1a1f2e; margin-bottom: 8px; }
+    .login-box .sub { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
+    .login-box input {
       width: 100%; padding: 12px 16px; font-size: 14px;
       border: 1px solid #e5e7eb; border-radius: 2px; outline: none;
-      text-align: center; letter-spacing: 1px;
-      transition: border-color 0.2s; margin-bottom: 12px;
+      text-align: center; margin-bottom: 12px;
     }
-    .login-box input:focus, .login-box textarea:focus { border-color: #d4944e; }
+    .login-box input:focus { border-color: #d4944e; }
     .login-box button {
-      width: 100%; padding: 12px;
-      background: #1a1f2e; color: #fff; border: none;
-      font-size: 14px; font-weight: 600; letter-spacing: 2px;
-      cursor: pointer; border-radius: 2px; transition: background 0.2s;
+      width: 100%; padding: 12px; background: #1a1f2e; color: #fff; border: none;
+      font-size: 14px; font-weight: 600; letter-spacing: 2px; cursor: pointer; border-radius: 2px;
     }
     .login-box button:hover { background: #2a3348; }
-    .login-box .error {
-      color: #dc2626; font-size: 13px; margin-top: 8px; display: none;
-    }
-    .login-box .hint {
-      font-size: 11px; color: #9ca3af; margin-top: 8px; line-height: 1.5;
-    }
-    .login-box .hint a { color: #d4944e; }
-    .login-box .success-msg {
-      color: #16a34a; font-size: 13px; margin-top: 8px; display: none;
-    }
+    .login-box .error { color: #dc2626; font-size: 13px; margin-top: 8px; display: none; }
+    .login-box .msg { font-size: 12px; color: #6b7280; margin-top: 8px; }
+    .login-box .msg a { color: #d4944e; }
+    .login-box .green { color: #16a34a; display: none; }
     #cms-root { height: 100vh; display: none; }
-    #step-pw { display: block; }
     #step-token { display: none; }
   </style>
 </head>
 <body>
-
 <div id="login-screen">
   <div class="login-box">
-
-    <!-- Step 1: Password -->
     <div id="step-pw">
       <div class="logo">SPORTEX</div>
       <div class="sub">Content Manager</div>
@@ -65,218 +47,147 @@
       <button id="pw-btn">UNLOCK</button>
       <div class="error" id="pw-error">Incorrect password</div>
     </div>
-
-    <!-- Step 2: GitHub PAT (first time only) -->
     <div id="step-token">
       <div class="logo">SPORTEX</div>
       <div class="sub">GitHub Access Token</div>
       <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus>
       <button id="token-btn">SAVE & ENTER</button>
-      <div class="error" id="token-error">Invalid token — must have <b>repo</b> scope</div>
-      <div class="success-msg" id="token-ok">Token validated! Starting editor...</div>
-      <div class="hint">
-        Need a token?<br>
+      <div class="error" id="token-error">Invalid token — needs <b>repo</b> scope</div>
+      <div class="green" id="token-ok">Token OK! Loading editor…</div>
+      <div class="msg">
         <a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">
-          Click here to create one →</a><br>
-        Check <b>repo</b> scope, generate, then paste above.
+          Create a token →</a> (check <b>repo</b>, generate, paste)
       </div>
     </div>
-
   </div>
 </div>
-
 <div id="cms-root"></div>
 
 <script>
-(function() {
-  var PASS_HASH = '61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
-  var SESSION_KEY = 'sportex_admin_pw';
-  var TOKEN_KEY = 'sportex_gh_token';
+(function(){
+var PASS_HASH = '61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
+var LS_KEY = 'spex_gh_token';
+var PW_KEY = 'spex_pw';
 
-  // ── Handle OAuth redirect return (fallback flow) ──
-  var hash = window.location.hash;
-  if (hash.indexOf('access_token=') !== -1) {
-    var oauthToken = hash.split('access_token=')[1].split('&')[0];
-    sessionStorage.setItem(TOKEN_KEY, oauthToken);
-    sessionStorage.setItem(SESSION_KEY, '1');
-    window.location.hash = '';
-    window.location.replace('/admin/');
-    return;
-  }
+// ── Auto-login if returning from OAuth redirect ──
+if (window.location.hash.indexOf('access_token=') !== -1) {
+  var t = window.location.hash.split('access_token=')[1].split('&')[0];
+  localStorage.setItem(LS_KEY, t);
+  localStorage.setItem(PW_KEY, '1');
+  window.location.hash = '';
+  window.location.replace('/admin/');
+}
 
-  // ── Already authenticated? ──
-  if (sessionStorage.getItem(SESSION_KEY) === '1') {
-    var saved = sessionStorage.getItem(TOKEN_KEY);
-    if (saved) {
-      injectToken(saved);
-      startCMS();
-    } else {
-      showTokenStep();
-    }
-    return;
-  }
+// ── Already have token + pw? Skip to CMS ──
+var token = localStorage.getItem(LS_KEY);
+if (token && localStorage.getItem(PW_KEY) === '1') {
+  overrideFetch(token);
+  startCMS();
+}
 
-  // ── Step 1: Password ──
-  document.getElementById('pw-btn').addEventListener('click', verifyPassword);
-  document.getElementById('pw-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') verifyPassword();
-  });
+// ── Step 1: Password ──
+document.getElementById('pw-btn').onclick = checkPw;
+document.getElementById('pw-input').onkeydown = function(e) { if(e.key==='Enter') checkPw(); };
 
-  async function sha256(text) {
-    var encoder = new TextEncoder();
-    var data = encoder.encode(text);
-    var hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    var hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-  }
+async function sha256(t) {
+  var d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return Array.from(new Uint8Array(d)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+}
 
-  async function verifyPassword() {
-    var input = document.getElementById('pw-input').value;
-    if (!input) return;
-    var h = await sha256(input);
-    if (h === PASS_HASH) {
-      sessionStorage.setItem(SESSION_KEY, '1');
-      var saved = sessionStorage.getItem(TOKEN_KEY);
-      if (saved) {
-        injectToken(saved);
-        startCMS();
-      } else {
-        showTokenStep();
-      }
-    } else {
-      document.getElementById('pw-error').style.display = 'block';
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-input').focus();
-    }
-  }
-
-  // ── Step 2: GitHub Token ──
-  function showTokenStep() {
+async function checkPw() {
+  var v = document.getElementById('pw-input').value;
+  if (!v) return;
+  if (await sha256(v) === PASS_HASH) {
+    localStorage.setItem(PW_KEY, '1');
+    document.getElementById('pw-error').style.display = 'none';
     document.getElementById('step-pw').style.display = 'none';
     document.getElementById('step-token').style.display = 'block';
     document.getElementById('token-input').focus();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
 
-    document.getElementById('token-btn').addEventListener('click', validateToken);
-    document.getElementById('token-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') validateToken();
+// ── Step 2: Token ──
+document.getElementById('token-btn').onclick = checkToken;
+document.getElementById('token-input').onkeydown = function(e) { if(e.key==='Enter') checkToken(); };
+
+async function checkToken() {
+  var t = document.getElementById('token-input').value.trim();
+  if (!t) return;
+  document.getElementById('token-btn').disabled = true;
+  document.getElementById('token-error').style.display = 'none';
+  try {
+    var r = await fetch('https://api.github.com/repos/ahrilove1/sportex', {
+      headers: { 'Authorization': 'Bearer ' + t }
     });
-  }
+    if (r.ok) {
+      localStorage.setItem(LS_KEY, t);
+      overrideFetch(t);
+      document.getElementById('token-ok').style.display = 'block';
+      setTimeout(startCMS, 500);
+      return;
+    }
+  } catch(e) {}
+  document.getElementById('token-btn').disabled = false;
+  document.getElementById('token-error').style.display = 'block';
+  document.getElementById('token-input').value = '';
+}
 
-  async function validateToken() {
-    var token = document.getElementById('token-input').value.trim();
-    if (!token) return;
+// ── Inject token into all GitHub API calls ──
+function overrideFetch(t) {
+  var _f = window.fetch;
+  window.fetch = function(u, o) {
+    if (typeof u === 'string' && u.indexOf('api.github.com') !== -1) {
+      o = o || {}; o.headers = o.headers || {};
+      if (o.headers instanceof Headers) o.headers.set('Authorization', 'Bearer ' + t);
+      else o.headers['Authorization'] = 'Bearer ' + t;
+    }
+    return _f.call(window, u, o);
+  };
+}
 
-    document.getElementById('token-btn').disabled = true;
-    document.getElementById('token-error').style.display = 'none';
+// ── Start CMS ──
+function startCMS() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('cms-root').style.display = 'block';
 
-    // Test token against GitHub API
-    try {
-      var resp = await fetch('https://api.github.com/user', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      });
-      if (resp.ok) {
-        var user = await resp.json();
-        // Also check repo access
-        var repoResp = await fetch('https://api.github.com/repos/ahrilove1/sportex', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (repoResp.ok) {
-          sessionStorage.setItem(TOKEN_KEY, token);
-          document.getElementById('token-ok').style.display = 'block';
-          injectToken(token);
-          setTimeout(startCMS, 400);
-          return;
-        }
-      }
-    } catch(e) {}
-
-    document.getElementById('token-btn').disabled = false;
-    document.getElementById('token-error').style.display = 'block';
-    document.getElementById('token-input').value = '';
-    document.getElementById('token-input').focus();
-  }
-
-  // ── Inject token globally ──
-  function injectToken(token) {
-    var _fetch = window.fetch;
-    window.fetch = function(url, opts) {
-      if (typeof url === 'string' && url.indexOf('api.github.com') !== -1) {
-        opts = opts || {};
-        opts.headers = opts.headers || {};
-        if (opts.headers instanceof Headers) {
-          opts.headers.set('Authorization', 'Bearer ' + token);
-        } else {
-          opts.headers['Authorization'] = 'Bearer ' + token;
-        }
-      }
-      return _fetch.call(window, url, opts);
-    };
-  }
-
-  // ── Start CMS ──
-  function startCMS() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('cms-root').style.display = 'block';
-
-    // Override window.open → dispatch fake auth if we have token
-    var _origOpen = window.open;
-    window.open = function(url, target, features) {
-      if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
-        var tok = sessionStorage.getItem(TOKEN_KEY);
-        if (tok) {
-          // Dispatch fake postMessage that Decap CMS expects from OAuth popup
-          setTimeout(function() {
-            window.postMessage({ token: tok, provider: 'github' }, '*');
-          }, 300);
-          return { close: function() {} };
-        }
-        // No token yet — redirect to get one
-        window.location.href = url;
-        return null;
-      }
-      return _origOpen.call(window, url, target, features);
-    };
-
-    // Load localForage first, inject token into Decap CMS's expected storage
-    var lfScript = document.createElement('script');
-    lfScript.src = 'https://unpkg.com/localforage@1.10.0/dist/localforage.min.js';
-    lfScript.onload = function() {
-      var token = sessionStorage.getItem(TOKEN_KEY);
-      if (token) {
-        // Use the same instance config that Decap CMS GitHub backend uses
-        localforage.createInstance({ name: 'decap-cms', storeName: 'github' })
-          .then(function(store) {
-            return store.setItem('github_user', {
-              token: token,
-              name: 'SPORTEX Admin',
-              email: 'admin@sportexproduction.com',
-              avatar_url: '',
-              html_url: 'https://github.com/ahrilove1',
-              login: 'ahrilove1'
-            });
-          })
-          .then(function() {
-            // Now load Decap CMS — it will find the stored user
-            loadDecapCMS();
-          })
-          .catch(function() {
-            loadDecapCMS(); // Fallback
+  // Intercept window.open: when Decap CMS tries to open OAuth popup,
+  // dispatch fake postMessage with our stored token instead
+  var _origOpen = window.open;
+  window.open = function(url, target, features) {
+    if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
+      var tok = localStorage.getItem(LS_KEY);
+      if (tok) {
+        // Decap CMS listens on window for 'message' events from popup
+        // We simulate this by dispatching a MessageEvent on window
+        setTimeout(function(){
+          var evt = new MessageEvent('message', {
+            data: { token: tok, provider: 'github' },
+            origin: location.origin
           });
-      } else {
-        loadDecapCMS();
+          window.dispatchEvent(evt);
+        }, 400);
+        // Return a fake window object
+        return { close: function(){} };
       }
-    };
-    document.body.appendChild(lfScript);
-  }
+      // No token — fallback: redirect page to OAuth
+      window.location.href = url;
+      return null;
+    }
+    return _origOpen.call(window, url, target, features);
+  };
 
-  function loadDecapCMS() {
-    var script = document.createElement('script');
-    script.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
-    script.onload = function() {
-      try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
-    };
-    document.body.appendChild(script);
-  }
+  // Load Decap CMS
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
+  s.onload = function() {
+    try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
+  };
+  document.body.appendChild(s);
+}
+
 })();
 </script>
 </body>
