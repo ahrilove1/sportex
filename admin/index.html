@@ -5,142 +5,192 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SPORTEX Admin</title>
 <style>
+:root{--navy:#1a1f2e;--navy-light:#2a3348;--white:#fff;--off-white:#f5f4f1;--gray:#6b7280;--gray-light:#e5e7eb;--accent:#d4944e;--accent-dark:#b87830;--text:#1f2937}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f4f1;color:#1f2937}
-/* Login */
-#login-screen{display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1f2e}
-.login-box{background:#fff;padding:48px 40px;border-radius:4px;text-align:center;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.login-box .logo{font-size:28px;font-weight:700;letter-spacing:4px;color:#1a1f2e;margin-bottom:4px}
-.login-box .sub{font-size:13px;color:#6b7280;margin-bottom:24px}
-.login-box input{width:100%;padding:12px 16px;font-size:14px;border:1px solid #e5e7eb;border-radius:2px;outline:none;text-align:center;margin-bottom:12px}
-.login-box input:focus{border-color:#d4944e}
-.login-box button{width:100%;padding:12px;background:#1a1f2e;color:#fff;border:none;font-size:14px;font-weight:600;letter-spacing:2px;cursor:pointer;border-radius:2px}
-.login-box button:hover{background:#2a3348}
-.login-box .error{color:#dc2626;font-size:13px;margin-top:8px;display:none}
-.login-box .green{color:#16a34a;display:none}
-.login-box .msg{font-size:12px;color:#6b7280;margin-top:8px}
-.login-box .msg a{color:#d4944e}
+body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--off-white);color:var(--text);line-height:1.6}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--navy);flex-direction:column}
+.login-box{background:var(--white);padding:56px 44px;border-radius:2px;text-align:center;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-box .logo{font-size:30px;font-weight:700;letter-spacing:4px;color:var(--navy);margin-bottom:4px}
+.login-box .sub{font-size:12px;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px}
+.login-box input{width:100%;padding:12px 16px;font-size:14px;border:1px solid var(--gray-light);border-radius:2px;outline:none;text-align:center;margin-bottom:14px;font-family:inherit;letter-spacing:.5px}
+.login-box input:focus{border-color:var(--accent)}
+.login-box .btn{width:100%;padding:13px;background:var(--navy);color:var(--white);border:none;font-size:13px;font-weight:600;letter-spacing:3px;cursor:pointer;border-radius:2px;text-transform:uppercase;margin-top:4px}
+.login-box .btn:hover{background:var(--navy-light)}
+.login-box .error{color:#dc2626;font-size:12px;margin-top:10px;display:none}
+.login-box .ok{color:#16a34a;display:none;font-size:13px;margin-top:10px;font-weight:600}
+.login-box .hint{font-size:11px;color:var(--gray);margin-top:12px;line-height:1.6}
+.login-box .hint a{color:var(--accent-dark);text-decoration:none}
+.login-box .hint a:hover{text-decoration:underline}
 #step-token{display:none}
 
-/* Editor */
+/* EDITOR */
 #editor{display:none}
-.toolbar{background:#1a1f2e;color:#fff;padding:0 24px;display:flex;align-items:center;height:56px;justify-content:space-between}
-.toolbar h1{font-size:18px;letter-spacing:3px}
-.toolbar .actions{display:flex;gap:12px;align-items:center}
-.toolbar .actions .status{font-size:12px;color:#9ca3af}
-.deploy-bar{display:none;height:6px;background:#e5e7eb;overflow:hidden}
-.deploy-bar.active{display:block}
-.deploy-fill{height:100%;background:linear-gradient(90deg,#d4944e,#16a34a);transition:width .5s ease;width:0%}
-.deploy-info{text-align:center;font-size:12px;color:#1a1f2e;padding:6px 0;font-weight:600;display:none}
-.deploy-info.active{display:block}
-.tabs{display:flex;gap:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px}
-.tab{padding:14px 24px;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;border-bottom:2px solid transparent;color:#6b7280;transition:all .2s}
-.tab:hover{color:#1f2937}
-.tab.active{color:#d4944e;border-bottom-color:#d4944e}
-.content{max-width:1200px;margin:0 auto;padding:24px}
-.panel{display:none;background:#fff;border-radius:4px;padding:24px}
-.panel.active{display:block}
-.panel h2{font-size:20px;margin-bottom:20px;color:#1a1f2e}
+.toolbar{background:var(--navy);color:var(--white);padding:0 32px;display:flex;align-items:center;height:56px;justify-content:space-between}
+.toolbar h1{font-size:18px;font-weight:700;letter-spacing:4px}
+.toolbar .nav-links{display:flex;gap:28px;align-items:center}
+.toolbar .nav-links a{color:rgba(255,255,255,.6);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:4px 0;border-bottom:2px solid transparent;transition:all .2s}
+.toolbar .nav-links a:hover,.toolbar .nav-links a.active{color:var(--accent);border-bottom-color:var(--accent)}
+.toolbar .status{font-size:11px;color:rgba(255,255,255,.4);margin-left:16px}
 
-/* Product list */
+/* DEPLOY BAR */
+.deploy-wrap{display:none}
+.deploy-wrap.on{display:block}
+.deploy-bar{height:4px;background:var(--gray-light)}
+.deploy-fill{height:100%;background:var(--accent);transition:width .4s ease;width:0%}
+.deploy-info{text-align:center;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--accent-dark);padding:5px 0}
+
+/* CONTENT */
+.content{max-width:1200px;margin:24px auto;padding:0 24px}
+.panel{display:none}
+.panel.on{display:block}
+
+/* CARDS */
+.card{background:var(--white);border-radius:2px;padding:28px 32px;margin-bottom:16px}
+.card h2{font-size:18px;font-weight:700;letter-spacing:2px;color:var(--navy);margin-bottom:20px}
+.card .section-header{font-size:14px;font-weight:700;letter-spacing:2px;color:var(--navy);margin:24px 0 16px;padding-top:20px;border-top:1px solid var(--gray-light)}
+
+/* TABLE */
 table{width:100%;border-collapse:collapse}
-th,td{padding:10px 12px;text-align:left;font-size:13px;border-bottom:1px solid #f5f4f1}
-th{color:#6b7280;font-weight:600;letter-spacing:1px;font-size:11px;text-transform:uppercase}
-td .btn-sm{padding:4px 12px;font-size:11px;border:1px solid #d1d5db;background:#fff;cursor:pointer;border-radius:2px;margin-right:4px}
-td .btn-sm:hover{background:#f5f4f1}
-td .btn-sm.danger{color:#dc2626;border-color:#dc2626}
-td .btn-sm.danger:hover{background:#fef2f2}
+th,td{padding:10px 14px;text-align:left;font-size:13px;border-bottom:1px solid var(--off-white)}
+th{color:var(--gray);font-weight:600;letter-spacing:1.5px;font-size:10px;text-transform:uppercase}
+tr:hover{background:var(--off-white)}
+.btn-xs{padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid var(--gray-light);background:var(--white);cursor:pointer;border-radius:2px;color:var(--text);margin-right:6px;transition:all .15s}
+.btn-xs:hover{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.btn-xs.red{color:#dc2626;border-color:#dc2626}
+.btn-xs.red:hover{background:#dc2626;color:#fff}
 
-/* Form */
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6b7280;margin-bottom:4px}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;font-size:14px;border:1px solid #e5e7eb;border-radius:2px;outline:none;font-family:inherit}
-.form-group textarea{resize:vertical;min-height:80px}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#d4944e}
+/* FORMS */
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.btn{padding:10px 24px;font-size:13px;font-weight:600;letter-spacing:1px;border:none;cursor:pointer;border-radius:2px}
-.btn-primary{background:#1a1f2e;color:#fff}
-.btn-primary:hover{background:#2a3348}
-.btn-secondary{background:#e5e7eb;color:#1f2937}
-.btn-secondary:hover{background:#d1d5db}
-.btn-danger{background:#dc2626;color:#fff}
+.form-row.col3{grid-template-columns:1fr 1fr 1fr}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:5px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none;font-family:inherit;letter-spacing:.3px;background:var(--white);transition:border-color .2s}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent)}
+.input-with-btn{display:flex;gap:8px}
+.input-with-btn input{flex:1}
+.input-with-btn .btn-sm{padding:10px 16px;font-size:11px;font-weight:600;letter-spacing:1px;border:1px solid var(--gray-light);background:var(--white);cursor:pointer;border-radius:2px;white-space:nowrap;color:var(--text);transition:all .15s}
+.input-with-btn .btn-sm:hover{background:var(--accent);color:var(--white);border-color:var(--accent)}
+
+/* BUTTONS */
+.btn{padding:11px 28px;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;border-radius:2px;transition:all .2s;font-family:inherit}
+.btn-primary{background:var(--navy);color:var(--white)}
+.btn-primary:hover{background:var(--navy-light)}
+.btn-secondary{background:var(--white);color:var(--text);border:1px solid var(--gray-light)}
+.btn-secondary:hover{background:var(--off-white)}
+.btn-accent{background:var(--accent);color:var(--white)}
+.btn-accent:hover{background:var(--accent-dark)}
+.btn-danger{background:#dc2626;color:var(--white)}
 .btn-danger:hover{background:#b91c1c}
+.btn-group{display:flex;gap:10px;margin-top:20px}
 
-/* Image upload */
-.upload-zone{border:2px dashed #d1d5db;border-radius:4px;padding:40px;text-align:center;cursor:pointer;margin-bottom:16px}
-.upload-zone:hover{border-color:#d4944e}
-.upload-zone p{color:#6b7280;font-size:14px}
-.img-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-.img-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px}
-.img-grid .img-item{position:relative}
-.img-grid .img-item .img-del{position:absolute;top:4px;right:4px;background:rgba(220,38,38,.9);color:#fff;border:none;width:22px;height:22px;border-radius:11px;cursor:pointer;font-size:12px;line-height:22px;text-align:center}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,31,46,.7);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.on{display:flex}
+.modal{background:var(--white);border-radius:2px;max-width:720px;width:90%;max-height:80vh;overflow-y:auto;padding:32px}
+.modal h3{font-size:16px;font-weight:700;letter-spacing:2px;color:var(--navy);margin-bottom:16px}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray)}
+.modal-close:hover{color:var(--text)}
+.img-select-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.img-select-grid .img-item{cursor:pointer;border:2px solid transparent;border-radius:2px;overflow:hidden;aspect-ratio:1;position:relative;transition:all .15s}
+.img-select-grid .img-item:hover{border-color:var(--accent);opacity:.9}
+.img-select-grid .img-item.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(212,148,78,.3)}
+.img-select-grid .img-item img{width:100%;height:100%;object-fit:cover}
+.img-select-grid .img-item .img-name{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);color:#fff;font-size:10px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* Toast */
-.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:4px;color:#fff;font-size:14px;font-weight:600;letter-spacing:.5px;display:none;z-index:999}
-.toast.success{background:#16a34a}
-.toast.error{background:#dc2626}
+/* IMAGE GALLERY TAB */
+.img-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:16px}
+.img-grid .img-card{position:relative;aspect-ratio:1;overflow:hidden;border-radius:2px;background:var(--off-white)}
+.img-grid .img-card img{width:100%;height:100%;object-fit:cover}
+.img-grid .img-card .img-actions{position:absolute;top:4px;right:4px;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.img-grid .img-card:hover .img-actions{opacity:1}
+.img-grid .img-card .img-actions button{width:24px;height:24px;border:none;border-radius:12px;cursor:pointer;font-size:11px;line-height:24px;text-align:center;color:#fff}
+.img-grid .img-card .img-url{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;font-size:9px;padding:2px 6px;cursor:pointer;opacity:0;transition:opacity .15s}
+.img-grid .img-card:hover .img-url{opacity:1}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--gray-light);border-radius:2px;padding:32px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all .2s;background:var(--white)}
+.upload-zone:hover{border-color:var(--accent);background:var(--off-white)}
+.upload-zone p{color:var(--gray);font-size:13px;letter-spacing:.5px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:2px;color:#fff;font-size:13px;font-weight:600;letter-spacing:.5px;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.ok{background:var(--accent-dark)}
+.toast.err{background:#dc2626}
+
+/* BACK */
+.back-link{text-align:center;margin:32px 0}
+.back-link a{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;color:var(--navy);border:1px solid var(--navy);padding:10px 24px;border-radius:2px;transition:all .2s}
+.back-link a:hover{background:var(--navy);color:var(--white)}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ═══ LOGIN ═══ -->
 <div id="login-screen">
 <div class="login-box">
-<div id="step-pw">
-<div class="logo">SPORTEX</div>
-<div class="sub">Content Manager</div>
-<input type="password" id="pw-input" placeholder="Enter password" autofocus>
-<button id="pw-btn">UNLOCK</button>
-<div class="error" id="pw-error">Incorrect password</div>
-</div>
-<div id="step-token">
-<div class="logo">SPORTEX</div>
-<div class="sub">GitHub Access Token</div>
-<input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus>
-<button id="token-btn">SAVE & ENTER</button>
-<div class="error" id="token-error">Invalid token — needs repo scope</div>
-<div class="green" id="token-ok">Token OK! Loading…</div>
-<div class="msg"><a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">Create a token →</a></div>
-</div>
+<div id="step-pw"><div class="logo">SPORTEX</div><div class="sub">Content Manager</div><input type="password" id="pw-input" placeholder="Enter password" autofocus><button class="btn" id="pw-btn">Unlock</button><div class="error" id="pw-error">Incorrect password</div></div>
+<div id="step-token"><div class="logo">SPORTEX</div><div class="sub">GitHub Access Token</div><input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus><button class="btn" id="token-btn">Save & Enter</button><div class="error" id="token-error">Invalid token — requires <b>repo</b> scope</div><div class="ok" id="token-ok">Validated! Loading…</div><div class="hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">Create a GitHub token →</a></div></div>
 </div>
 </div>
 
-<!-- EDITOR -->
+<!-- ═══ EDITOR ═══ -->
 <div id="editor">
 <div class="toolbar">
-<h1>SPORTEX CMS</h1>
-<div class="actions">
+<h1>SPORTEX</h1>
+<div style="display:flex;align-items:center;gap:8px">
+<span class="nav-links">
+<a href="#" class="active" data-tab="products">Products</a>
+<a href="#" data-tab="company">Company</a>
+<a href="#" data-tab="images">Images</a>
+<a href="#" data-tab="settings">Settings</a>
+</span>
 <span class="status" id="save-status"></span>
-<button class="btn btn-secondary" onclick="location.reload()">Exit</button>
 </div>
 </div>
-<div class="deploy-bar" id="deploy-bar"><div class="deploy-fill" id="deploy-fill" style="width:0%"></div></div>
-<div class="deploy-info" id="deploy-info"></div>
-<div class="tabs">
-<div class="tab active" data-tab="products">Products</div>
-<div class="tab" data-tab="company">Company</div>
-<div class="tab" data-tab="images">Images</div>
-</div>
+<div class="deploy-wrap" id="deploy-wrap"><div class="deploy-bar"><div class="deploy-fill" id="deploy-fill"></div></div><div class="deploy-info" id="deploy-info"></div></div>
 <div class="content">
-<div id="panel-products" class="panel active">
+
+<!-- PRODUCTS PANEL -->
+<div id="panel-products" class="panel on">
+<div class="card">
 <h2>Products</h2>
 <button class="btn btn-primary" id="btn-add-product" style="margin-bottom:16px">+ Add Product</button>
 <div id="product-list"></div>
 <div id="product-edit" style="display:none"></div>
 </div>
+</div>
+
+<!-- COMPANY PANEL -->
 <div id="panel-company" class="panel">
-<h2>Company Information</h2>
-<form id="company-form"></form>
-<div style="margin-top:16px"><button class="btn btn-primary" id="btn-save-company">Save Company Info</button></div>
+<div class="card"><h2>Company Information</h2><form id="company-form"></form><div class="btn-group"><button class="btn btn-primary" id="btn-save-company">Save Company Info</button></div></div>
 </div>
+
+<!-- IMAGES PANEL -->
 <div id="panel-images" class="panel">
-<h2>Image Upload</h2>
-<div class="upload-zone" id="upload-zone">
-<p>Click or drag images here to upload<br><small>Uploaded to /images/uploads/</small></p>
-<input type="file" id="file-input" multiple accept="image/*" style="display:none">
-</div>
+<div class="card"><h2>Image Library</h2>
+<div class="upload-zone" id="upload-zone"><p>📸 Click or drag & drop images here to upload</p><input type="file" id="file-input" multiple accept="image/*" style="display:none"></div>
 <div class="img-grid" id="img-grid"></div>
 </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="panel-settings" class="panel">
+<div class="card"><h2>Site Images</h2><form id="settings-form"></form><div class="btn-group"><button class="btn btn-primary" id="btn-save-settings">Save Settings</button></div></div>
+</div>
+
+</div>
+</div>
+
+<!-- ═══ IMAGE PICKER MODAL ═══ -->
+<div class="modal-overlay" id="img-picker-modal">
+<div class="modal">
+<button class="modal-close" onclick="closeImgPicker()">&times;</button>
+<h3 id="img-picker-title">Select Image</h3>
+<div class="img-select-grid" id="img-select-grid"></div>
+<div class="btn-group" style="margin-top:16px"><button class="btn btn-secondary" onclick="closeImgPicker()">Cancel</button><button class="btn btn-primary" id="img-picker-confirm">Select</button></div>
 </div>
 </div>
 
@@ -148,265 +198,252 @@ td .btn-sm.danger:hover{background:#fef2f2}
 
 <script>
 // ═══ CONFIG ═══
-var PASS_HASH = '61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
-var REPO = 'ahrilove1/sportex';
-var LS_KEY = 'spex_gh_token';
-var PW_KEY = 'spex_pw';
-var token = localStorage.getItem(LS_KEY);
-var PRODUCTS_FILE = 'data/products.json';
-var COMPANY_FILE = 'data/company.json';
-var IMG_DIR = 'images/uploads/';
+var PASS_HASH='61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
+var REPO='ahrilove1/sportex';
+var LS='spex_gh_token'; var PW='spex_pw';
+var token=localStorage.getItem(LS);
+var PRODUCTS_FILE='data/products.json', COMPANY_FILE='data/company.json', IMAGES_FILE='data/images.json', SETTINGS_FILE='data/settings.json', IMG_DIR='images/uploads/';
+
+// ═══ DATA ═══
+var productsData=[],companyData={},imagesData=[],settingsData={};
+var productsSha=null,companySha=null,imagesSha=null,settingsSha=null;
 
 // ═══ LOGIN ═══
-if (token && localStorage.getItem(PW_KEY)==='1') { showEditor(); }
-
-document.getElementById('pw-btn').onclick = checkPw;
-document.getElementById('pw-input').onkeydown = function(e){ if(e.key==='Enter') checkPw(); };
-async function sha256(t){ var d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(d)).map(function(b){return b.toString(16).padStart(2,'0')}).join(''); }
-async function checkPw(){ var v=document.getElementById('pw-input').value; if(!v) return; if(await sha256(v)===PASS_HASH){ localStorage.setItem(PW_KEY,'1'); document.getElementById('pw-error').style.display='none'; document.getElementById('step-pw').style.display='none'; document.getElementById('step-token').style.display='block'; document.getElementById('token-input').focus(); } else { document.getElementById('pw-error').style.display='block'; document.getElementById('pw-input').value=''; } }
-
-document.getElementById('token-btn').onclick = checkToken;
-document.getElementById('token-input').onkeydown = function(e){ if(e.key==='Enter') checkToken(); };
-async function checkToken(){ var t=document.getElementById('token-input').value.trim(); if(!t) return; document.getElementById('token-btn').disabled=true; document.getElementById('token-error').style.display='none'; try{ var r=await fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+t}}); if(r.ok){ localStorage.setItem(LS_KEY,t); token=t; document.getElementById('token-ok').style.display='block'; setTimeout(showEditor,400); return; } }catch(e){} document.getElementById('token-btn').disabled=false; document.getElementById('token-error').style.display='block'; }
+if(token&&localStorage.getItem(PW)==='1'){loadData();}
+document.getElementById('pw-btn').onclick=checkPw;
+document.getElementById('pw-input').onkeydown=function(e){if(e.key==='Enter')checkPw()};
+async function sha256(t){var d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return Array.from(new Uint8Array(d)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
+async function checkPw(){var v=document.getElementById('pw-input').value;if(!v)return;if(await sha256(v)===PASS_HASH){localStorage.setItem(PW,'1');document.getElementById('pw-error').style.display='none';document.getElementById('step-pw').style.display='none';document.getElementById('step-token').style.display='block';document.getElementById('token-input').focus()}else{document.getElementById('pw-error').style.display='block';document.getElementById('pw-input').value=''}}
+document.getElementById('token-btn').onclick=checkToken;
+document.getElementById('token-input').onkeydown=function(e){if(e.key==='Enter')checkToken()};
+async function checkToken(){var t=document.getElementById('token-input').value.trim();if(!t)return;document.getElementById('token-btn').disabled=true;document.getElementById('token-error').style.display='none';try{var r=await fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+t}});if(r.ok){localStorage.setItem(LS,t);token=t;document.getElementById('token-ok').style.display='block';setTimeout(loadData,400);return}}catch(e){}document.getElementById('token-btn').disabled=false;document.getElementById('token-error').style.display='block'}
 
 // ═══ GITHUB API ═══
-function ghAPI(path, opts){ opts=opts||{}; opts.headers=opts.headers||{}; opts.headers['Authorization']='Bearer '+token; opts.headers['Accept']='application/vnd.github.v3+json'; return fetch('https://api.github.com'+path,opts); }
-async function ghRead(filePath){ var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath); if(!r.ok) throw new Error('Read error: '+r.status); var d=await r.json(); return {sha:d.sha, content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}; }
-async function ghWrite(filePath, content, msg, sha){ var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))}; if(sha) body.sha=sha; var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)}); if(!r.ok) throw new Error('Write error: '+r.status+' '+await r.text()); return r.json(); }
-async function ghUpload(filePath, base64data, msg){ var body={message:msg,content:base64data}; var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)}); if(!r.ok) throw new Error('Upload error: '+r.status+' '+await r.text()); return r.json(); }
+function ghAPI(path,opts){opts=opts||{};opts.headers=opts.headers||{};opts.headers['Authorization']='Bearer '+token;opts.headers['Accept']='application/vnd.github.v3+json';return fetch('https://api.github.com'+path,opts)}
+async function ghRead(filePath){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath);if(!r.ok)throw new Error('Read '+r.status);var d=await r.json();return{sha:d.sha,content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}}
+async function ghWrite(filePath,content,msg,sha){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(!r.ok)throw new Error('Write '+r.status);return r.json()}
+async function ghUploadBuf(filePath,base64,msg){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify({message:msg,content:base64})});if(!r.ok)throw new Error('Upload '+r.status);return r.json()}
 
 // ═══ TOAST ═══
-function toast(msg,type){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+(type||'success'); t.style.display='block'; setTimeout(function(){t.style.display='none'},2500); }
+function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'ok');t.style.display='block';setTimeout(function(){t.style.display='none'},2500)}
 
 // ═══ DEPLOY TRACKER ═══
 var deployTimer=null;
-function trackDeploy(commitSha){
-  var bar=document.getElementById('deploy-bar'); var fill=document.getElementById('deploy-fill'); var info=document.getElementById('deploy-info');
-  bar.classList.add('active'); info.classList.add('active');
-  var startTime=Date.now();
-  // Sim progress: 0-60% in first 15s (build), then 60-90% (deploy), then check for completion
-  function updateProgress(pct,msg){
-    fill.style.width=pct+'%'; info.textContent='🔄 '+msg+' ('+Math.floor(pct)+'%)';
+function trackDeploy(sha){
+  var w=document.getElementById('deploy-wrap'),f=document.getElementById('deploy-fill'),i=document.getElementById('deploy-info');
+  w.classList.add('on'); var start=Date.now();
+  function upd(pct,msg){f.style.width=pct+'%';i.textContent=msg+' ('+Math.floor(pct)+'%)'}
+  upd(5,'Saving...');
+  function sim(){var e=(Date.now()-start)/1000;var p=e<15?Math.min(60,e*4):Math.min(90,60+(e-15)*3);upd(p,p<60?'Building…':'Deploying…');if(p<90)deployTimer=setTimeout(sim,500)}
+  sim();
+  async function check(){
+    try{var r=await ghAPI('/repos/'+REPO+'/commits/'+sha+'/status');if(r.ok){var d=await r.json();var ok=false;(d.statuses||[]).forEach(function(s){if((s.context||'').toLowerCase().indexOf('cloudflare')!==-1||(s.context||'').toLowerCase().indexOf('pages')!==-1){if(s.state==='success')ok=true}});if(ok){clearTimeout(deployTimer);upd(100,'Live ✅');document.getElementById('save-status').textContent='Live ✅';setTimeout(function(){w.classList.remove('on')},4000);return}}}catch(e){}if(Date.now()-start<120000)deployTimer=setTimeout(check,3000);else{upd(100,'Done');setTimeout(function(){w.classList.remove('on')},3000)}
   }
-  updateProgress(5,'Saving to GitHub...');
-  // Animate progress
-  function simulate(){ var elapsed=(Date.now()-startTime)/1000; var pct; if(elapsed<15) pct=Math.min(60,elapsed*4); else pct=Math.min(90,60+(elapsed-15)*3); updateProgress(pct,pct<60?'Building...':'Deploying...'); if(pct<90) deployTimer=setTimeout(simulate,500); }
-  simulate();
-  // Poll Cloudflare Pages deployment via GitHub
-  async function checkLive(){
-    try{
-      var r=await ghAPI('/repos/'+REPO+'/commits/'+commitSha+'/status');
-      if(r.ok){
-        var data=await r.json();
-        var cf=null;
-        (data.statuses||[]).forEach(function(s){ if(s.context.indexOf('cloudflare')!==-1||s.context.indexOf('pages')!==-1) cf=s; });
-        if(cf&&cf.state==='success'){
-          clearTimeout(deployTimer); updateProgress(100,'Live ✅');
-          document.getElementById('save-status').textContent='Live ✅';
-          setTimeout(function(){ bar.classList.remove('active'); info.classList.remove('active'); },3000);
-          return;
-        }
-      }
-    }catch(e){}
-    if(Date.now()-startTime<120000) deployTimer=setTimeout(checkLive,3000);
-    else { updateProgress(100,'Done (timeout)'); setTimeout(function(){ bar.classList.remove('active'); info.classList.remove('active'); },3000); }
-  }
-  deployTimer=setTimeout(checkLive,5000);
+  deployTimer=setTimeout(check,5000);
 }
 
-// ═══ EDITOR ═══
-var productsData = null;
-var companyData = null;
-var productsSha = null;
-var companySha = null;
-
-async function showEditor(){
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('editor').style.display='block';
-  document.getElementById('save-status').textContent='Loading data...';
+// ═══ LOAD DATA ═══
+async function loadData(){
+  document.getElementById('login-screen').style.display='none';document.getElementById('editor').style.display='block';
+  document.getElementById('save-status').textContent='Loading…';
   try{
-    var pd=await ghRead(PRODUCTS_FILE);
-    productsData=pd.content.products_list; productsSha=pd.sha;
-    var cd=await ghRead(COMPANY_FILE);
-    companyData=cd.content; companySha=cd.sha;
+    var pd=await ghRead(PRODUCTS_FILE);productsData=pd.content.products_list;productsSha=pd.sha;
+    var cd=await ghRead(COMPANY_FILE);companyData=cd.content;companySha=cd.sha;
+    try{var id=await ghRead(IMAGES_FILE);imagesData=id.content.images;imagesSha=id.sha}catch(e){imagesData=[]}
+    try{var sd=await ghRead(SETTINGS_FILE);settingsData=sd.content;settingsSha=sd.sha}catch(e){settingsData={hero:'',men_hero:'',women_hero:''}}
     document.getElementById('save-status').textContent='Ready';
-    renderProducts();
-    renderCompanyForm();
-    loadImages();
-  }catch(e){ document.getElementById('save-status').textContent='Error: '+e.message; toast('Failed to load data: '+e.message,'error'); }
+    renderAll();
+  }catch(e){document.getElementById('save-status').textContent='Error: '+e.message;toast('Failed to load data: '+e.message,'err')}
 }
 
-// ═══ TABS ═══
-document.querySelectorAll('.tab').forEach(function(t){ t.onclick=function(){ document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')}); this.classList.add('active'); document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')}); document.getElementById('panel-'+this.dataset.tab).classList.add('active'); }; });
+function renderAll(){
+  renderProducts();
+  renderCompanyForm();
+  renderImages();
+  renderSettings();
+}
+
+// ═══ NAV ═══
+document.querySelectorAll('.nav-links a').forEach(function(a){a.onclick=function(e){e.preventDefault();document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});document.getElementById('panel-'+this.dataset.tab).classList.add('on')}});
 
 // ═══ PRODUCTS ═══
 function renderProducts(){
-  var html='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th></th></tr></thead><tbody>';
+  var h='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th style="width:130px"></th></tr></thead><tbody>';
   productsData.forEach(function(p,i){
-    html+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td>'+p.tags+'</td><td><button class="btn-sm" onclick="editProduct('+i+')">Edit</button><button class="btn-sm danger" onclick="deleteProduct('+i+')">Del</button></td></tr>';
+    h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td>'+p.tags+'</td><td><button class="btn-xs" onclick="editProduct('+i+')">Edit</button><button class="btn-xs red" onclick="delProduct('+i+')">Del</button></td></tr>';
   });
-  html+='</tbody></table>';
-  document.getElementById('product-list').innerHTML=html;
+  h+='</tbody></table>';
+  document.getElementById('product-list').innerHTML=h;
   document.getElementById('product-list').style.display='block';
   document.getElementById('product-edit').style.display='none';
 }
-
-document.getElementById('btn-add-product').onclick=function(){ editProduct(-1); };
+function delProduct(idx){if(!confirm('Delete '+productsData[idx].name+'?'))return;productsData.splice(idx,1);saveProducts()}
+document.getElementById('btn-add-product').onclick=function(){editProduct(-1)};
 
 function editProduct(idx){
   var p=idx>=0?productsData[idx]:{id:'',name:'',category:'men',tags:'',thumbnail:'',images:[],description:'',features:[],fabric:'',sizes:'',moq:'',care:''};
-  if(idx>=0&&typeof p.images[0]==='object') p._images=p.images.map(function(x){return x.url||x.image||x}).join('\n');
-  else p._images=(p.images||[]).join('\n');
-  if(idx>=0&&typeof p.features[0]==='object') p._features=p.features.map(function(x){return x.text||x.feature||x}).join('\n');
-  else p._features=(p.features||[]).join('\n');
-  var html='<h3>'+(idx>=0?'Edit':'Add')+' Product</h3>';
-  html+='<div class="form-row"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+p.id+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+p.name+'"></div></div>';
-  html+='<div class="form-row"><div class="form-group"><label>Category</label><select id="ep-category"><option value="men" '+(p.category==='men'?'selected':'')+'>Men</option><option value="women" '+(p.category==='women'?'selected':'')+'>Women</option></select></div><div class="form-group"><label>Tags</label><input id="ep-tags" value="'+p.tags+'"></div></div>';
-  html+='<div class="form-group"><label>Thumbnail URL</label><div style="display:flex;gap:8px"><input id="ep-thumbnail" value="'+p.thumbnail+'" style="flex:1"><button class="btn btn-secondary" onclick="uploadAndInsert(\'ep-thumbnail\')" type="button" style="white-space:nowrap">📸 Upload</button></div></div>';
-  html+='<div class="form-group"><label>Gallery Images (one URL per line)</label><div style="display:flex;gap:8px"><textarea id="ep-images" rows="3" style="flex:1">'+p._images+'</textarea><button class="btn btn-secondary" onclick="uploadAndInsert(\'ep-images\')" type="button" style="white-space:nowrap;height:fit-content">📸 Upload</button></div></div>';
-  html+='<div class="form-group"><label>Description</label><textarea id="ep-desc">'+p.description+'</textarea></div>';
-  html+='<div class="form-group"><label>Features (one per line)</label><textarea id="ep-features" rows="4">'+p._features+'</textarea></div>';
-  html+='<div class="form-row"><div class="form-group"><label>Fabric</label><input id="ep-fabric" value="'+p.fabric+'"></div><div class="form-group"><label>Sizes</label><input id="ep-sizes" value="'+p.sizes+'"></div></div>';
-  html+='<div class="form-row"><div class="form-group"><label>MOQ</label><input id="ep-moq" value="'+p.moq+'"></div><div class="form-group"><label>Care</label><input id="ep-care" value="'+p.care+'"></div></div>';
-  html+='<div style="margin-top:16px"><button class="btn btn-primary" id="btn-save-product" data-idx="'+idx+'">Save Product</button> <button class="btn btn-secondary" onclick="renderProducts()">Cancel</button></div>';
-  document.getElementById('product-edit').innerHTML=html;
-  document.getElementById('product-list').style.display='none';
-  document.getElementById('product-edit').style.display='block';
+  if(idx>=0&&typeof p.images[0]==='object')p._imgs=p.images.map(function(x){return x.url||x.image||x}).join('\n');else p._imgs=(p.images||[]).join('\n');
+  if(idx>=0&&typeof p.features[0]==='object')p._feats=p.features.map(function(x){return x.text||x.feature||x}).join('\n');else p._feats=(p.features||[]).join('\n');
+  var h='<h3>'+(idx>=0?'Edit':'Add')+' Product</h3>';
+  h+='<div class="form-row col3"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+esc(p.id)+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+esc(p.name)+'"></div><div class="form-group"><label>Category</label><select id="ep-category"><option value="men"'+(p.category==='men'?' selected':'')+'>Men</option><option value="women"'+(p.category==='women'?' selected':'')+'>Women</option></select></div></div>';
+  h+='<div class="form-row"><div class="form-group"><label>Tags</label><input id="ep-tags" value="'+esc(p.tags)+'"></div></div>';
+  h+='<div class="form-group"><label>Thumbnail</label><div class="input-with-btn"><input id="ep-thumbnail" value="'+esc(p.thumbnail)+'"><button class="btn-sm" onclick="uploadFileAndSet(\'ep-thumbnail\')">📸 Upload</button><button class="btn-sm" onclick="openImgPicker(\'ep-thumbnail\')">🖼 Browse</button></div></div>';
+  h+='<div class="form-group"><label>Gallery Images (one per line)</label><textarea id="ep-images" rows="3">'+esc(p._imgs)+'</textarea><div class="btn-group" style="margin-top:6px"><button class="btn btn-secondary btn-sm" onclick="uploadFileAndSet(\'ep-images\')" style="font-size:11px;padding:8px 16px">📸 Upload</button><button class="btn btn-secondary btn-sm" onclick="openImgPicker(\'ep-images\')" style="font-size:11px;padding:8px 16px">🖼 Browse</button></div></div>';
+  h+='<div class="form-group"><label>Description</label><textarea id="ep-desc" rows="3">'+esc(p.description)+'</textarea></div>';
+  h+='<div class="form-group"><label>Features (one per line)</label><textarea id="ep-features" rows="4">'+esc(p._feats)+'</textarea></div>';
+  h+='<div class="form-row col3"><div class="form-group"><label>Fabric</label><input id="ep-fabric" value="'+esc(p.fabric)+'"></div><div class="form-group"><label>Sizes</label><input id="ep-sizes" value="'+esc(p.sizes)+'"></div><div class="form-group"><label>MOQ</label><input id="ep-moq" value="'+esc(p.moq)+'"></div></div>';
+  h+='<div class="form-group"><label>Care</label><input id="ep-care" value="'+esc(p.care)+'"></div>';
+  h+='<div class="btn-group"><button class="btn btn-primary" id="btn-save-product" data-idx="'+idx+'">Save Product</button><button class="btn btn-secondary" onclick="renderProducts()">Cancel</button></div>';
+  document.getElementById('product-edit').innerHTML=h;
+  document.getElementById('product-list').style.display='none';document.getElementById('product-edit').style.display='block';
   document.getElementById('btn-save-product').onclick=saveProduct;
 }
-
-function deleteProduct(idx){
-  if(!confirm('Delete '+productsData[idx].name+'?')) return;
-  productsData.splice(idx,1);
-  saveProducts();
-}
-
+function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 async function saveProduct(){
-  var idx=parseInt(this.dataset.idx);
-  var p={
-    id: document.getElementById('ep-id').value,
-    name: document.getElementById('ep-name').value,
-    category: document.getElementById('ep-category').value,
-    tags: document.getElementById('ep-tags').value,
-    thumbnail: document.getElementById('ep-thumbnail').value,
-    images: document.getElementById('ep-images').value.split('\n').filter(function(x){return x.trim()}).map(function(u){return {url:u.trim()}}),
-    description: document.getElementById('ep-desc').value,
-    features: document.getElementById('ep-features').value.split('\n').filter(function(x){return x.trim()}).map(function(t){return {text:t.trim()}}),
-    fabric: document.getElementById('ep-fabric').value,
-    sizes: document.getElementById('ep-sizes').value,
-    moq: document.getElementById('ep-moq').value,
-    care: document.getElementById('ep-care').value
-  };
-  if(idx>=0) productsData[idx]=p; else productsData.push(p);
-  saveProducts();
+  var idx=parseInt(document.getElementById('btn-save-product').dataset.idx);
+  var p={id:document.getElementById('ep-id').value,name:document.getElementById('ep-name').value,category:document.getElementById('ep-category').value,tags:document.getElementById('ep-tags').value,thumbnail:document.getElementById('ep-thumbnail').value,images:document.getElementById('ep-images').value.split('\n').filter(function(x){return x.trim()}).map(function(u){return{url:u.trim()}}),description:document.getElementById('ep-desc').value,features:document.getElementById('ep-features').value.split('\n').filter(function(x){return x.trim()}).map(function(t){return{text:t.trim()}}),fabric:document.getElementById('ep-fabric').value,sizes:document.getElementById('ep-sizes').value,moq:document.getElementById('ep-moq').value,care:document.getElementById('ep-care').value};
+  if(idx>=0)productsData[idx]=p;else productsData.push(p);
+  document.getElementById('product-edit').querySelector('.btn-primary').disabled=true;
+  await saveProducts();
 }
 
 async function saveProducts(){
-  document.getElementById('save-status').textContent='Saving products...';
+  document.getElementById('save-status').textContent='Saving…';
   try{
     var r=await ghWrite(PRODUCTS_FILE,{products_list:productsData},'content: update products',productsSha);
-    productsSha=r.content.sha;
-    document.getElementById('save-status').textContent='Deploying...';
-    trackDeploy(r.commit.sha);
-    renderProducts();
-  }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
+    productsSha=r.content.sha;document.getElementById('save-status').textContent='Deploying…';
+    trackDeploy(r.commit.sha);renderProducts();toast('Products saved ✅');
+  }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 }
 
 // ═══ COMPANY ═══
 function renderCompanyForm(){
-  var fields=['name','fullName','address','addressZh','email','phone','tagline','taglineZh'];
-  var html='';
-  fields.forEach(function(f){ html+='<div class="form-group"><label>'+f+'</label><input id="ec-'+f+'" value="'+(companyData[f]||'')+'"></div>'; });
-  html+='<div class="form-group"><label>Description (EN)</label><textarea id="ec-description" rows="4">'+(companyData.description||'')+'</textarea></div>';
-  html+='<div class="form-group"><label>Description (ZH)</label><textarea id="ec-descriptionZh" rows="4">'+(companyData.descriptionZh||'')+'</textarea></div>';
-  html+='<div class="form-group"><label>Mission (EN)</label><textarea id="ec-mission" rows="3">'+(companyData.mission||'')+'</textarea></div>';
-  html+='<div class="form-group"><label>Mission (ZH)</label><textarea id="ec-missionZh" rows="3">'+(companyData.missionZh||'')+'</textarea></div>';
-  document.getElementById('company-form').innerHTML=html;
+  var f=['name','fullName','address','addressZh','email','phone','tagline','taglineZh'];
+  var h='';
+  f.forEach(function(k){h+='<div class="form-group"><label>'+k+'</label><input id="ec-'+k+'" value="'+esc(companyData[k]||'')+'"></div>'});
+  h+='<div class="form-group"><label>Description (EN)</label><textarea id="ec-description" rows="4">'+esc(companyData.description||'')+'</textarea></div>';
+  h+='<div class="form-group"><label>Description (ZH)</label><textarea id="ec-descriptionZh" rows="4">'+esc(companyData.descriptionZh||'')+'</textarea></div>';
+  h+='<div class="form-group"><label>Mission (EN)</label><textarea id="ec-mission" rows="3">'+esc(companyData.mission||'')+'</textarea></div>';
+  h+='<div class="form-group"><label>Mission (ZH)</label><textarea id="ec-missionZh" rows="3">'+esc(companyData.missionZh||'')+'</textarea></div>';
+  document.getElementById('company-form').innerHTML=h;
 }
-
 document.getElementById('btn-save-company').onclick=async function(){
-  document.getElementById('save-status').textContent='Saving company...';
-  var fields=['name','fullName','address','addressZh','email','phone','tagline','taglineZh','description','descriptionZh','mission','missionZh'];
-  var data={};
-  fields.forEach(function(f){ data[f]=document.getElementById('ec-'+f).value; });
+  var f=['name','fullName','address','addressZh','email','phone','tagline','taglineZh','description','descriptionZh','mission','missionZh'];
+  var d={};f.forEach(function(k){d[k]=document.getElementById('ec-'+k).value});
+  document.getElementById('save-status').textContent='Saving…';
   try{
-    var r=await ghWrite(COMPANY_FILE,data,'content: update company info',companySha);
-    companySha=r.content.sha;
-    companyData=data;
-    document.getElementById('save-status').textContent='Deploying...';
-    trackDeploy(r.commit.sha);
-  }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
+    var r=await ghWrite(COMPANY_FILE,d,'content: update company info',companySha);
+    companySha=r.content.sha;companyData=d;document.getElementById('save-status').textContent='Deploying…';
+    trackDeploy(r.commit.sha);toast('Company info saved ✅');
+  }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 };
 
-// ═══ UPLOAD HELPER ═══
-async function uploadAndInsert(fieldId){
-  var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=(fieldId==='ep-images');
+// ═══ IMAGE DATABASE ═══
+function renderImages(){
+  var g=document.getElementById('img-grid');
+  if(!imagesData.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:32px">No images yet — upload some!</p>';return}
+  var h='';
+  imagesData.forEach(function(img,i){
+    h+='<div class="img-card"><img src="'+img.url+'" alt="'+img.name+'"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
+  });
+  g.innerHTML=h;
+}
+function copyUrl(url){navigator.clipboard.writeText(url).then(function(){toast('URL copied! 📋')})}
+async function delImage(idx){if(!confirm('Delete '+imagesData[idx].name+'?'))return;
+  try{await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+imagesData[idx].name.replace(/[^a-zA-Z0-9._-]/g,'_'),{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})});
+  imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}}
+
+// ═══ IMAGE PICKER ═══
+var pickerTarget=null;
+function openImgPicker(targetId){
+  pickerTarget=targetId;
+  var g=document.getElementById('img-select-grid');
+  var h='';
+  imagesData.forEach(function(img,i){
+    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'" onclick="toggleImgPick(this)"><img src="'+img.url+'" alt="'+img.name+'"><div class="img-name">'+img.name+'</div></div>';
+  });
+  if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
+  g.innerHTML=h;
+  document.getElementById('img-picker-title').textContent=targetId==='ep-images'?'Select images for gallery':'Select thumbnail image';
+  document.getElementById('img-picker-modal').classList.add('on');
+  document.getElementById('img-picker-confirm').onclick=confirmImgPick;
+}
+function toggleImgPick(el){if(pickerTarget==='ep-images'){el.classList.toggle('selected')}else{document.querySelectorAll('#img-select-grid .img-item').forEach(function(x){x.classList.remove('selected')});el.classList.add('selected')}}
+function confirmImgPick(){
+  var sel=document.querySelectorAll('#img-select-grid .img-item.selected');
+  var urls=[];sel.forEach(function(s){urls.push(s.dataset.url)});
+  if(!urls.length){toast('Select at least one image','err');return}
+  var el=document.getElementById(pickerTarget);
+  if(pickerTarget==='ep-images'){el.value=el.value+'\n'+urls.join('\n')}else{el.value=urls[0]}
+  closeImgPicker();toast('Image(s) inserted ✅');
+}
+function closeImgPicker(){document.getElementById('img-picker-modal').classList.remove('on');pickerTarget=null}
+
+// ═══ UPLOAD ═══
+document.getElementById('upload-zone').onclick=function(){document.getElementById('file-input').click()};
+document.getElementById('upload-zone').ondragover=function(e){e.preventDefault();this.style.borderColor='var(--accent)'};
+document.getElementById('upload-zone').ondragleave=function(){this.style.borderColor='var(--gray-light)'};
+document.getElementById('upload-zone').ondrop=function(e){e.preventDefault();this.style.borderColor='var(--gray-light)';uploadFiles(e.dataTransfer.files)};
+document.getElementById('file-input').onchange=function(){uploadFiles(this.files);this.value=''};
+
+async function uploadFiles(files){
+  for(var i=0;i<files.length;i++){
+    var f=files[i];document.getElementById('save-status').textContent='Uploading '+f.name+'…';
+    try{
+      var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(f)});
+      var ts=Date.now(),safeName=ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
+      var result=await ghUploadBuf(path,base64,'content: upload '+f.name);
+      var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
+      imagesData.push({name:f.name,url:url,path:path,sha:result.content.sha,date:new Date().toISOString()});
+      toast('Uploaded: '+f.name+' ✅');
+    }catch(e){toast('Upload failed: '+e.message,'err')}
+  }
+  if(files.length>0){
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
+    document.getElementById('save-status').textContent='Ready';renderImages();
+  }
+}
+async function uploadFileAndSet(fieldId){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=(fieldId==='ep-images');
   inp.onchange=async function(){
-    var files=inp.files;
-    for(var i=0;i<files.length;i++){
-      var f=files[i];
-      document.getElementById('save-status').textContent='Uploading '+f.name+'...';
+    var f=inp.files;if(!f.length)return;
+    document.getElementById('save-status').textContent='Uploading…';
+    for(var i=0;i<f.length;i++){
       try{
-        var base64=await new Promise(function(ok){ var r=new FileReader(); r.onload=function(){ ok(r.result.split(',')[1]); }; r.readAsDataURL(f); });
-        var ts=new Date().getTime();
-        var path=IMG_DIR+ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-        var result=await ghUpload(path,base64,'content: upload '+f.name);
+        var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(f[i])});
+        var ts=Date.now(),safeName=ts+'_'+f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
+        var result=await ghUploadBuf(path,base64,'content: upload '+f[i].name);
         var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
+        imagesData.push({name:f[i].name,url:url,path:path,sha:result.content.sha,date:new Date().toISOString()});
         var el=document.getElementById(fieldId);
-        if(fieldId==='ep-images') el.value=el.value+'\n'+url;
-        else el.value=url;
-        toast('Uploaded: '+f.name+' ✅');
-      }catch(e){ toast('Upload failed: '+e.message,'error'); }
+        if(fieldId==='ep-images')el.value=el.value+'\n'+url;else el.value=url;
+      }catch(e){toast('Upload failed: '+e.message,'err')}
     }
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
     document.getElementById('save-status').textContent='Ready';
-    loadImages();
   };
   inp.click();
 }
 
-// ═══ IMAGES ═══
-document.getElementById('upload-zone').onclick=function(){ document.getElementById('file-input').click(); };
-document.getElementById('upload-zone').ondragover=function(e){ e.preventDefault(); this.style.borderColor='#d4944e'; };
-document.getElementById('upload-zone').ondragleave=function(){ this.style.borderColor='#d1d5db'; };
-document.getElementById('upload-zone').ondrop=function(e){ e.preventDefault(); this.style.borderColor='#d1d5db'; uploadFiles(e.dataTransfer.files); };
-document.getElementById('file-input').onchange=function(){ uploadFiles(this.files); };
-
-async function uploadFiles(files){
-  for(var i=0;i<files.length;i++){
-    var f=files[i];
-    document.getElementById('save-status').textContent='Uploading '+f.name+'...';
-    try{
-      var base64=await new Promise(function(ok){ var r=new FileReader(); r.onload=function(){ ok(r.result.split(',')[1]); }; r.readAsDataURL(f); });
-      var ts=new Date().getTime();
-      await ghUpload(IMG_DIR+ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),base64,'content: upload '+f.name);
-      toast('Uploaded: '+f.name+' ✅');
-    }catch(e){ toast('Upload failed: '+e.message,'error'); }
-  }
-  document.getElementById('save-status').textContent='Ready';
-  loadImages();
+// ═══ SETTINGS ═══
+function renderSettings(){
+  var h='';
+  ['hero','men_hero','women_hero'].forEach(function(k){
+    h+='<div class="form-group"><label>'+k.replace('_',' ').toUpperCase()+'</label><div class="input-with-btn"><input id="es-'+k+'" value="'+esc(settingsData[k]||'')+'"><button class="btn-sm" onclick="uploadFileAndSet(\'es-'+k+'\')">📸 Upload</button><button class="btn-sm" onclick="openImgPicker(\'es-'+k+'\')">🖼 Browse</button></div></div>';
+  });
+  document.getElementById('settings-form').innerHTML=h;
 }
-
-async function loadImages(){
+document.getElementById('btn-save-settings').onclick=async function(){
+  var d={};
+  ['hero','men_hero','women_hero'].forEach(function(k){d[k]=document.getElementById('es-'+k).value});
+  document.getElementById('save-status').textContent='Saving…';
   try{
-    var r=await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR);
-    if(!r.ok){ document.getElementById('img-grid').innerHTML='<p style="color:#6b7280">No images yet</p>'; return; }
-    var files=await r.json();
-    var html='';
-    files.forEach(function(f){
-      html+='<div class="img-item"><img src="'+f.download_url+'" alt="'+f.name+'"><button class="img-del" onclick="deleteImage(\''+f.name+'\',\''+f.sha+'\')">×</button><span style="font-size:10px;color:#6b7280">'+f.download_url+'</span></div>';
-    });
-    document.getElementById('img-grid').innerHTML=html;
-  }catch(e){}
-}
+    var r=await ghWrite(SETTINGS_FILE,d,'content: update site settings',settingsSha);
+    settingsSha=r.content.sha;settingsData=d;document.getElementById('save-status').textContent='Deploying…';
+    trackDeploy(r.commit.sha);toast('Settings saved ✅');
+  }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
+};
 
-async function deleteImage(name,sha){
-  if(!confirm('Delete '+name+'?')) return;
-  try{
-    await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+name,{method:'DELETE',body:JSON.stringify({message:'content: delete '+name,sha:sha})});
-    toast('Deleted: '+name+' ✅');
-    loadImages();
-  }catch(e){ toast('Delete failed: '+e.message,'error'); }
-}
 </script>
 </body>
 </html>
