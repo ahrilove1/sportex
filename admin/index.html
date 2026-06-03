@@ -74,7 +74,6 @@ var token = localStorage.getItem(LS_KEY);
 if (token && localStorage.getItem(PW_KEY) === '1') {
   injectFetch(token);
   startCMS();
-  return;
 }
 
 // ── Step 1: Password ──
@@ -139,51 +138,18 @@ function injectFetch(t) {
 }
 
 function startCMS() {
-  console.log('[SPORTEX] startCMS called');
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('cms-root').style.display = 'block';
 
-  // Intercept ALL window.open calls globally
-  var _origOpen = window.open;
-  window.open = function(url, target, features) {
-    console.log('[SPORTEX] window.open called, url:', (typeof url === 'string' ? url.substring(0,80) : typeof url));
-    if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
-      var tok = localStorage.getItem(LS_KEY);
-      var fakeWin = {
-        close: function(){},
-        focus: function(){},
-        closed: false,
-        location: { href: '' },
-        postMessage: function(data, origin) {
-          // Main window is sending us (popup) the initial handshake payload
-          console.log('[POPUP] received handshake from main:', data);
-          // Respond back to main window with a handshake acknowledgment
-          setTimeout(function() {
-            window.postMessage('handshake:' + JSON.stringify(data), '*');
-            console.log('[POPUP] sent handshake back');
-            // Now send the authorization
-            setTimeout(function() {
-              var authData = 'authorization:github:success:' + JSON.stringify({token: tok, provider: 'github'});
-              console.log('[POPUP] sending auth data');
-              window.postMessage(authData, '*');
-            }, 200);
-          }, 200);
-        }
-      };
-      return fakeWin;
-    }
-    return _origOpen.call(window, url, target, features);
-  };
+  // Let Decap CMS use its native OAuth flow (real popup)
+  // No window.open override — the popup should work now
+  // Our injectFetch ensures all GitHub API calls have the token anyway
 
-  // Load Decap CMS
-  console.log('[SPORTEX] loading Decap CMS...');
   var s = document.createElement('script');
   s.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
   s.onload = function() {
-    console.log('[SPORTEX] Decap CMS loaded');
     try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
   };
-  s.onerror = function() { console.log('[SPORTEX] Decap CMS load FAILED'); };
   document.body.appendChild(s);
 }
 })();
