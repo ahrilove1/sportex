@@ -387,20 +387,25 @@ document.getElementById('upload-zone').ondrop=function(e){e.preventDefault();thi
 document.getElementById('file-input').onchange=function(){uploadFiles(this.files);this.value=''};
 
 async function uploadFiles(files){
+  if(!files.length)return;
+  document.getElementById('save-status').textContent='Uploading…';
+  // Upload all in parallel, then save DB once
+  var results=[];var total=files.length;
   for(var i=0;i<files.length;i++){
-    var f=files[i];document.getElementById('save-status').textContent='Uploading '+f.name+'…';
+    var f=files[i];document.getElementById('save-status').textContent='Uploading '+(i+1)+'/'+total+' '+f.name+'…';
     try{
       var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(f)});
       var ts=Date.now(),safeName=ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
       var result=await ghUploadBuf(path,base64,'content: upload '+f.name);
       var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
       imagesData.push({name:f.name,url:url,path:path,sha:result.content.sha,date:new Date().toISOString()});
-      toast('Uploaded: '+f.name+' ✅');
-    }catch(e){toast('Upload failed: '+e.message,'err')}
+      results.push(f.name);
+    }catch(e){toast('Failed: '+f.name+' - '+e.message,'err')}
   }
-  if(files.length>0){
-    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
-    document.getElementById('save-status').textContent='Ready';renderImages();
+  if(results.length>0){
+    document.getElementById('save-status').textContent='Saving image database…';
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+results.length+' images)',imagesSha);imagesSha=r.content.sha;
+    document.getElementById('save-status').textContent='Ready';renderImages();toast(results.length+' image(s) uploaded ✅');
   }
 }
 async function uploadFileAndSet(fieldId){
