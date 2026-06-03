@@ -40,7 +40,9 @@ export async function onRequest(context) {
   // Try popup flow first
   if (window.opener && window.opener !== window) {
     try {
-      window.opener.postMessage({token: '${token}', provider: 'github'}, '*');
+      // Decap CMS expects: "authorization:github:success:{...}"
+      var authMsg = 'authorization:github:success:' + JSON.stringify({token: '${token}', provider: 'github'});
+      window.opener.postMessage(authMsg, '*');
       window.close();
     } catch(e) {
       // Fall through to redirect
