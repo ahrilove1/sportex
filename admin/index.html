@@ -28,6 +28,11 @@ body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-ser
 .toolbar h1{font-size:18px;letter-spacing:3px}
 .toolbar .actions{display:flex;gap:12px;align-items:center}
 .toolbar .actions .status{font-size:12px;color:#9ca3af}
+.deploy-bar{display:none;height:3px;background:#e5e7eb;position:relative;overflow:hidden}
+.deploy-bar.active{display:block}
+.deploy-fill{height:100%;background:#d4944e;transition:width .5s ease}
+.deploy-info{text-align:center;font-size:11px;color:#6b7280;padding:4px 0;display:none}
+.deploy-info.active{display:block}
 .tabs{display:flex;gap:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px}
 .tab{padding:14px 24px;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;border-bottom:2px solid transparent;color:#6b7280;transition:all .2s}
 .tab:hover{color:#1f2937}
@@ -109,6 +114,8 @@ td .btn-sm.danger:hover{background:#fef2f2}
 <button class="btn btn-secondary" onclick="location.reload()">Exit</button>
 </div>
 </div>
+<div class="deploy-bar" id="deploy-bar"><div class="deploy-fill" id="deploy-fill" style="width:0%"></div></div>
+<div class="deploy-info" id="deploy-info"></div>
 <div class="tabs">
 <div class="tab active" data-tab="products">Products</div>
 <div class="tab" data-tab="company">Company</div>
@@ -170,6 +177,42 @@ async function ghUpload(filePath, base64data, msg){ var body={message:msg,conten
 
 // ═══ TOAST ═══
 function toast(msg,type){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+(type||'success'); t.style.display='block'; setTimeout(function(){t.style.display='none'},2500); }
+
+// ═══ DEPLOY TRACKER ═══
+var deployTimer=null;
+function trackDeploy(commitSha){
+  var bar=document.getElementById('deploy-bar'); var fill=document.getElementById('deploy-fill'); var info=document.getElementById('deploy-info');
+  bar.classList.add('active'); info.classList.add('active');
+  var startTime=Date.now();
+  // Sim progress: 0-60% in first 15s (build), then 60-90% (deploy), then check for completion
+  function updateProgress(pct,msg){
+    fill.style.width=pct+'%'; info.textContent='🔄 '+msg+' ('+Math.floor(pct)+'%)';
+  }
+  updateProgress(5,'Saving to GitHub...');
+  // Animate progress
+  function simulate(){ var elapsed=(Date.now()-startTime)/1000; var pct; if(elapsed<15) pct=Math.min(60,elapsed*4); else pct=Math.min(90,60+(elapsed-15)*3); updateProgress(pct,pct<60?'Building...':'Deploying...'); if(pct<90) deployTimer=setTimeout(simulate,500); }
+  simulate();
+  // Poll Cloudflare Pages deployment via GitHub
+  async function checkLive(){
+    try{
+      var r=await ghAPI('/repos/'+REPO+'/commits/'+commitSha+'/status');
+      if(r.ok){
+        var data=await r.json();
+        var cf=null;
+        (data.statuses||[]).forEach(function(s){ if(s.context.indexOf('cloudflare')!==-1||s.context.indexOf('pages')!==-1) cf=s; });
+        if(cf&&cf.state==='success'){
+          clearTimeout(deployTimer); updateProgress(100,'Live ✅');
+          document.getElementById('save-status').textContent='Live ✅';
+          setTimeout(function(){ bar.classList.remove('active'); info.classList.remove('active'); },3000);
+          return;
+        }
+      }
+    }catch(e){}
+    if(Date.now()-startTime<120000) deployTimer=setTimeout(checkLive,3000);
+    else { updateProgress(100,'Done (timeout)'); setTimeout(function(){ bar.classList.remove('active'); info.classList.remove('active'); },3000); }
+  }
+  deployTimer=setTimeout(checkLive,5000);
+}
 
 // ═══ EDITOR ═══
 var productsData = null;
@@ -263,8 +306,8 @@ async function saveProducts(){
   try{
     var r=await ghWrite(PRODUCTS_FILE,{products_list:productsData},'content: update products',productsSha);
     productsSha=r.content.sha;
-    document.getElementById('save-status').textContent='Saved!';
-    toast('Products saved ✅');
+    document.getElementById('save-status').textContent='Deploying...';
+    trackDeploy(r.commit.sha);
     renderProducts();
   }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
 }
@@ -290,8 +333,8 @@ document.getElementById('btn-save-company').onclick=async function(){
     var r=await ghWrite(COMPANY_FILE,data,'content: update company info',companySha);
     companySha=r.content.sha;
     companyData=data;
-    document.getElementById('save-status').textContent='Saved!';
-    toast('Company info saved ✅');
+    document.getElementById('save-status').textContent='Deploying...';
+    trackDeploy(r.commit.sha);
   }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
 };
 
