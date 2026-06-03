@@ -93,6 +93,17 @@
   var SESSION_KEY = 'sportex_admin_pw';
   var TOKEN_KEY = 'sportex_gh_token';
 
+  // ── Handle OAuth redirect return (fallback flow) ──
+  var hash = window.location.hash;
+  if (hash.indexOf('access_token=') !== -1) {
+    var oauthToken = hash.split('access_token=')[1].split('&')[0];
+    sessionStorage.setItem(TOKEN_KEY, oauthToken);
+    sessionStorage.setItem(SESSION_KEY, '1');
+    window.location.hash = '';
+    window.location.replace('/admin/');
+    return;
+  }
+
   // ── Already authenticated? ──
   if (sessionStorage.getItem(SESSION_KEY) === '1') {
     var saved = sessionStorage.getItem(TOKEN_KEY);
@@ -207,10 +218,19 @@
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('cms-root').style.display = 'block';
 
-    // Override window.open → redirect for any OAuth attempts
+    // Override window.open → dispatch fake auth if we have token
     var _origOpen = window.open;
     window.open = function(url, target, features) {
       if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
+        var tok = sessionStorage.getItem(TOKEN_KEY);
+        if (tok) {
+          // Dispatch fake postMessage that Decap CMS expects from OAuth popup
+          setTimeout(function() {
+            window.postMessage({ token: tok, provider: 'github' }, '*');
+          }, 300);
+          return { close: function() {} };
+        }
+        // No token yet — redirect to get one
         window.location.href = url;
         return null;
       }
