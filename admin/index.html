@@ -205,7 +205,7 @@ tr:hover{background:var(--off-white)}
 
 <script>
 // ═══ CONFIG ═══
-var PASS_HASH='61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
+var PASS_HASH='84837a82c6313982cc78a6ca36cea7c82194dd939aaa42a8d066df85b5b22b72';
 var REPO='ahrilove1/sportex';
 var LS='spex_gh_token'; var PW='spex_pw';
 var token=localStorage.getItem(LS);
@@ -228,7 +228,7 @@ async function checkToken(){var t=document.getElementById('token-input').value.t
 // ═══ GITHUB API ═══
 function ghAPI(path,opts){opts=opts||{};opts.headers=opts.headers||{};opts.headers['Authorization']='Bearer '+token;opts.headers['Accept']='application/vnd.github.v3+json';return fetch('https://api.github.com'+path,opts)}
 async function ghRead(filePath){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath);if(!r.ok)throw new Error('Read '+r.status);var d=await r.json();return{sha:d.sha,content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}}
-async function ghWrite(filePath,content,msg,sha){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(!r.ok)throw new Error('Write '+r.status);return r.json()}
+async function ghWrite(filePath,content,msg,sha,retry){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(r.status===409&&(!retry||retry<3)){await new Promise(function(ok){setTimeout(ok,500)});var fresh=await ghRead(filePath);return ghWrite(filePath,content,msg,fresh.sha,(retry||1)+1)}if(!r.ok)throw new Error('Write '+r.status);return r.json()}
 async function ghUploadBuf(filePath,base64,msg){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify({message:msg,content:base64})});if(!r.ok)throw new Error('Upload '+r.status);return r.json()}
 
 // ═══ TOAST ═══
