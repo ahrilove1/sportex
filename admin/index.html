@@ -169,8 +169,8 @@ function startCMS() {
           });
           window.dispatchEvent(evt);
         }, 400);
-        // Return a fake window object
-        return { close: function(){} };
+        // Return a fake window object with all methods Decap CMS might call
+        return { close: function(){}, focus: function(){}, closed: false, location: { href: '' } };
       }
       // No token — fallback: redirect page to OAuth
       window.location.href = url;
@@ -183,7 +183,31 @@ function startCMS() {
   var s = document.createElement('script');
   s.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
   s.onload = function() {
-    try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
+    try {
+      CMS.registerPreviewStyle('/admin/preview.css');
+
+      // Auto-authenticate: dispatch AUTH_SUCCESS to CMS Redux store
+      var tok = localStorage.getItem(LS_KEY);
+      if (tok) {
+        var store = CMS.getStore();
+        if (store) {
+          store.dispatch({
+            type: 'AUTH_SUCCESS',
+            payload: {
+              user: {
+                token: tok,
+                name: 'SPORTEX Admin',
+                login: 'ahrilove1',
+                email: 'admin@sportexproduction.com',
+                avatar_url: '',
+                html_url: 'https://github.com/ahrilove1',
+                backendName: 'github'
+              }
+            }
+          });
+        }
+      }
+    } catch(e) { console.log('CMS init:', e); }
   };
   document.body.appendChild(s);
 }
