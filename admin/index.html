@@ -412,11 +412,10 @@ async function uploadFiles(files){
   var failed=allResults.length-okResults.length;
   if(failed>0)toast(failed+'/'+allResults.length+' failed — retry those','err');
   okResults.forEach(function(r){imagesData.push({name:r.name,url:r.url,path:r.path,sha:r.sha,date:new Date().toISOString()})});
-  if(results.length>0){
+  if(okResults.length>0){
     document.getElementById('save-status').textContent='Saving image database…';
-    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+results.length+' images)',imagesSha);imagesSha=r.content.sha;
-    document.getElementById('save-status').textContent='Ready';renderImages();toast(results.length+' image(s) uploaded ✅');
-  }
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+okResults.length+' images)',imagesSha);imagesSha=r.content.sha;
+    document.getElementById('save-status').textContent='Ready';renderImages();toast(okResults.length+' image(s) uploaded ✅');
   }
 }
 async function uploadFileAndSet(fieldId){
