@@ -13,7 +13,7 @@
     }
     .login-box {
       background: #fff; padding: 48px 40px; border-radius: 4px;
-      text-align: center; max-width: 380px; width: 90%;
+      text-align: center; max-width: 400px; width: 90%;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
     .login-box .logo {
@@ -23,35 +23,65 @@
     .login-box .sub {
       font-size: 13px; color: #6b7280; margin-bottom: 28px;
     }
-    .login-box input {
-      width: 100%; padding: 12px 16px; font-size: 15px;
+    .login-box input, .login-box textarea {
+      width: 100%; padding: 12px 16px; font-size: 14px;
       border: 1px solid #e5e7eb; border-radius: 2px; outline: none;
       text-align: center; letter-spacing: 1px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s; margin-bottom: 12px;
     }
-    .login-box input:focus { border-color: #d4944e; }
+    .login-box input:focus, .login-box textarea:focus { border-color: #d4944e; }
     .login-box button {
-      width: 100%; margin-top: 16px; padding: 12px;
+      width: 100%; padding: 12px;
       background: #1a1f2e; color: #fff; border: none;
       font-size: 14px; font-weight: 600; letter-spacing: 2px;
       cursor: pointer; border-radius: 2px; transition: background 0.2s;
     }
     .login-box button:hover { background: #2a3348; }
     .login-box .error {
-      color: #dc2626; font-size: 13px; margin-top: 12px; display: none;
+      color: #dc2626; font-size: 13px; margin-top: 8px; display: none;
+    }
+    .login-box .hint {
+      font-size: 11px; color: #9ca3af; margin-top: 8px; line-height: 1.5;
+    }
+    .login-box .hint a { color: #d4944e; }
+    .login-box .success-msg {
+      color: #16a34a; font-size: 13px; margin-top: 8px; display: none;
     }
     #cms-root { height: 100vh; display: none; }
+    #step-pw { display: block; }
+    #step-token { display: none; }
   </style>
 </head>
 <body>
 
 <div id="login-screen">
   <div class="login-box">
-    <div class="logo">SPORTEX</div>
-    <div class="sub">Content Manager</div>
-    <input type="password" id="pw-input" placeholder="Enter password" autofocus>
-    <button id="pw-btn">UNLOCK</button>
-    <div class="error" id="pw-error">Incorrect password</div>
+
+    <!-- Step 1: Password -->
+    <div id="step-pw">
+      <div class="logo">SPORTEX</div>
+      <div class="sub">Content Manager</div>
+      <input type="password" id="pw-input" placeholder="Enter password" autofocus>
+      <button id="pw-btn">UNLOCK</button>
+      <div class="error" id="pw-error">Incorrect password</div>
+    </div>
+
+    <!-- Step 2: GitHub PAT (first time only) -->
+    <div id="step-token">
+      <div class="logo">SPORTEX</div>
+      <div class="sub">GitHub Access Token</div>
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus>
+      <button id="token-btn">SAVE & ENTER</button>
+      <div class="error" id="token-error">Invalid token — must have <b>repo</b> scope</div>
+      <div class="success-msg" id="token-ok">Token validated! Starting editor...</div>
+      <div class="hint">
+        Need a token?<br>
+        <a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">
+          Click here to create one →</a><br>
+        Check <b>repo</b> scope, generate, then paste above.
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -63,31 +93,19 @@
   var SESSION_KEY = 'sportex_admin_pw';
   var TOKEN_KEY = 'sportex_gh_token';
 
-  // ── Step 1: Handle OAuth redirect return ──
-  var hash = window.location.hash;
-  if (hash.indexOf('access_token=') !== -1) {
-    var token = hash.split('access_token=')[1].split('&')[0];
-    sessionStorage.setItem(TOKEN_KEY, token);
-    sessionStorage.setItem(SESSION_KEY, '1');
-    window.location.hash = '';
-    window.location.replace('/admin/');
-    return;
-  }
-
-  // ── Step 2: Inject token into Decap CMS's IndexedDB BEFORE loading CMS ──
-  var storedToken = sessionStorage.getItem(TOKEN_KEY);
-  if (storedToken) {
-    injectTokenAndStart(storedToken);
-    return;
-  }
-
-  // ── Step 3: Already authed? Go straight to CMS ──
+  // ── Already authenticated? ──
   if (sessionStorage.getItem(SESSION_KEY) === '1') {
-    startCMS();
+    var saved = sessionStorage.getItem(TOKEN_KEY);
+    if (saved) {
+      injectToken(saved);
+      startCMS();
+    } else {
+      showTokenStep();
+    }
     return;
   }
 
-  // ── Step 4: Password gate ──
+  // ── Step 1: Password ──
   document.getElementById('pw-btn').addEventListener('click', verifyPassword);
   document.getElementById('pw-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') verifyPassword();
@@ -107,7 +125,13 @@
     var h = await sha256(input);
     if (h === PASS_HASH) {
       sessionStorage.setItem(SESSION_KEY, '1');
-      startCMS();
+      var saved = sessionStorage.getItem(TOKEN_KEY);
+      if (saved) {
+        injectToken(saved);
+        startCMS();
+      } else {
+        showTokenStep();
+      }
     } else {
       document.getElementById('pw-error').style.display = 'block';
       document.getElementById('pw-input').value = '';
@@ -115,75 +139,57 @@
     }
   }
 
-  // ── Inject token into IndexedDB (matching Decap CMS's localForage format) ──
-  function injectTokenAndStart(token) {
-    var req = indexedDB.open('decap-cms', 1);
-    req.onupgradeneeded = function(e) {
-      var db = e.target.result;
-      if (!db.objectStoreNames.contains('github')) {
-        db.createObjectStore('github');
-      }
-    };
-    req.onsuccess = async function(e) {
-      var db = e.target.result;
-      // Ensure store exists
-      if (!db.objectStoreNames.contains('github')) {
-        db.close();
-        var req2 = indexedDB.open('decap-cms', db.version + 1);
-        req2.onupgradeneeded = function(ev) {
-          ev.target.result.createObjectStore('github');
-        };
-        req2.onsuccess = function(ev2) {
-          writeToken(ev2.target.result, token);
-        };
-      } else {
-        writeToken(db, token);
-      }
-    };
-    req.onerror = function() {
-      // IndexedDB failed, fallback: override fetch globally
-      overrideFetch(token);
-      sessionStorage.removeItem(TOKEN_KEY);
-      startCMS();
-    };
+  // ── Step 2: GitHub Token ──
+  function showTokenStep() {
+    document.getElementById('step-pw').style.display = 'none';
+    document.getElementById('step-token').style.display = 'block';
+    document.getElementById('token-input').focus();
+
+    document.getElementById('token-btn').addEventListener('click', validateToken);
+    document.getElementById('token-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') validateToken();
+    });
   }
 
-  function writeToken(db, token) {
+  async function validateToken() {
+    var token = document.getElementById('token-input').value.trim();
+    if (!token) return;
+
+    document.getElementById('token-btn').disabled = true;
+    document.getElementById('token-error').style.display = 'none';
+
+    // Test token against GitHub API
     try {
-      var tx = db.transaction('github', 'readwrite');
-      var store = tx.objectStore('github');
-      // Decap CMS stores user data using localForage; the key is 'github_user'
-      store.put({
-        token: token,
-        name: 'SPORTEX Admin',
-        email: 'admin@sportexproduction.com',
-        avatar_url: '',
-        html_url: 'https://github.com/ahrilove1'
-      }, 'github_user');
-      tx.oncomplete = function() {
-        db.close();
-        sessionStorage.removeItem(TOKEN_KEY);
-        overrideFetch(token); // belt-and-suspenders
-        startCMS();
-      };
-      tx.onerror = function() {
-        db.close();
-        overrideFetch(token);
-        sessionStorage.removeItem(TOKEN_KEY);
-        startCMS();
-      };
-    } catch(e) {
-      db.close();
-      overrideFetch(token);
-      sessionStorage.removeItem(TOKEN_KEY);
-      startCMS();
-    }
+      var resp = await fetch('https://api.github.com/user', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (resp.ok) {
+        var user = await resp.json();
+        // Also check repo access
+        var repoResp = await fetch('https://api.github.com/repos/ahrilove1/sportex', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (repoResp.ok) {
+          sessionStorage.setItem(TOKEN_KEY, token);
+          document.getElementById('token-ok').style.display = 'block';
+          injectToken(token);
+          setTimeout(startCMS, 400);
+          return;
+        }
+      }
+    } catch(e) {}
+
+    document.getElementById('token-btn').disabled = false;
+    document.getElementById('token-error').style.display = 'block';
+    document.getElementById('token-input').value = '';
+    document.getElementById('token-input').focus();
   }
 
-  function overrideFetch(token) {
+  // ── Inject token globally ──
+  function injectToken(token) {
     var _fetch = window.fetch;
     window.fetch = function(url, opts) {
-      if (typeof url === 'string' && (url.indexOf('api.github.com') !== -1)) {
+      if (typeof url === 'string' && url.indexOf('api.github.com') !== -1) {
         opts = opts || {};
         opts.headers = opts.headers || {};
         if (opts.headers instanceof Headers) {
@@ -199,10 +205,9 @@
   // ── Start CMS ──
   function startCMS() {
     document.getElementById('login-screen').style.display = 'none';
-    var cmsRoot = document.getElementById('cms-root');
-    cmsRoot.style.display = 'block';
+    document.getElementById('cms-root').style.display = 'block';
 
-    // Override window.open to use redirect instead of popup (fixes popup blocker)
+    // Override window.open → redirect for any OAuth attempts
     var _origOpen = window.open;
     window.open = function(url, target, features) {
       if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
@@ -212,6 +217,39 @@
       return _origOpen.call(window, url, target, features);
     };
 
+    // Load localForage first, inject token into Decap CMS's expected storage
+    var lfScript = document.createElement('script');
+    lfScript.src = 'https://unpkg.com/localforage@1.10.0/dist/localforage.min.js';
+    lfScript.onload = function() {
+      var token = sessionStorage.getItem(TOKEN_KEY);
+      if (token) {
+        // Use the same instance config that Decap CMS GitHub backend uses
+        localforage.createInstance({ name: 'decap-cms', storeName: 'github' })
+          .then(function(store) {
+            return store.setItem('github_user', {
+              token: token,
+              name: 'SPORTEX Admin',
+              email: 'admin@sportexproduction.com',
+              avatar_url: '',
+              html_url: 'https://github.com/ahrilove1',
+              login: 'ahrilove1'
+            });
+          })
+          .then(function() {
+            // Now load Decap CMS — it will find the stored user
+            loadDecapCMS();
+          })
+          .catch(function() {
+            loadDecapCMS(); // Fallback
+          });
+      } else {
+        loadDecapCMS();
+      }
+    };
+    document.body.appendChild(lfScript);
+  }
+
+  function loadDecapCMS() {
     var script = document.createElement('script');
     script.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
     script.onload = function() {
