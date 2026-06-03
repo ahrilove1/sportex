@@ -163,7 +163,7 @@ tr:hover{background:var(--off-white)}
 <div id="panel-products" class="panel on">
 <div class="card">
 <h2>Products</h2>
-<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+<div id="prod-toolbar" style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
 <input id="prod-search" type="text" placeholder="Search products…" style="flex:1;min-width:200px;padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none" oninput="onProdSearch()">
 <select id="prod-cat" onchange="onProdSearch()" style="padding:8px 14px;font-size:13px;border:1px solid var(--gray-light);border-radius:2px;outline:none"><option value="all">All</option><option value="men">Men</option><option value="women">Women</option></select>
 <button class="btn btn-primary" id="btn-add-product">+ Add Product</button>
@@ -276,12 +276,16 @@ function renderAll(){
 }
 
 // ═══ NAV ═══
-document.querySelectorAll('.nav-links a').forEach(function(a){a.onclick=function(e){e.preventDefault();document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});document.getElementById('panel-'+this.dataset.tab).classList.add('on')}});
+document.querySelectorAll('.nav-links a').forEach(function(a){a.onclick=function(e){e.preventDefault();document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});document.getElementById('panel-'+this.dataset.tab).classList.add('on');if(this.dataset.tab==='products')renderProducts()}});
 
 // ═══ PRODUCTS ═══
 var prodSearch='',prodCat='all',prodPage=1,prodPerPage=10;
 
 function renderProducts(){
+  // Show toolbar + list, hide edit
+  document.getElementById('prod-toolbar').style.display='flex';
+  document.getElementById('product-list').style.display='block';
+  document.getElementById('product-edit').style.display='none';
   // Read current values from static inputs
   var searchEl=document.getElementById('prod-search');
   var catEl=document.getElementById('prod-cat');
@@ -325,8 +329,6 @@ function renderProducts(){
   } else { h+=''; }
 
   document.getElementById('product-list').innerHTML=h;
-  document.getElementById('product-list').style.display='block';
-  document.getElementById('product-edit').style.display='none';
 }
 var _prodTimer=null;
 function onProdSearch(){clearTimeout(_prodTimer);_prodTimer=setTimeout(function(){prodPage=1;renderProducts()},300)}
@@ -335,6 +337,10 @@ function delProduct(idx){if(!confirm('Delete '+productsData[idx].name+'?'))retur
 document.getElementById('btn-add-product').onclick=function(){editProduct(-1)};
 
 function editProduct(idx){
+  // Hide toolbar + list, show edit
+  document.getElementById('prod-toolbar').style.display='none';
+  document.getElementById('product-list').style.display='none';
+  document.getElementById('product-edit').style.display='block';
   var p=idx>=0?productsData[idx]:{id:'',name:'',category:'men',tags:'',thumbnail:'',images:[],description:'',features:[],fabric:'',sizes:'',moq:'',care:''};
   if(idx>=0&&typeof p.images[0]==='object')p._imgs=p.images.map(function(x){return x.url||x.image||x}).join('\n');else p._imgs=(p.images||[]).join('\n');
   if(idx>=0&&typeof p.features[0]==='object')p._feats=p.features.map(function(x){return x.text||x.feature||x}).join('\n');else p._feats=(p.features||[]).join('\n');
@@ -349,7 +355,6 @@ function editProduct(idx){
   h+='<div class="form-group"><label>Care</label><input id="ep-care" value="'+esc(p.care)+'"></div>';
   h+='<div class="btn-group"><button class="btn btn-primary" id="btn-save-product" data-idx="'+idx+'">Save Product</button><button class="btn btn-secondary" onclick="renderProducts()">Cancel</button></div>';
   document.getElementById('product-edit').innerHTML=h;
-  document.getElementById('product-list').style.display='none';document.getElementById('product-edit').style.display='block';
   document.getElementById('btn-save-product').onclick=saveProduct;
 }
 function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
