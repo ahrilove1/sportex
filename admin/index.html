@@ -1,158 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPORTEX Admin</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: "Helvetica Neue", Arial, sans-serif; background: #1a1f2e; }
-    #login-screen {
-      display: flex; align-items: center; justify-content: center;
-      height: 100vh; flex-direction: column;
-    }
-    .login-box {
-      background: #fff; padding: 48px 40px; border-radius: 4px;
-      text-align: center; max-width: 400px; width: 90%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    .login-box .logo { font-size: 28px; font-weight: 700; letter-spacing: 4px; color: #1a1f2e; margin-bottom: 8px; }
-    .login-box .sub { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
-    .login-box input {
-      width: 100%; padding: 12px 16px; font-size: 14px;
-      border: 1px solid #e5e7eb; border-radius: 2px; outline: none;
-      text-align: center; margin-bottom: 12px;
-    }
-    .login-box input:focus { border-color: #d4944e; }
-    .login-box button {
-      width: 100%; padding: 12px; background: #1a1f2e; color: #fff; border: none;
-      font-size: 14px; font-weight: 600; letter-spacing: 2px; cursor: pointer; border-radius: 2px;
-    }
-    .login-box button:hover { background: #2a3348; }
-    .login-box .error { color: #dc2626; font-size: 13px; margin-top: 8px; display: none; }
-    .login-box .msg { font-size: 12px; color: #6b7280; margin-top: 8px; }
-    .login-box .msg a { color: #d4944e; }
-    .login-box .green { color: #16a34a; display: none; }
-    #cms-root { height: 100vh; display: none; }
-    #step-token { display: none; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPORTEX Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f4f1;color:#1f2937}
+/* Login */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1f2e}
+.login-box{background:#fff;padding:48px 40px;border-radius:4px;text-align:center;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-box .logo{font-size:28px;font-weight:700;letter-spacing:4px;color:#1a1f2e;margin-bottom:4px}
+.login-box .sub{font-size:13px;color:#6b7280;margin-bottom:24px}
+.login-box input{width:100%;padding:12px 16px;font-size:14px;border:1px solid #e5e7eb;border-radius:2px;outline:none;text-align:center;margin-bottom:12px}
+.login-box input:focus{border-color:#d4944e}
+.login-box button{width:100%;padding:12px;background:#1a1f2e;color:#fff;border:none;font-size:14px;font-weight:600;letter-spacing:2px;cursor:pointer;border-radius:2px}
+.login-box button:hover{background:#2a3348}
+.login-box .error{color:#dc2626;font-size:13px;margin-top:8px;display:none}
+.login-box .green{color:#16a34a;display:none}
+.login-box .msg{font-size:12px;color:#6b7280;margin-top:8px}
+.login-box .msg a{color:#d4944e}
+#step-token{display:none}
+
+/* Editor */
+#editor{display:none}
+.toolbar{background:#1a1f2e;color:#fff;padding:0 24px;display:flex;align-items:center;height:56px;justify-content:space-between}
+.toolbar h1{font-size:18px;letter-spacing:3px}
+.toolbar .actions{display:flex;gap:12px;align-items:center}
+.toolbar .actions .status{font-size:12px;color:#9ca3af}
+.tabs{display:flex;gap:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px}
+.tab{padding:14px 24px;font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;border-bottom:2px solid transparent;color:#6b7280;transition:all .2s}
+.tab:hover{color:#1f2937}
+.tab.active{color:#d4944e;border-bottom-color:#d4944e}
+.content{max-width:1200px;margin:0 auto;padding:24px}
+.panel{display:none;background:#fff;border-radius:4px;padding:24px}
+.panel.active{display:block}
+.panel h2{font-size:20px;margin-bottom:20px;color:#1a1f2e}
+
+/* Product list */
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;font-size:13px;border-bottom:1px solid #f5f4f1}
+th{color:#6b7280;font-weight:600;letter-spacing:1px;font-size:11px;text-transform:uppercase}
+td .btn-sm{padding:4px 12px;font-size:11px;border:1px solid #d1d5db;background:#fff;cursor:pointer;border-radius:2px;margin-right:4px}
+td .btn-sm:hover{background:#f5f4f1}
+td .btn-sm.danger{color:#dc2626;border-color:#dc2626}
+td .btn-sm.danger:hover{background:#fef2f2}
+
+/* Form */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6b7280;margin-bottom:4px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;font-size:14px;border:1px solid #e5e7eb;border-radius:2px;outline:none;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#d4944e}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btn{padding:10px 24px;font-size:13px;font-weight:600;letter-spacing:1px;border:none;cursor:pointer;border-radius:2px}
+.btn-primary{background:#1a1f2e;color:#fff}
+.btn-primary:hover{background:#2a3348}
+.btn-secondary{background:#e5e7eb;color:#1f2937}
+.btn-secondary:hover{background:#d1d5db}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+
+/* Image upload */
+.upload-zone{border:2px dashed #d1d5db;border-radius:4px;padding:40px;text-align:center;cursor:pointer;margin-bottom:16px}
+.upload-zone:hover{border-color:#d4944e}
+.upload-zone p{color:#6b7280;font-size:14px}
+.img-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.img-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px}
+.img-grid .img-item{position:relative}
+.img-grid .img-item .img-del{position:absolute;top:4px;right:4px;background:rgba(220,38,38,.9);color:#fff;border:none;width:22px;height:22px;border-radius:11px;cursor:pointer;font-size:12px;line-height:22px;text-align:center}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:4px;color:#fff;font-size:14px;font-weight:600;letter-spacing:.5px;display:none;z-index:999}
+.toast.success{background:#16a34a}
+.toast.error{background:#dc2626}
+</style>
 </head>
 <body>
+
+<!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box">
-    <div id="step-pw">
-      <div class="logo">SPORTEX</div>
-      <div class="sub">Content Manager</div>
-      <input type="password" id="pw-input" placeholder="Enter password" autofocus>
-      <button id="pw-btn">UNLOCK</button>
-      <div class="error" id="pw-error">Incorrect password</div>
-    </div>
-    <div id="step-token">
-      <div class="logo">SPORTEX</div>
-      <div class="sub">GitHub Access Token</div>
-      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus>
-      <button id="token-btn">SAVE & ENTER</button>
-      <div class="error" id="token-error">Invalid token — needs <b>repo</b> scope</div>
-      <div class="green" id="token-ok">Token OK! Loading editor…</div>
-      <div class="msg">
-        <a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">
-          Create a token →</a> (check <b>repo</b>, generate, paste)
-      </div>
-    </div>
-  </div>
+<div class="login-box">
+<div id="step-pw">
+<div class="logo">SPORTEX</div>
+<div class="sub">Content Manager</div>
+<input type="password" id="pw-input" placeholder="Enter password" autofocus>
+<button id="pw-btn">UNLOCK</button>
+<div class="error" id="pw-error">Incorrect password</div>
 </div>
-<div id="cms-root"></div>
+<div id="step-token">
+<div class="logo">SPORTEX</div>
+<div class="sub">GitHub Access Token</div>
+<input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus>
+<button id="token-btn">SAVE & ENTER</button>
+<div class="error" id="token-error">Invalid token — needs repo scope</div>
+<div class="green" id="token-ok">Token OK! Loading…</div>
+<div class="msg"><a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">Create a token →</a></div>
+</div>
+</div>
+</div>
+
+<!-- EDITOR -->
+<div id="editor">
+<div class="toolbar">
+<h1>SPORTEX CMS</h1>
+<div class="actions">
+<span class="status" id="save-status"></span>
+<button class="btn btn-secondary" onclick="location.reload()">Exit</button>
+</div>
+</div>
+<div class="tabs">
+<div class="tab active" data-tab="products">Products</div>
+<div class="tab" data-tab="company">Company</div>
+<div class="tab" data-tab="images">Images</div>
+</div>
+<div class="content">
+<div id="panel-products" class="panel active">
+<h2>Products</h2>
+<button class="btn btn-primary" id="btn-add-product" style="margin-bottom:16px">+ Add Product</button>
+<div id="product-list"></div>
+<div id="product-edit" style="display:none"></div>
+</div>
+<div id="panel-company" class="panel">
+<h2>Company Information</h2>
+<form id="company-form"></form>
+<div style="margin-top:16px"><button class="btn btn-primary" id="btn-save-company">Save Company Info</button></div>
+</div>
+<div id="panel-images" class="panel">
+<h2>Image Upload</h2>
+<div class="upload-zone" id="upload-zone">
+<p>Click or drag images here to upload<br><small>Uploaded to /images/uploads/</small></p>
+<input type="file" id="file-input" multiple accept="image/*" style="display:none">
+</div>
+<div class="img-grid" id="img-grid"></div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-(function(){
+// ═══ CONFIG ═══
 var PASS_HASH = '61e30afec88a4c8327301d32b87b23d68d9a5dd780b060b776532d4026547734';
+var REPO = 'ahrilove1/sportex';
 var LS_KEY = 'spex_gh_token';
 var PW_KEY = 'spex_pw';
 var token = localStorage.getItem(LS_KEY);
+var PRODUCTS_FILE = 'data/products.json';
+var COMPANY_FILE = 'data/company.json';
+var IMG_DIR = 'images/uploads/';
 
-// ── Already authenticated? Skip to CMS ──
-if (token && localStorage.getItem(PW_KEY) === '1') {
-  injectFetch(token);
-  startCMS();
-}
+// ═══ LOGIN ═══
+if (token && localStorage.getItem(PW_KEY)==='1') { showEditor(); }
 
-// ── Step 1: Password ──
 document.getElementById('pw-btn').onclick = checkPw;
-document.getElementById('pw-input').onkeydown = function(e) { if(e.key==='Enter') checkPw(); };
+document.getElementById('pw-input').onkeydown = function(e){ if(e.key==='Enter') checkPw(); };
+async function sha256(t){ var d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)); return Array.from(new Uint8Array(d)).map(function(b){return b.toString(16).padStart(2,'0')}).join(''); }
+async function checkPw(){ var v=document.getElementById('pw-input').value; if(!v) return; if(await sha256(v)===PASS_HASH){ localStorage.setItem(PW_KEY,'1'); document.getElementById('pw-error').style.display='none'; document.getElementById('step-pw').style.display='none'; document.getElementById('step-token').style.display='block'; document.getElementById('token-input').focus(); } else { document.getElementById('pw-error').style.display='block'; document.getElementById('pw-input').value=''; } }
 
-async function sha256(t) {
-  var d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
-  return Array.from(new Uint8Array(d)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-}
-
-async function checkPw() {
-  var v = document.getElementById('pw-input').value;
-  if (!v) return;
-  if (await sha256(v) === PASS_HASH) {
-    localStorage.setItem(PW_KEY, '1');
-    document.getElementById('pw-error').style.display = 'none';
-    document.getElementById('step-pw').style.display = 'none';
-    document.getElementById('step-token').style.display = 'block';
-    document.getElementById('token-input').focus();
-  } else {
-    document.getElementById('pw-error').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-  }
-}
-
-// ── Step 2: Token ──
 document.getElementById('token-btn').onclick = checkToken;
-document.getElementById('token-input').onkeydown = function(e) { if(e.key==='Enter') checkToken(); };
+document.getElementById('token-input').onkeydown = function(e){ if(e.key==='Enter') checkToken(); };
+async function checkToken(){ var t=document.getElementById('token-input').value.trim(); if(!t) return; document.getElementById('token-btn').disabled=true; document.getElementById('token-error').style.display='none'; try{ var r=await fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+t}}); if(r.ok){ localStorage.setItem(LS_KEY,t); token=t; document.getElementById('token-ok').style.display='block'; setTimeout(showEditor,400); return; } }catch(e){} document.getElementById('token-btn').disabled=false; document.getElementById('token-error').style.display='block'; }
 
-async function checkToken() {
-  var t = document.getElementById('token-input').value.trim();
-  if (!t) return;
-  document.getElementById('token-btn').disabled = true;
-  document.getElementById('token-error').style.display = 'none';
-  try {
-    var r = await fetch('https://api.github.com/repos/ahrilove1/sportex', {
-      headers: { 'Authorization': 'Bearer ' + t }
+// ═══ GITHUB API ═══
+function ghAPI(path, opts){ opts=opts||{}; opts.headers=opts.headers||{}; opts.headers['Authorization']='Bearer '+token; opts.headers['Accept']='application/vnd.github.v3+json'; return fetch('https://api.github.com'+path,opts); }
+async function ghRead(filePath){ var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath); if(!r.ok) throw new Error('Read error: '+r.status); var d=await r.json(); return {sha:d.sha, content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}; }
+async function ghWrite(filePath, content, msg, sha){ var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))}; if(sha) body.sha=sha; var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)}); if(!r.ok) throw new Error('Write error: '+r.status+' '+await r.text()); return r.json(); }
+async function ghUpload(filePath, base64data, msg){ var body={message:msg,content:base64data}; var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)}); if(!r.ok) throw new Error('Upload error: '+r.status+' '+await r.text()); return r.json(); }
+
+// ═══ TOAST ═══
+function toast(msg,type){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+(type||'success'); t.style.display='block'; setTimeout(function(){t.style.display='none'},2500); }
+
+// ═══ EDITOR ═══
+var productsData = null;
+var companyData = null;
+var productsSha = null;
+var companySha = null;
+
+async function showEditor(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('editor').style.display='block';
+  document.getElementById('save-status').textContent='Loading data...';
+  try{
+    var pd=await ghRead(PRODUCTS_FILE);
+    productsData=pd.content.products_list; productsSha=pd.sha;
+    var cd=await ghRead(COMPANY_FILE);
+    companyData=cd.content; companySha=cd.sha;
+    document.getElementById('save-status').textContent='Ready';
+    renderProducts();
+    renderCompanyForm();
+    loadImages();
+  }catch(e){ document.getElementById('save-status').textContent='Error: '+e.message; toast('Failed to load data: '+e.message,'error'); }
+}
+
+// ═══ TABS ═══
+document.querySelectorAll('.tab').forEach(function(t){ t.onclick=function(){ document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')}); this.classList.add('active'); document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active')}); document.getElementById('panel-'+this.dataset.tab).classList.add('active'); }; });
+
+// ═══ PRODUCTS ═══
+function renderProducts(){
+  var html='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th></th></tr></thead><tbody>';
+  productsData.forEach(function(p,i){
+    html+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td>'+p.tags+'</td><td><button class="btn-sm" onclick="editProduct('+i+')">Edit</button><button class="btn-sm danger" onclick="deleteProduct('+i+')">Del</button></td></tr>';
+  });
+  html+='</tbody></table>';
+  document.getElementById('product-list').innerHTML=html;
+  document.getElementById('product-list').style.display='block';
+  document.getElementById('product-edit').style.display='none';
+}
+
+document.getElementById('btn-add-product').onclick=function(){ editProduct(-1); };
+
+function editProduct(idx){
+  var p=idx>=0?productsData[idx]:{id:'',name:'',category:'men',tags:'',thumbnail:'',images:[],description:'',features:[],fabric:'',sizes:'',moq:'',care:''};
+  if(idx>=0&&typeof p.images[0]==='object') p._images=p.images.map(function(x){return x.url||x.image||x}).join('\n');
+  else p._images=(p.images||[]).join('\n');
+  if(idx>=0&&typeof p.features[0]==='object') p._features=p.features.map(function(x){return x.text||x.feature||x}).join('\n');
+  else p._features=(p.features||[]).join('\n');
+  var html='<h3>'+(idx>=0?'Edit':'Add')+' Product</h3>';
+  html+='<div class="form-row"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+p.id+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+p.name+'"></div></div>';
+  html+='<div class="form-row"><div class="form-group"><label>Category</label><select id="ep-category"><option value="men" '+(p.category==='men'?'selected':'')+'>Men</option><option value="women" '+(p.category==='women'?'selected':'')+'>Women</option></select></div><div class="form-group"><label>Tags</label><input id="ep-tags" value="'+p.tags+'"></div></div>';
+  html+='<div class="form-group"><label>Thumbnail URL</label><input id="ep-thumbnail" value="'+p.thumbnail+'"></div>';
+  html+='<div class="form-group"><label>Gallery Images (one URL per line)</label><textarea id="ep-images" rows="3">'+p._images+'</textarea></div>';
+  html+='<div class="form-group"><label>Description</label><textarea id="ep-desc">'+p.description+'</textarea></div>';
+  html+='<div class="form-group"><label>Features (one per line)</label><textarea id="ep-features" rows="4">'+p._features+'</textarea></div>';
+  html+='<div class="form-row"><div class="form-group"><label>Fabric</label><input id="ep-fabric" value="'+p.fabric+'"></div><div class="form-group"><label>Sizes</label><input id="ep-sizes" value="'+p.sizes+'"></div></div>';
+  html+='<div class="form-row"><div class="form-group"><label>MOQ</label><input id="ep-moq" value="'+p.moq+'"></div><div class="form-group"><label>Care</label><input id="ep-care" value="'+p.care+'"></div></div>';
+  html+='<div style="margin-top:16px"><button class="btn btn-primary" id="btn-save-product" data-idx="'+idx+'">Save Product</button> <button class="btn btn-secondary" onclick="renderProducts()">Cancel</button></div>';
+  document.getElementById('product-edit').innerHTML=html;
+  document.getElementById('product-list').style.display='none';
+  document.getElementById('product-edit').style.display='block';
+  document.getElementById('btn-save-product').onclick=saveProduct;
+}
+
+function deleteProduct(idx){
+  if(!confirm('Delete '+productsData[idx].name+'?')) return;
+  productsData.splice(idx,1);
+  saveProducts();
+}
+
+async function saveProduct(){
+  var idx=parseInt(this.dataset.idx);
+  var p={
+    id: document.getElementById('ep-id').value,
+    name: document.getElementById('ep-name').value,
+    category: document.getElementById('ep-category').value,
+    tags: document.getElementById('ep-tags').value,
+    thumbnail: document.getElementById('ep-thumbnail').value,
+    images: document.getElementById('ep-images').value.split('\n').filter(function(x){return x.trim()}).map(function(u){return {url:u.trim()}}),
+    description: document.getElementById('ep-desc').value,
+    features: document.getElementById('ep-features').value.split('\n').filter(function(x){return x.trim()}).map(function(t){return {text:t.trim()}}),
+    fabric: document.getElementById('ep-fabric').value,
+    sizes: document.getElementById('ep-sizes').value,
+    moq: document.getElementById('ep-moq').value,
+    care: document.getElementById('ep-care').value
+  };
+  if(idx>=0) productsData[idx]=p; else productsData.push(p);
+  saveProducts();
+}
+
+async function saveProducts(){
+  document.getElementById('save-status').textContent='Saving products...';
+  try{
+    var r=await ghWrite(PRODUCTS_FILE,{products_list:productsData},'content: update products',productsSha);
+    productsSha=r.content.sha;
+    document.getElementById('save-status').textContent='Saved!';
+    toast('Products saved ✅');
+    renderProducts();
+  }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
+}
+
+// ═══ COMPANY ═══
+function renderCompanyForm(){
+  var fields=['name','fullName','address','addressZh','email','phone','tagline','taglineZh'];
+  var html='';
+  fields.forEach(function(f){ html+='<div class="form-group"><label>'+f+'</label><input id="ec-'+f+'" value="'+(companyData[f]||'')+'"></div>'; });
+  html+='<div class="form-group"><label>Description (EN)</label><textarea id="ec-description" rows="4">'+(companyData.description||'')+'</textarea></div>';
+  html+='<div class="form-group"><label>Description (ZH)</label><textarea id="ec-descriptionZh" rows="4">'+(companyData.descriptionZh||'')+'</textarea></div>';
+  html+='<div class="form-group"><label>Mission (EN)</label><textarea id="ec-mission" rows="3">'+(companyData.mission||'')+'</textarea></div>';
+  html+='<div class="form-group"><label>Mission (ZH)</label><textarea id="ec-missionZh" rows="3">'+(companyData.missionZh||'')+'</textarea></div>';
+  document.getElementById('company-form').innerHTML=html;
+}
+
+document.getElementById('btn-save-company').onclick=async function(){
+  document.getElementById('save-status').textContent='Saving company...';
+  var fields=['name','fullName','address','addressZh','email','phone','tagline','taglineZh','description','descriptionZh','mission','missionZh'];
+  var data={};
+  fields.forEach(function(f){ data[f]=document.getElementById('ec-'+f).value; });
+  try{
+    var r=await ghWrite(COMPANY_FILE,data,'content: update company info',companySha);
+    companySha=r.content.sha;
+    companyData=data;
+    document.getElementById('save-status').textContent='Saved!';
+    toast('Company info saved ✅');
+  }catch(e){ document.getElementById('save-status').textContent='Error'; toast('Save failed: '+e.message,'error'); }
+};
+
+// ═══ IMAGES ═══
+document.getElementById('upload-zone').onclick=function(){ document.getElementById('file-input').click(); };
+document.getElementById('upload-zone').ondragover=function(e){ e.preventDefault(); this.style.borderColor='#d4944e'; };
+document.getElementById('upload-zone').ondragleave=function(){ this.style.borderColor='#d1d5db'; };
+document.getElementById('upload-zone').ondrop=function(e){ e.preventDefault(); this.style.borderColor='#d1d5db'; uploadFiles(e.dataTransfer.files); };
+document.getElementById('file-input').onchange=function(){ uploadFiles(this.files); };
+
+async function uploadFiles(files){
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    document.getElementById('save-status').textContent='Uploading '+f.name+'...';
+    try{
+      var base64=await new Promise(function(ok){ var r=new FileReader(); r.onload=function(){ ok(r.result.split(',')[1]); }; r.readAsDataURL(f); });
+      var ts=new Date().getTime();
+      await ghUpload(IMG_DIR+ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),base64,'content: upload '+f.name);
+      toast('Uploaded: '+f.name+' ✅');
+    }catch(e){ toast('Upload failed: '+e.message,'error'); }
+  }
+  document.getElementById('save-status').textContent='Ready';
+  loadImages();
+}
+
+async function loadImages(){
+  try{
+    var r=await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR);
+    if(!r.ok){ document.getElementById('img-grid').innerHTML='<p style="color:#6b7280">No images yet</p>'; return; }
+    var files=await r.json();
+    var html='';
+    files.forEach(function(f){
+      html+='<div class="img-item"><img src="'+f.download_url+'" alt="'+f.name+'"><button class="img-del" onclick="deleteImage(\''+f.name+'\',\''+f.sha+'\')">×</button><span style="font-size:10px;color:#6b7280">'+f.download_url+'</span></div>';
     });
-    if (r.ok) {
-      localStorage.setItem(LS_KEY, t);
-      injectFetch(t);
-      document.getElementById('token-ok').style.display = 'block';
-      startCMS();
-      return;
-    }
-  } catch(e) {}
-  document.getElementById('token-btn').disabled = false;
-  document.getElementById('token-error').style.display = 'block';
+    document.getElementById('img-grid').innerHTML=html;
+  }catch(e){}
 }
 
-function injectFetch(t) {
-  var _f = window.fetch;
-  window.fetch = function(u, o) {
-    if (typeof u === 'string' && u.indexOf('api.github.com') !== -1) {
-      o = o || {}; o.headers = o.headers || {};
-      if (o.headers instanceof Headers) o.headers.set('Authorization', 'Bearer ' + t);
-      else o.headers['Authorization'] = 'Bearer ' + t;
-    }
-    return _f.call(window, u, o);
-  };
+async function deleteImage(name,sha){
+  if(!confirm('Delete '+name+'?')) return;
+  try{
+    await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+name,{method:'DELETE',body:JSON.stringify({message:'content: delete '+name,sha:sha})});
+    toast('Deleted: '+name+' ✅');
+    loadImages();
+  }catch(e){ toast('Delete failed: '+e.message,'error'); }
 }
-
-function startCMS() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('cms-root').style.display = 'block';
-
-  // Let Decap CMS use its native OAuth flow (real popup)
-  // No window.open override — the popup should work now
-  // Our injectFetch ensures all GitHub API calls have the token anyway
-
-  var s = document.createElement('script');
-  s.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
-  s.onload = function() {
-    try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
-  };
-  document.body.appendChild(s);
-}
-})();
 </script>
 </body>
 </html>
