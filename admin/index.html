@@ -164,15 +164,17 @@ function startCMS() {
         // Decap CMS listens on window for 'message' events from popup
         // Use native postMessage (self-targeted) to ensure it reaches listeners
         setTimeout(function(){
-          console.log('[SPORTEX] dispatching auth message with token');
-          window.postMessage({ token: tok, provider: 'github' }, '*');
+          // The format Decap CMS expects: "authorization:github:success:..."
+          var authData = 'authorization:github:success:' + JSON.stringify({token: tok, provider: 'github'});
+          console.log('[SPORTEX] dispatching auth:', authData.substring(0, 60) + '...');
+          window.postMessage(authData, '*');
           // Also try dispatchEvent as fallback
           try {
             window.dispatchEvent(new MessageEvent('message', {
-              data: { token: tok, provider: 'github' },
+              data: authData,
               origin: location.origin
             }));
-          } catch(e) { console.log('[SPORTEX] dispatchEvent fallback error:', e); }
+          } catch(e) { console.log('[SPORTEX] dispatchEvent error:', e); }
         }, 500);
         // Return a fake window object with all methods Decap CMS might call
         return { close: function(){ console.log('[SPORTEX] fakeWindow.close'); }, focus: function(){ console.log('[SPORTEX] fakeWindow.focus'); }, closed: false, location: { href: '' } };
