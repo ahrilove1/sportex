@@ -139,12 +139,14 @@ function injectFetch(t) {
 }
 
 function startCMS() {
+  console.log('[SPORTEX] startCMS called');
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('cms-root').style.display = 'block';
 
-  // Minimal window.open override: intercept popup, complete handshake, then auth
+  // Intercept ALL window.open calls globally
   var _origOpen = window.open;
   window.open = function(url, target, features) {
+    console.log('[SPORTEX] window.open called, url:', (typeof url === 'string' ? url.substring(0,80) : typeof url));
     if (typeof url === 'string' && url.indexOf('/api/auth') !== -1) {
       var tok = localStorage.getItem(LS_KEY);
       var fakeWin = {
@@ -174,11 +176,14 @@ function startCMS() {
   };
 
   // Load Decap CMS
+  console.log('[SPORTEX] loading Decap CMS...');
   var s = document.createElement('script');
   s.src = 'https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js';
   s.onload = function() {
+    console.log('[SPORTEX] Decap CMS loaded');
     try { CMS.registerPreviewStyle('/admin/preview.css'); } catch(e) {}
   };
+  s.onerror = function() { console.log('[SPORTEX] Decap CMS load FAILED'); };
   document.body.appendChild(s);
 }
 })();
