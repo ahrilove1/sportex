@@ -392,11 +392,12 @@ function resizeImage(file){return new Promise(function(ok){var u=URL.createObjec
 async function uploadFiles(files){
   if(!files.length)return;
   document.getElementById('save-status').textContent='Uploading…';
-  // Upload all in PARALLEL for speed
-  var total=files.length;document.getElementById('save-status').textContent='Uploading '+total+' image(s) in parallel…';
-  var tasks=[];
-  for(var i=0;i<files.length;i++){(function(f){
-    tasks.push((async function(){
+  // Upload in batches of 3 for stable parallel uploads
+  var total=files.length,okResults=[],BATCH=3;
+  for(var bi=0;bi<total;bi+=BATCH){
+    var batch=[];for(var j=bi;j<Math.min(bi+BATCH,total);j++)batch.push(files[j]);
+    document.getElementById('save-status').textContent='Uploading batch '+(Math.floor(bi/BATCH)+1)+' ('+(bi+1)+'-'+Math.min(bi+BATCH,total)+' of '+total+')…';
+    var tasks=batch.map(function(f){return (async function(){
       try{
         var optimized=await resizeImage(f);
         var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(optimized)});
@@ -405,12 +406,11 @@ async function uploadFiles(files){
         var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
         return {name:f.name,url:url,path:path,sha:result.content.sha};
       }catch(e){toast('Failed: '+f.name+' - '+e.message,'err');return null}
-    })());
-  })(files[i]);}
-  var allResults=await Promise.all(tasks);
-  var okResults=allResults.filter(function(r){return r!==null});
-  var failed=allResults.length-okResults.length;
-  if(failed>0)toast(failed+'/'+allResults.length+' failed — retry those','err');
+    })();});
+    var r=(await Promise.all(tasks)).filter(function(x){return x!==null});okResults=okResults.concat(r);
+  }
+  var failed=total-okResults.length;
+  if(failed>0)toast(failed+'/'+total+' failed — retry','err');
   okResults.forEach(function(r){imagesData.push({name:r.name,url:r.url,path:r.path,sha:r.sha,date:new Date().toISOString()})});
   if(okResults.length>0){
     document.getElementById('save-status').textContent='Saving image database…';
