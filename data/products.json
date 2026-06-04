@@ -592,6 +592,34 @@
       "sizes": "XS / S / M / L / XL",
       "moq": "500 pcs per color",
       "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+    },
+    {
+      "id": "pants-1",
+      "name": "pants-1",
+      "category": "men",
+      "tags": "pants",
+      "thumbnail": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561509184_pants1_front.jpg",
+      "images": [
+        {
+          "url": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561522760_pants1_back.jpg"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561509184_pants1_front.jpg"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561457293_pants1_side.jpg"
+        }
+      ],
+      "description": "pants",
+      "features": [
+        {
+          "text": "pants"
+        }
+      ],
+      "fabric": "1",
+      "sizes": "1",
+      "moq": "1",
+      "care": "1"
     }
   ]
 }
