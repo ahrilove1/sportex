@@ -461,7 +461,7 @@ document.getElementById('upload-zone').ondrop=function(e){e.preventDefault();thi
 document.getElementById('file-input').onchange=function(){uploadFiles(this.files);this.value=''};
 
 // ═══ IMAGE RESIZE ═══
-function resizeImage(file){return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxW=1200;if(w<=maxW){URL.revokeObjectURL(u);ok(file)}else{var ratio=maxW/w;var c=document.createElement('canvas');c.width=maxW;c.height=h*ratio;var ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){URL.revokeObjectURL(u);ok(new File([b],file.name,{type:'image/jpeg'}))},'image/jpeg',.85)}};img.src=u})}
+function resizeImage(file){return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxW=1200;if(w<=maxW){URL.revokeObjectURL(u);ok(file)}else{var ratio=maxW/w;var c=document.createElement('canvas');c.width=maxW;c.height=Math.round(h*ratio);var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){URL.revokeObjectURL(u);if(b.size<file.size||w>maxW){ok(new File([b],file.name.replace(/\.[^.]+$/,'.jpg'),{type:'image/jpeg'}))}else{ok(file)}},'image/jpeg',.82)}};img.src=u})}
 
 async function uploadFiles(files){
   if(!files.length)return;
