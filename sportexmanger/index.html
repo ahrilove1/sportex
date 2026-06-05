@@ -461,51 +461,48 @@ document.getElementById('upload-zone').ondrop=function(e){e.preventDefault();thi
 document.getElementById('file-input').onchange=function(){uploadFiles(this.files);this.value=''};
 
 // ═══ IMAGE RESIZE ═══
-function resizeImage(file){return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxW=1200;if(w<=maxW){URL.revokeObjectURL(u);ok(file)}else{var ratio=maxW/w;var c=document.createElement('canvas');c.width=maxW;c.height=Math.round(h*ratio);var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){URL.revokeObjectURL(u);if(b.size<file.size||w>maxW){ok(new File([b],file.name.replace(/\.[^.]+$/,'.jpg'),{type:'image/jpeg'}))}else{ok(file)}},'image/jpeg',.82)}};img.src=u})}
+function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;if(w<=maxW){URL.revokeObjectURL(u);ok(file)}else{var ratio=maxW/w;var c=document.createElement('canvas');c.width=maxW;c.height=Math.round(h*ratio);var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){URL.revokeObjectURL(u);var ext='.jpg';if(b.size<file.size||w>maxW){ok(new File([b],file.name.replace(/\.[^.]+$/,'')+ext,{type:'image/jpeg'}))}else{ok(file)}},'image/jpeg',quality)}};img.src=u})}
+
+async function uploadWithThumbs(fileList){
+  var items=[];
+  for(var i=0;i<fileList.length;i++){
+    var f=fileList[i];
+    var full=await resizeImage(f,1200,.82);
+    var thumb=await resizeImage(f,400,.75);
+    var ts=Date.now()+Math.floor(Math.random()*99999);
+    var base=f.name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
+    var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
+    var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
+    items.push({name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullBase64,thumbBase64:thumbBase64});
+  }
+  return items;
+}
 
 async function uploadFiles(files){
   if(!files.length)return;
   var total=files.length;
-  document.getElementById('save-status').textContent='Preparing '+total+' image(s)…';
-  // Step 1: Read all files + encode in parallel
-  var prepTasks=[];
-  for(var i=0;i<total;i++){(function(f){
-    prepTasks.push((async function(){
-      var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(f)});
-      var ts=Date.now()+Math.floor(Math.random()*99999),safeName=ts+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-      return {name:f.name,path:IMG_DIR+safeName,base64:base64};
-    })());
-  })(files[i]);}
-  var prepared=await Promise.all(prepTasks);
-  // Step 2: Upload all in ONE commit via Git Data API
-  document.getElementById('save-status').textContent='Uploading '+total+' images (single commit)…';
+  document.getElementById('save-status').textContent='Compressing & generating thumbnails…';
   try{
-    // Get current branch HEAD
+    var items=await uploadWithThumbs(files);
+    document.getElementById('save-status').textContent='Uploading '+(items.length*2)+' images…';
     var headRef=await ghAPI('/repos/'+REPO+'/git/ref/heads/main');
     var headData=await headRef.json();
     var baseCommitSha=headData.object.sha;
-    // Get base commit + tree
     var baseCommit=await ghAPI('/repos/'+REPO+'/git/commits/'+baseCommitSha);
     var baseCommitData=await baseCommit.json();
     var baseTreeSha=baseCommitData.tree.sha;
-    // Create blobs for each file
-    var blobTasks=prepared.map(function(p){return ghAPI('/repos/'+REPO+'/git/blobs',{method:'POST',body:JSON.stringify({content:p.base64,encoding:'base64'})}).then(function(r){return r.json()})});
+    var allBlobs=[],allPaths=[];
+    items.forEach(function(it){allBlobs.push(it.fullBase64,it.thumbBase64);allPaths.push(it.path,it.thumbPath)});
+    var blobTasks=allBlobs.map(function(b){return ghAPI('/repos/'+REPO+'/git/blobs',{method:'POST',body:JSON.stringify({content:b,encoding:'base64'})}).then(function(r){return r.json()})});
     var blobs=await Promise.all(blobTasks);
-    // Build new tree entries
-    var treeEntries=prepared.map(function(p,i){return {path:p.path, mode:'100644', type:'blob', sha:blobs[i].sha}});
-    // Create new tree
+    var treeEntries=allPaths.map(function(p,i){return {path:p,mode:'100644',type:'blob',sha:blobs[i].sha}});
     var newTreeResp=await ghAPI('/repos/'+REPO+'/git/trees',{method:'POST',body:JSON.stringify({base_tree:baseTreeSha,tree:treeEntries})});
     var newTree=await newTreeResp.json();
-    // Create commit
-    var msg='content: upload '+total+' image(s)';
-    var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:msg,tree:newTree.sha,parents:[baseCommitSha]})});
+    var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs',tree:newTree.sha,parents:[baseCommitSha]})});
     var newCommit=await commitResp.json();
-    // Update branch ref
     await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});
-    // Add to image library
-    prepared.forEach(function(p,i){imagesData.push({name:p.name,url:p.path,path:p.path,sha:blobs[i].sha,date:new Date().toISOString()})});
-    toast(total+' image(s) uploaded ✅');
-    // Save image database
+    items.forEach(function(it,i){imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:blobs[i*2].sha,date:new Date().toISOString()})});
+    toast(total+' image(s) uploaded with thumbnails ✅');
     document.getElementById('save-status').textContent='Saving database…';
     var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);imagesSha=r.content.sha;
     document.getElementById('save-status').textContent='Ready';renderImages();

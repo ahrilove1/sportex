@@ -11,6 +11,11 @@ function cdn(src) {
 }
 
 let allProducts = [];
+// Build thumb lookup from images.json
+window._imageThumbs = {};
+(async () => {
+  try { var ir = await fetch('data/images.json'); var idata = await ir.json(); (idata.images||[]).forEach(function(i){ if(i.thumb) window._imageThumbs[i.path] = i.thumb; }); } catch(e){}
+})();
 let productsLoaded = (async () => {
   try {
     const r = await fetch('data/products.json');
@@ -39,12 +44,13 @@ function getProductById(id) {
   return allProducts.find(p => p.id === id);
 }
 
-// Helper: img tag with responsive size hints + CDN URL + lazy + async decode
+// Helper: img tag with srcset (thumb + full) for optimized loading
 function imgTag(src, alt, cls, hint) {
   var url = cdn(src || PLACEHOLDER);
-  var sizes = hint === 'card' ? '(max-width:640px) 50vw, 300px' :
-              hint === 'gallery' ? '(max-width:640px) 100vw, 600px' :
-              hint === 'detail' ? '(max-width:640px) 100vw, 1200px' :
-              '(max-width:640px) 50vw, 300px';
-  return '<img src="' + url + '" alt="' + (alt || '') + '" sizes="' + sizes + '" decoding="async" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
+  var thumb = url;
+  // Look up thumb from image registry if available
+  if (window._imageThumbs && window._imageThumbs[url]) thumb = window._imageThumbs[url];
+  var sizes = hint === 'card' ? '(max-width:640px) 50vw, 300px' : hint === 'gallery' ? '(max-width:640px) 100vw, 600px' : hint === 'detail' ? '(max-width:640px) 100vw, 1200px' : '(max-width:640px) 50vw, 300px';
+  var srcset = thumb !== url ? thumb + ' 400w, ' + url + ' 1200w' : '';
+  return '<img src="' + url + '"' + (srcset ? ' srcset="' + srcset + '" sizes="' + sizes + '"' : ' sizes="' + sizes + '"') + ' alt="' + (alt || '') + '" decoding="async" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
 }
