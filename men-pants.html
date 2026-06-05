@@ -76,9 +76,9 @@ function isPants(p){var n=(p.name||'').toLowerCase();var t=(p.tags||'').toLowerC
 function isShirt(p){var n=(p.name||'').toLowerCase();var t=(p.tags||'').toLowerCase();return /shirt|polo|windbreaker|jacket|top/.test(n)||/shirt/.test(t)||/shirts/.test(t);}
 (async function(){
 try{
-var r=await fetch('data/products.json');var d=await r.json();var all=d.products_list||[];document.getElementById('productGrid').innerHTML='DEBUG: total='+all.length+' men='+all.filter(function(p){return p.category==='men';}).length;
+var r=await fetch('data/products.json');var d=await r.json();var all=d.products_list||[];
 var men=all.filter(function(p){return p.category==='men';});
-var products=men.filter(function(p){return isPants(p)||(!isPants(p)&&!isShirt(p));});
+var products=men.filter(function(p){return isPants(p);});
 try{var cr=await fetch('/api/data/company');if(cr.ok)COMPANY=await cr.json();}catch(e){}
 renderNav('men');renderFooter();
 var g=document.getElementById('productGrid');
