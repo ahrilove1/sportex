@@ -89,7 +89,7 @@ products.forEach(function(p){
  c.innerHTML='<div class="img-wrap">'+imgTag(p.thumbnail,p.name,'','card')+'</div><div class="info"><div class="p-name">'+p.name+'</div><div class="p-cat">'+p.tags+'</div><p style="font-size:13px;color:var(--gray);line-height:1.7;margin-top:8px">'+(p.description||'')+'</p></div>';
  g.appendChild(c);
 });
-}catch(e){document.getElementById('productGrid').innerHTML='<p style="text-align:center;color:var(--gray);padding:40px">Error: '+e.message+'</p>';}
+}catch(e){document.getElementById('productGrid').innerHTML='<p style="text-align:center;color:red;padding:40px">'+e.stack+'</p>';}
 })();
 </script>
 </body>
