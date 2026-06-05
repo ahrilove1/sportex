@@ -706,6 +706,34 @@
       "sizes": "SIZES",
       "moq": "MOQ",
       "care": "Care"
+    },
+    {
+      "id": "pants-5",
+      "name": "name",
+      "category": "men",
+      "tags": "TAGS",
+      "thumbnail": "/images/uploads/1780561476099_pants5_side.jpg",
+      "images": [
+        {
+          "url": "/images/uploads/1780561449953_pants5_back.jpg"
+        },
+        {
+          "url": "/images/uploads/1780561475635_pants5_front.jpg"
+        },
+        {
+          "url": "/images/uploads/1780561476099_pants5_side.jpg"
+        }
+      ],
+      "description": "Description",
+      "features": [
+        {
+          "text": "Features (one per line)"
+        }
+      ],
+      "fabric": "Fabric",
+      "sizes": "SIZES",
+      "moq": "MOQ",
+      "care": "Care"
     }
   ]
 }
