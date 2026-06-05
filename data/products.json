@@ -38,7 +38,9 @@
       "fabric": "55% Linen / 45% Polyester",
       "sizes": "S / M / L / XL / XXL",
       "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron",
+      "_imgs": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80\nhttps://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80\nhttps://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80",
+      "_feats": "Breathable linen-polyester blend\nRelaxed camp collar design\nSide-slit hem for ease of movement\nNatural wrinkle texture for casual look\nCoconut button detailing"
     },
     {
       "id": "m-03",
@@ -595,9 +597,9 @@
     },
     {
       "id": "pants-1",
-      "name": "pants-1",
+      "name": "name",
       "category": "men",
-      "tags": "pants",
+      "tags": "TAGS",
       "thumbnail": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561509184_pants1_front.jpg",
       "images": [
         {
@@ -610,16 +612,16 @@
           "url": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561457293_pants1_side.jpg"
         }
       ],
-      "description": "pants",
+      "description": "description",
       "features": [
         {
-          "text": "pants"
+          "text": "Features"
         }
       ],
-      "fabric": "1",
-      "sizes": "1",
-      "moq": "1",
-      "care": "1"
+      "fabric": "FABRIC",
+      "sizes": "SIZES",
+      "moq": "MOQ",
+      "care": "CARE"
     }
   ]
 }
