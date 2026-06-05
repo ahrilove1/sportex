@@ -650,6 +650,34 @@
       "sizes": "SIZES",
       "moq": "MOQ",
       "care": "Care"
+    },
+    {
+      "id": "pants-3",
+      "name": "name",
+      "category": "men",
+      "tags": "TAGS",
+      "thumbnail": "/images/uploads/1780561445507_pants3_front.jpg",
+      "images": [
+        {
+          "url": "/images/uploads/1780561484822_pants3_back.jpg"
+        },
+        {
+          "url": "/images/uploads/1780561445507_pants3_front.jpg"
+        },
+        {
+          "url": "/images/uploads/1780561440597_pants3_side.jpg"
+        }
+      ],
+      "description": "Description",
+      "features": [
+        {
+          "text": "Features (one per line)"
+        }
+      ],
+      "fabric": "Fabric",
+      "sizes": "SIZES",
+      "moq": "MOQ",
+      "care": "Care"
     }
   ]
 }
