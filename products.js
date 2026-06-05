@@ -39,7 +39,12 @@ function getProductById(id) {
   return allProducts.find(p => p.id === id);
 }
 
-// Helper: img tag with placeholder fallback
-function imgTag(src, alt, cls) {
-  return '<img src="' + cdn(src || PLACEHOLDER) + '" alt="' + (alt || '') + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
+// Helper: img tag with responsive size hints + CDN URL + lazy + async decode
+function imgTag(src, alt, cls, hint) {
+  var url = cdn(src || PLACEHOLDER);
+  var sizes = hint === 'card' ? '(max-width:640px) 50vw, 300px' :
+              hint === 'gallery' ? '(max-width:640px) 100vw, 600px' :
+              hint === 'detail' ? '(max-width:640px) 100vw, 1200px' :
+              '(max-width:640px) 50vw, 300px';
+  return '<img src="' + url + '" alt="' + (alt || '') + '" sizes="' + sizes + '" decoding="async" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
 }

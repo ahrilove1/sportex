@@ -229,7 +229,7 @@ if (!product) {
           <div class="gallery-thumbs">
             ${product.images.map((img, i) => `
               <button class="${i === 0 ? 'active' : ''}" data-img="${img}">
-                ${imgTag(img, product.name + ' view ' + (i + 1))}
+                ${imgTag(img, product.name + ' view ' + (i + 1), '', 'gallery')}
               </button>
             `).join('')}
           </div>

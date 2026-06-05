@@ -274,7 +274,7 @@ featuredIds.forEach(id => {
   card.href = 'product.html?id=' + p.id;
   card.innerHTML = `
     <div class="img-wrap">
-      ${imgTag(p.thumbnail, p.name)}
+      ${imgTag(p.thumbnail, p.name, '', 'card')}
     </div>
     <div class="info">
       <div class="p-name">${p.name}</div>
