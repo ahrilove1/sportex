@@ -4,7 +4,6 @@
       "id": "m-02",
       "name": "Linen Resort Shirt",
       "category": "men",
-      "tags": "Relaxed Fit · Breathable",
       "thumbnail": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
       "images": [
         {
@@ -38,7 +37,6 @@
       "fabric": "55% Linen / 45% Polyester",
       "sizes": "S / M / L / XL / XXL",
       "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron",
       "_imgs": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80\nhttps://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80\nhttps://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80",
       "_feats": "Breathable linen-polyester blend\nRelaxed camp collar design\nSide-slit hem for ease of movement\nNatural wrinkle texture for casual look\nCoconut button detailing"
     },
@@ -46,7 +44,6 @@
       "id": "m-03",
       "name": "UV Protection Polo",
       "category": "men",
-      "tags": "UPF 50+ · Antibacterial",
       "thumbnail": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
       "images": [
         {
@@ -79,14 +76,12 @@
       ],
       "fabric": "100% Polyester Piqué, 120 g/m²",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "m-04",
       "name": "Lightweight Cargo Pants",
       "category": "men",
-      "tags": "Breathable · Quick-Dry",
       "thumbnail": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
       "images": [
         {
@@ -119,14 +114,12 @@
       ],
       "fabric": "94% Nylon / 6% Spandex",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "m-05",
       "name": "Adventure Shorts",
       "category": "men",
-      "tags": "Quick-Dry · Lightweight",
       "thumbnail": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=80",
       "images": [],
       "description": "Built for hiking, swimming, and everything in between. These amphibious shorts dry in minutes and pack down to nothing — the ultimate adventure companion.",
@@ -149,14 +142,12 @@
       ],
       "fabric": "100% Nylon Ripstop",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "m-06",
       "name": "Packable Windbreaker",
       "category": "men",
-      "tags": "Ultra Light · Windproof",
       "thumbnail": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
       "images": [
         {
@@ -192,14 +183,12 @@
       ],
       "fabric": "100% Nylon Micro Ripstop",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Do not iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "m-07",
       "name": "Resort Camp Shirt",
       "category": "men",
-      "tags": "Printed · Relaxed Fit",
       "thumbnail": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&q=80",
       "images": [
         {
@@ -232,14 +221,12 @@
       ],
       "fabric": "100% Viscose Rayon",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per print",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per print"
     },
     {
       "id": "m-08",
       "name": "Travel Chinos",
       "category": "men",
-      "tags": "Stretch Fit · Wrinkle-Free",
       "thumbnail": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
       "images": [
         {
@@ -272,14 +259,12 @@
       ],
       "fabric": "68% Cotton / 29% Polyester / 3% Spandex",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "w-01",
       "name": "Outdoor Light Blouse",
       "category": "women",
-      "tags": "UPF 50+ · Antibacterial",
       "thumbnail": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80",
       "images": [
         {
@@ -312,14 +297,12 @@
       ],
       "fabric": "100% Polyester, 105 g/m²",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "w-02",
       "name": "Floral Midi Dress",
       "category": "women",
-      "tags": "Breathable · Relaxed Fit",
       "thumbnail": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
       "images": [
         {
@@ -352,14 +335,12 @@
       ],
       "fabric": "100% Viscose Rayon",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per print",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per print"
     },
     {
       "id": "w-03",
       "name": "Sun Protection Top",
       "category": "women",
-      "tags": "Antibacterial · UPF 50+",
       "thumbnail": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80",
       "images": [
         {
@@ -392,14 +373,12 @@
       ],
       "fabric": "92% Polyester / 8% Spandex",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "w-04",
       "name": "Linen Blend Trousers",
       "category": "women",
-      "tags": "Relaxed Fit · Breathable",
       "thumbnail": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
       "images": [
         {
@@ -432,14 +411,12 @@
       ],
       "fabric": "55% Linen / 45% Viscose",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "w-05",
       "name": "Resort Maxi Skirt",
       "category": "women",
-      "tags": "Flowy Fit · Lightweight",
       "thumbnail": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80",
       "images": [
         {
@@ -472,14 +449,12 @@
       ],
       "fabric": "100% Viscose Rayon",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per print",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per print"
     },
     {
       "id": "w-06",
       "name": "Lightweight Jacket",
       "category": "women",
-      "tags": "Packable · UV Protection",
       "thumbnail": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
       "images": [
         {
@@ -512,14 +487,12 @@
       ],
       "fabric": "100% Nylon Micro Ripstop",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Do not iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "w-07",
       "name": "Boho Beach Top",
       "category": "women",
-      "tags": "Cotton Blend · Relaxed Fit",
       "thumbnail": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80",
       "images": [
         {
@@ -552,14 +525,12 @@
       ],
       "fabric": "85% Cotton / 15% Linen",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "w-08",
       "name": "Adventure Capris",
       "category": "women",
-      "tags": "Stretch Fit · Quick-Dry",
       "thumbnail": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80",
       "images": [
         {
@@ -592,14 +563,12 @@
       ],
       "fabric": "88% Nylon / 12% Spandex",
       "sizes": "XS / S / M / L / XL",
-      "moq": "500 pcs per color",
-      "care": "Machine wash cold · Hang dry · Do not bleach · Low iron"
+      "moq": "500 pcs per color"
     },
     {
       "id": "pants-1",
       "name": "name1",
       "category": "men",
-      "tags": "TAGS",
       "thumbnail": "https://raw.githubusercontent.com/ahrilove1/sportex/main/images/uploads/1780561509184_pants1_front.jpg",
       "images": [
         {
@@ -621,14 +590,12 @@
       "fabric": "FABRIC",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "CARE",
       "subcat": "pants"
     },
     {
       "id": "pants-2",
       "name": "name",
       "category": "men",
-      "tags": "TAGS",
       "thumbnail": "/images/uploads/1780561461702_pants2_front.jpg",
       "images": [
         {
@@ -650,14 +617,12 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care",
       "subcat": "pants"
     },
     {
       "id": "pants-3",
       "name": "name",
       "category": "men",
-      "tags": "TAGS",
       "thumbnail": "/images/uploads/1780561445507_pants3_front.jpg",
       "images": [
         {
@@ -679,14 +644,12 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care",
       "subcat": "pants"
     },
     {
       "id": "pants-4",
       "name": "name",
       "category": "men",
-      "tags": "TAGS",
       "thumbnail": "/images/uploads/1780561521760_pants4_side.jpg",
       "images": [
         {
@@ -708,14 +671,12 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care",
       "subcat": "pants"
     },
     {
       "id": "pants-5",
       "name": "name",
       "category": "men",
-      "tags": "TAGS",
       "thumbnail": "/images/uploads/1780561476099_pants5_side.jpg",
       "images": [
         {
@@ -737,7 +698,6 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care",
       "subcat": "pants"
     }
   ]
