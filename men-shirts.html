@@ -179,32 +179,37 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
+function isShirt(p) {
+  var n=(p.name||'').toLowerCase(), t=(p.tags||'').toLowerCase();
+  return /shirt|polo|windbreaker|jacket|top/.test(n)||/shirt/.test(t);
+}
+
 (async () => {
 try {
-await Promise.all([productsLoaded, companyLoaded]);
+var resp=await fetch('/api/data/products');
+if(!resp.ok) throw new Error('API '+resp.status);
+var data=await resp.json();
+var all=data.products_list||[];
+var men=all.filter(function(p){return p.category==='men';});
+var products=men.filter(function(p){return isShirt(p);});
+
+try{var cr=await fetch('/api/data/company');if(cr.ok)COMPANY=await cr.json();}catch(e){}
 renderNav('men');
 renderFooter();
 
-var men = getProductsByCategory('men');
-var products = filterBySubcat(men, 'shirts');
-
-var grid = document.getElementById('productGrid');
-if (!products.length) {
-  grid.innerHTML = '<p style=\"text-align:center;color:var(--gray);grid-column:1/-1;padding:40px\">No products yet &mdash; add shirt products via the CMS.</p>';
-} else {
-  products.forEach(function(p) {
-    var card = document.createElement('a');
-    card.className = 'product-card reveal';
-    card.href = 'product?id=' + p.id;
-    card.style.textDecoration = 'none';
-    card.style.color = 'inherit';
-    card.style.display = 'block';
-    card.innerHTML = '<div class=\"img-wrap\">'+imgTag(p.thumbnail, p.name, '', 'card')+'</div><div class=\"info\"><div class=\"p-name\">'+p.name+'</div><div class=\"p-cat\">'+p.tags+'</div><p style=\"font-size:13px;color:var(--gray);line-height:1.7;margin-top:8px\">'+(p.description||'')+'</p></div>';
-    grid.appendChild(card);
+var grid=document.getElementById('productGrid');
+if(!products.length){
+  grid.innerHTML='<p style=\"text-align:center;color:var(--gray);padding:40px\">No products yet</p>';
+}else{
+  products.forEach(function(p){
+    var c=document.createElement('a');c.className='product-card reveal';c.href='product?id='+p.id;
+    c.style.textDecoration='none';c.style.color='inherit';c.style.display='block';
+    c.innerHTML='<div class=\"img-wrap\">'+imgTag(p.thumbnail,p.name,'','card')+'</div><div class=\"info\"><div class=\"p-name\">'+p.name+'</div><div class=\"p-cat\">'+p.tags+'</div><p style=\"font-size:13px;color:var(--gray);line-height:1.7;margin-top:8px\">'+(p.description||'')+'</p></div>';
+    grid.appendChild(c);
   });
 }
-} catch(e) {
-  document.getElementById('productGrid').innerHTML = '<p style=\"text-align:center;color:var(--gray);grid-column:1/-1;padding:40px\">Error: '+e.message+'</p>';
+}catch(e){
+  document.getElementById('productGrid').innerHTML='<p style=\"text-align:center;color:var(--gray);padding:40px\">Error: '+e.message+'</p>';
 }
 }
 
