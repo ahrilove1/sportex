@@ -5,8 +5,13 @@
 let COMPANY = {};
 let companyLoaded = (async () => {
   try {
-    const r = await fetch('data/company.json');
-    COMPANY = await r.json();
+    // Try KV first (instant), fallback to static file
+    var r = await fetch('/api/data/company');
+    if (r.ok) { var d = await r.json(); if (Object.keys(d).length) { COMPANY = d; return; } }
+  } catch(e){}
+  try {
+    var r2 = await fetch('data/company.json');
+    COMPANY = await r2.json();
   } catch (e) {
     console.error('Failed to load company data', e);
   }

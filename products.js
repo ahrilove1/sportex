@@ -10,16 +10,25 @@ function cdn(src) {
   return (src||'').startsWith(RAW_PREFIX) ? (src||'').slice(RAW_PREFIX.length) : (src||'');
 }
 
+// Smart fetch: try KV first (instant), fallback to static file
+async function fetchData(name) {
+  try {
+    var r = await fetch('/api/data/' + name);
+    if (r.ok) { var d = await r.json(); if (Object.keys(d).length) return d; }
+  } catch(e){}
+  var r = await fetch('data/' + name + '.json');
+  return await r.json();
+}
+
 let allProducts = [];
-// Build thumb lookup from images.json
+// Build thumb lookup from images.json (KV or local)
 window._imageThumbs = {};
 (async () => {
-  try { var ir = await fetch('data/images.json'); var idata = await ir.json(); (idata.images||[]).forEach(function(i){ if(i.thumb) window._imageThumbs[i.path] = i.thumb; }); } catch(e){}
+  try { var idata = await fetchData('images'); (idata.images||[]).forEach(function(i){ if(i.thumb) window._imageThumbs[i.path] = i.thumb; }); } catch(e){}
 })();
 let productsLoaded = (async () => {
   try {
-    const r = await fetch('data/products.json');
-    const data = await r.json();
+    const data = await fetchData('products');
     // Transform CMS format to site format + apply placeholder for empty images
     allProducts = (data.products_list || []).map(p => ({
       ...p,

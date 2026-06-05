@@ -216,6 +216,14 @@ var REPO='ahrilove1/sportex';
 var LS='spex_gh_token'; var PW='spex_pw';
 var token=localStorage.getItem(LS);
 var PRODUCTS_FILE='data/products.json', COMPANY_FILE='data/company.json', IMAGES_FILE='data/images.json', SETTINGS_FILE='data/settings.json', IMG_DIR='images/uploads/';
+var KV_SECRET='spex_kv_2026'; // match env.KV_SECRET in Worker
+
+async function kvWrite(key, jsonData){
+  try {
+    var resp=await fetch('/api/data/'+key, {method:'PUT', headers:{'Content-Type':'application/json','X-KV-Secret':KV_SECRET}, body:JSON.stringify(jsonData)});
+    return resp.ok;
+  } catch(e){ return false; }
+}
 
 // ═══ DATA ═══
 var productsData=[],companyData={},imagesData=[],settingsData={};
@@ -371,8 +379,10 @@ async function saveProducts(){
   document.getElementById('save-status').textContent='Saving…';
   try{
     var r=await ghWrite(PRODUCTS_FILE,{products_list:productsData},'content: update products',productsSha);
-    productsSha=r.content.sha;document.getElementById('save-status').textContent='Deploying…';
-    trackDeploy(r.commit.sha);renderProducts();toast('Products saved ✅');
+    productsSha=r.content.sha;document.getElementById('save-status').textContent='Syncing…';
+    var kvOk=await kvWrite('products',{products_list:productsData});
+    document.getElementById('save-status').textContent=kvOk?'Ready':'Deploying…';
+    trackDeploy(r.commit.sha);renderProducts();toast(kvOk?'Products saved ✅ (instant sync)':'Products saved ✅');
   }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 }
 
@@ -393,8 +403,10 @@ document.getElementById('btn-save-company').onclick=async function(){
   document.getElementById('save-status').textContent='Saving…';
   try{
     var r=await ghWrite(COMPANY_FILE,d,'content: update company info',companySha);
-    companySha=r.content.sha;companyData=d;document.getElementById('save-status').textContent='Deploying…';
-    trackDeploy(r.commit.sha);toast('Company info saved ✅');
+    companySha=r.content.sha;companyData=d;
+    var kvOk=await kvWrite('company',d);
+    document.getElementById('save-status').textContent=kvOk?'Ready':'Deploying…';
+    trackDeploy(r.commit.sha);toast(kvOk?'Company info saved ✅ (instant sync)':'Company info saved ✅');
   }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 };
 
@@ -425,7 +437,7 @@ async function delImage(idx){
   var warn=usedIn.length?'\n\n⚠ Used in: '+usedIn.join(', '):'';
   if(!confirm('Delete '+img.name+'?'+warn))return;
   try{await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+imagesData[idx].name.replace(/[^a-zA-Z0-9._-]/g,'_'),{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})});
-  imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}}
+  imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;kvWrite('images',{images:imagesData});renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}}
 
 // ═══ IMAGE PICKER ═══
 var pickerTarget=null;
@@ -510,6 +522,7 @@ async function uploadFiles(files){
     toast(total+' image(s) uploaded with thumbnails ✅');
     document.getElementById('save-status').textContent='Saving database…';
     var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);imagesSha=r.content.sha;
+    kvWrite('images',{images:imagesData});
     document.getElementById('save-status').textContent='Ready';renderImages();
   }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message}
 }
@@ -531,6 +544,7 @@ async function uploadFileAndSet(fieldId){
       }catch(e){toast('Upload failed: '+e.message,'err')}
     }
     var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
+    kvWrite('images',{images:imagesData});
     document.getElementById('save-status').textContent='Ready';
   };
   inp.click();
@@ -550,8 +564,10 @@ document.getElementById('btn-save-settings').onclick=async function(){
   document.getElementById('save-status').textContent='Saving…';
   try{
     var r=await ghWrite(SETTINGS_FILE,d,'content: update site settings',settingsSha);
-    settingsSha=r.content.sha;settingsData=d;document.getElementById('save-status').textContent='Deploying…';
-    trackDeploy(r.commit.sha);toast('Settings saved ✅');
+    settingsSha=r.content.sha;settingsData=d;
+    var kvOk=await kvWrite('settings',d);
+    document.getElementById('save-status').textContent=kvOk?'Ready':'Deploying…';
+    trackDeploy(r.commit.sha);toast(kvOk?'Settings saved ✅ (instant sync)':'Settings saved ✅');
   }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 };
 
