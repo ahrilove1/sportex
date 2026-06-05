@@ -596,13 +596,14 @@
       "id": "pants-2",
       "name": "name",
       "category": "men",
+      "subcat": "pants",
       "thumbnail": "/images/uploads/1780561461702_pants2_front.jpg",
       "images": [
         {
-          "url": "/images/uploads/1780561454246_pants2_back.jpg"
+          "url": "/images/uploads/1780561461702_pants2_front.jpg"
         },
         {
-          "url": "/images/uploads/1780561461702_pants2_front.jpg"
+          "url": "/images/uploads/1780561454246_pants2_back.jpg"
         },
         {
           "url": "/images/uploads/1780561508405_pants2_side.jpg"
@@ -616,8 +617,7 @@
       ],
       "fabric": "Fabric",
       "sizes": "SIZES",
-      "moq": "MOQ",
-      "subcat": "pants"
+      "moq": "MOQ"
     },
     {
       "id": "pants-3",
