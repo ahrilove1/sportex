@@ -81,8 +81,11 @@
   .section-header p { color: var(--gray); font-size: 15px; letter-spacing: 1px; }
 
   .categories {
-    max-width: 1000px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .categories { grid-template-columns: repeat(2, 1fr); }
   }
   .cat-card {
     position: relative; overflow: hidden; cursor: pointer; text-decoration: none;
@@ -182,18 +185,24 @@
   </div>
   <div class="categories">
     <a href="men-shirts" class="cat-card reveal">
-      <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80" alt="Men's Shirts" loading="lazy">
-      <div class="cat-label">
-        <h3>Shirts <span class="arrow">&rarr;</span></h3>
-        <span>Outdoor Shirts &middot; Polos &middot; Windbreakers</span>
-      </div>
+      <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80" alt="Shirts" loading="lazy">
+      <div class="cat-label"><h3>Shirts <span class="arrow">&rarr;</span></h3><span>Outdoor Shirts &middot; Polos</span></div>
+    </a>
+    <a href="men-jackets" class="cat-card reveal">
+      <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&q=80" alt="Jackets" loading="lazy">
+      <div class="cat-label"><h3>Jackets <span class="arrow">&rarr;</span></h3><span>Windbreakers & Light Outerwear</span></div>
+    </a>
+    <a href="men-workwear" class="cat-card reveal">
+      <img src="https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=800&q=80" alt="Workwear" loading="lazy">
+      <div class="cat-label"><h3>Workwear <span class="arrow">&rarr;</span></h3><span>Utility & Cargo Styles</span></div>
+    </a>
+    <a href="men-tshirts" class="cat-card reveal">
+      <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80" alt="T-Shirts" loading="lazy">
+      <div class="cat-label"><h3>T-Shirts <span class="arrow">&rarr;</span></h3><span>Tees & Polos</span></div>
     </a>
     <a href="men-pants" class="cat-card reveal">
-      <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80" alt="Men's Pants" loading="lazy">
-      <div class="cat-label">
-        <h3>Pants <span class="arrow">&rarr;</span></h3>
-        <span>Trousers &middot; Shorts &middot; Chinos</span>
-      </div>
+      <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80" alt="Pants" loading="lazy">
+      <div class="cat-label"><h3>Pants <span class="arrow">&rarr;</span></h3><span>Trousers & Shorts &middot; Chinos</span></div>
     </a>
   </div>
 </section>
