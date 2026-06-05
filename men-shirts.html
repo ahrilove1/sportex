@@ -91,8 +91,19 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 32px rgba(0,0,0,0.08);
   }
+  .product-card { display: flex; gap: 20px; align-items: center; }
   .product-card .img-wrap {
-    width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--off-white);
+    width: 240px; height: 320px; flex-shrink: 0; overflow: hidden; background: var(--off-white);
+  }
+  .product-card .info { flex: 1; padding: 0; }
+  .product-card .info .p-name { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .product-card .info .p-cat { font-size: 13px; color: var(--gray); margin-bottom: 12px; }
+
+  .product-grid { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+
+  @media (max-width: 768px) {
+    .product-card { flex-direction: column; }
+    .product-card .img-wrap { width: 100%; height: auto; aspect-ratio: 3/4; }
   }
   .product-card .img-wrap img {
     width: 100%; height: 100%; object-fit: cover;
@@ -168,19 +179,13 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
-function isMatch(p) {
-  var name = (p.name||'').toLowerCase();
-  var tags = (p.tags||'').toLowerCase();
-  return /shirt|polo|windbreaker|jacket|top/.test(name) || /shirt/.test(tags) || /shirts/.test(tags);
-}
-
 (async () => {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('men');
 renderFooter();
 
 var men = getProductsByCategory('men');
-var products = men.filter(function(p){ return isMatch(p); });
+var products = filterBySubcat(men, 'shirts');
 
 var grid = document.getElementById('productGrid');
 if (!products.length) {

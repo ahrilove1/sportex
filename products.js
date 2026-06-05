@@ -48,6 +48,17 @@ function getProductsByCategory(cat) {
   return allProducts.filter(p => p.category === cat);
 }
 
+// 按子品类筛选 (shirts / pants / other)
+function filterBySubcat(products, subcat) {
+  return products.filter(function(p) {
+    var name = (p.name||'').toLowerCase();
+    var tags = (p.tags||'').toLowerCase();
+    if (subcat === 'shirts') return /shirt|polo|windbreaker|jacket|top/.test(name) || /shirt/.test(tags) || /shirts/.test(tags);
+    if (subcat === 'pants') return /pants|trouser|chino|short|cargo|jean/.test(name) || /pants/.test(tags);
+    return true;
+  });
+}
+
 // 按ID获取产品
 function getProductById(id) {
   return allProducts.find(p => p.id === id);
