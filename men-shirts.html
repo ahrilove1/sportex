@@ -180,6 +180,7 @@
 <script src="lang.js"></script>
 <script>
 (async () => {
+try {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('men');
 renderFooter();
@@ -189,7 +190,7 @@ var products = filterBySubcat(men, 'shirts');
 
 var grid = document.getElementById('productGrid');
 if (!products.length) {
-  grid.innerHTML = '<p style="text-align:center;color:var(--gray);grid-column:1/-1;padding:40px">No products in this category yet.</p>';
+  grid.innerHTML = '<p style=\"text-align:center;color:var(--gray);grid-column:1/-1;padding:40px\">No products yet &mdash; add shirt products via the CMS.</p>';
 } else {
   products.forEach(function(p) {
     var card = document.createElement('a');
@@ -198,9 +199,13 @@ if (!products.length) {
     card.style.textDecoration = 'none';
     card.style.color = 'inherit';
     card.style.display = 'block';
-    card.innerHTML = '<div class="img-wrap">'+imgTag(p.thumbnail, p.name, '', 'card')+'</div><div class="info"><div class="p-name">'+p.name+'</div><div class="p-cat">'+p.tags+'</div><p style="font-size:13px;color:var(--gray);line-height:1.7;margin-top:8px">'+(p.description||'')+'</p></div>';
+    card.innerHTML = '<div class=\"img-wrap\">'+imgTag(p.thumbnail, p.name, '', 'card')+'</div><div class=\"info\"><div class=\"p-name\">'+p.name+'</div><div class=\"p-cat\">'+p.tags+'</div><p style=\"font-size:13px;color:var(--gray);line-height:1.7;margin-top:8px\">'+(p.description||'')+'</p></div>';
     grid.appendChild(card);
   });
+}
+} catch(e) {
+  document.getElementById('productGrid').innerHTML = '<p style=\"text-align:center;color:var(--gray);grid-column:1/-1;padding:40px\">Error: '+e.message+'</p>';
+}
 }
 
 var observer = new IntersectionObserver((entries) => {
