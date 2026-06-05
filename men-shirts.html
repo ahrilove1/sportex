@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Men's Collection | SPORTEX</title>
-<meta name="description" content="SPORTEX Men's Outdoor Resort Wear — lightweight, breathable shirts, trousers, and outerwear with UPF 50+ protection for warm climates.">
-<meta property="og:title" content="Men's Collection | SPORTEX">
-<meta property="og:description" content="Lightweight outdoor shirts and resort wear engineered for warm climates. UPF 50+, antibacterial, quick-dry.">
+<title>Men's Shirts | SPORTEX</title>
+<meta name="description" content="SPORTEX Men's Outdoor Shirts — breathable, UPF 50+ polos, resort shirts and windbreakers.">
+<meta property="og:title" content="Men's Shirts | SPORTEX">
+<meta property="og:description" content="Lightweight outdoor shirts with UPF 50+ protection. Breathable, antibacterial, quick-dry.">
 <meta property="og:type" content="website">
 <link rel="icon" href="favicon.svg">
 <style>
@@ -56,7 +56,7 @@
 
   .page-hero {
     position: relative; height: 45vh; min-height: 360px;
-    background: url('https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1920&q=80') center 30%/cover no-repeat;
+    background: url('https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1920&q=80') center 30%/cover no-repeat;
     display: flex; align-items: center; justify-content: center;
   }
   .page-hero::before {
@@ -141,40 +141,25 @@
 
 <section class="page-hero">
   <div class="page-hero-content">
-    <h1 data-lkey="menHeroTitle">MEN'S COLLECTION</h1>
-    <p data-lkey="menHeroSub">Outdoor Shirts & Resort Wear</p>
+    <h1>MEN'S SHIRTS</h1>
+    <p>Outdoor Shirts &mdash; Breathable, UPF 50+</p>
   </div>
 </section>
 
 <div class="breadcrumb">
-  <a href="index">Home</a> / <span>Men's Collection</span>
+  <a href="index">Home</a> / <a href="men">Men's Collection</a> / <span>Shirts</span>
 </div>
 
-<section class="section" id="collections">
+<section class="section">
   <div class="section-header reveal">
-    <h2>Shop by Category</h2>
-    <p>Explore our men's outdoor resort wear collection</p>
+    <h2>All Men's Shirts</h2>
+    <p>Polos, resort shirts & windbreakers for warm climates</p>
   </div>
-  <div class="categories">
-    <a href="men-shirts" class="cat-card reveal">
-      <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80" alt="Men's Shirts" loading="lazy">
-      <div class="cat-label">
-        <h3>Shirts <span class="arrow">&rarr;</span></h3>
-        <span>Outdoor Shirts &middot; Polos &middot; Windbreakers</span>
-      </div>
-    </a>
-    <a href="men-pants" class="cat-card reveal">
-      <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80" alt="Men's Pants" loading="lazy">
-      <div class="cat-label">
-        <h3>Pants <span class="arrow">&rarr;</span></h3>
-        <span>Trousers &middot; Shorts &middot; Chinos</span>
-      </div>
-    </a>
-  </div>
+  <div class="product-grid" id="productGrid"></div>
 </section>
 
 <div class="back-link reveal">
-  <a href="index" data-lkey="backHome">&larr; Back to Home</a>
+  <a href="men">&larr; Back to Men</a>
 </div>
 
 <footer id="siteFooter" class="footer"></footer>
@@ -183,15 +168,38 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
+function isMatch(p) {
+  var name = (p.name||'').toLowerCase();
+  var tags = (p.tags||'').toLowerCase();
+  return /shirt|polo|windbreaker|jacket|top/.test(name) || /shirt/.test(tags) || /shirts/.test(tags);
+}
+
 (async () => {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('men');
 renderFooter();
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+var men = getProductsByCategory('men');
+var products = men.filter(function(p){ return isMatch(p); });
+
+var grid = document.getElementById('productGrid');
+if (!products.length) {
+  grid.innerHTML = '<p style="text-align:center;color:var(--gray);grid-column:1/-1;padding:40px">No products in this category yet.</p>';
+} else {
+  products.forEach(function(p) {
+    var card = document.createElement('a');
+    card.className = 'product-card reveal';
+    card.href = 'product?id=' + p.id;
+    card.style.textDecoration = 'none';
+    card.style.color = 'inherit';
+    card.style.display = 'block';
+    card.innerHTML = '<div class="img-wrap">'+imgTag(p.thumbnail, p.name, '', 'card')+'</div><div class="info"><div class="p-name">'+p.name+'</div><div class="p-cat">'+p.tags+'</div></div>';
+    grid.appendChild(card);
   });
+}
+
+var observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 })();
