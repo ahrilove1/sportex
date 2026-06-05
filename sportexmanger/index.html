@@ -464,18 +464,23 @@ document.getElementById('file-input').onchange=function(){uploadFiles(this.files
 function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;if(w<=maxW){URL.revokeObjectURL(u);ok(file)}else{var ratio=maxW/w;var c=document.createElement('canvas');c.width=maxW;c.height=Math.round(h*ratio);var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){URL.revokeObjectURL(u);var ext='.jpg';if(b.size<file.size||w>maxW){ok(new File([b],file.name.replace(/\.[^.]+$/,'')+ext,{type:'image/jpeg'}))}else{ok(file)}},'image/jpeg',quality)}};img.src=u})}
 
 async function uploadWithThumbs(fileList){
-  var items=[];
-  for(var i=0;i<fileList.length;i++){
-    var f=fileList[i];
-    var full=await resizeImage(f,1200,.82);
-    var thumb=await resizeImage(f,400,.75);
-    var ts=Date.now()+Math.floor(Math.random()*99999);
-    var base=f.name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
-    var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
-    var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
-    items.push({name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullBase64,thumbBase64:thumbBase64});
-  }
-  return items;
+  var total=fileList.length;
+  return await Promise.all(fileList.map(function(f,i){
+    return (async function(){
+      // Run full+thumb resize in parallel
+      var full=resizeImage(f,1200,.82);
+      var thumb=resizeImage(f,400,.75);
+      var ts=Date.now()+Math.floor(Math.random()*99999);
+      // Wait for both resizes to complete
+      var fullBlob=await full;
+      var thumbBlob=await thumb;
+      // Encode both in parallel
+      var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(fullBlob)});
+      var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumbBlob)});
+      var base=f.name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
+      return {name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullBase64,thumbBase64:thumbBase64};
+    })();
+  }));
 }
 
 async function uploadFiles(files){
