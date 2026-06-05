@@ -4,6 +4,11 @@
 // Changes sync automatically: CMS → GitHub → Cloudflare → Frontend
 
 const PLACEHOLDER = 'images/placeholder.svg';
+const RAW_PREFIX = 'https://raw.githubusercontent.com/ahrilove1/sportex/main/';
+// Convert GitHub raw URLs to local paths for Cloudflare CDN + caching
+function cdn(src) {
+  return (src||'').startsWith(RAW_PREFIX) ? (src||'').slice(RAW_PREFIX.length) : (src||'');
+}
 
 let allProducts = [];
 let productsLoaded = (async () => {
@@ -13,8 +18,8 @@ let productsLoaded = (async () => {
     // Transform CMS format to site format + apply placeholder for empty images
     allProducts = (data.products_list || []).map(p => ({
       ...p,
-      thumbnail: p.thumbnail || PLACEHOLDER,
-      images: (p.images || []).map(i => typeof i === 'string' ? i : (i.url || i.image || '')).filter(u => u),
+      thumbnail: cdn(p.thumbnail) || PLACEHOLDER,
+      images: (p.images || []).map(i => typeof i === 'string' ? cdn(i) : cdn(i.url || i.image || '')).filter(u => u),
       features: (p.features || []).map(f => typeof f === 'string' ? f : (f.text || f.feature || '')),
     }));
     // If all gallery images are empty, use placeholder
@@ -36,5 +41,5 @@ function getProductById(id) {
 
 // Helper: img tag with placeholder fallback
 function imgTag(src, alt, cls) {
-  return '<img src="' + (src || PLACEHOLDER) + '" alt="' + (alt || '') + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
+  return '<img src="' + cdn(src || PLACEHOLDER) + '" alt="' + (alt || '') + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
 }

@@ -503,7 +503,7 @@ async function uploadFiles(files){
     // Update branch ref
     await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});
     // Add to image library
-    prepared.forEach(function(p,i){imagesData.push({name:p.name,url:'https://raw.githubusercontent.com/'+REPO+'/main/'+p.path,path:p.path,sha:blobs[i].sha,date:new Date().toISOString()})});
+    prepared.forEach(function(p,i){imagesData.push({name:p.name,url:p.path,path:p.path,sha:blobs[i].sha,date:new Date().toISOString()})});
     toast(total+' image(s) uploaded ✅');
     // Save image database
     document.getElementById('save-status').textContent='Saving database…';
@@ -522,7 +522,7 @@ async function uploadFileAndSet(fieldId){
         var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(optimized)});
         var ts=Date.now()+Math.floor(Math.random()*9999),safeName=ts+'_'+f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
         var result=await ghUploadBuf(path,base64,'content: upload '+f[i].name);
-        var url='https://raw.githubusercontent.com/'+REPO+'/main/'+path;
+        var url=path;
         imagesData.push({name:f[i].name,url:url,path:path,sha:result.content.sha,date:new Date().toISOString()});
         var el=document.getElementById(fieldId);
         if(fieldId==='ep-images')el.value=el.value+'\n'+url;else el.value=url;
