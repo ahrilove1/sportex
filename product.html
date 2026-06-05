@@ -179,8 +179,8 @@
 
 <section id="productSection"></section>
 
-<div class="back-link" id="backLink">
-  <a href="men.html" data-lkey="pdBack">&larr; Back to Collection</a>
+<div class="back-link" id="backLink" style="padding:20px 40px 0">
+  <a href="men.html">&larr; Back to Collection</a>
 </div>
 
 <footer id="siteFooter" class="footer"></footer>
@@ -212,7 +212,7 @@ if (!product) {
   document.title = product.name + ' | SPORTEX';
 
   const catName = product.category === 'men' ? 'Men\'s Collection' : 'Women\'s Collection';
-  const catPage = product.category === 'men' ? 'men.html' : 'women.html';
+  const catPage = product.category === 'men' ? (product.subcat ? 'men-'+product.subcat+'.html' : 'men.html') : 'women.html';
   document.getElementById('bcCat').href = catPage;
   document.getElementById('bcCat').textContent = catName;
   document.getElementById('bcName').textContent = product.name;
