@@ -80,6 +80,31 @@
   .section-header h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 700; color: var(--navy); letter-spacing: 2px; margin-bottom: 8px; }
   .section-header p { color: var(--gray); font-size: 15px; letter-spacing: 1px; }
 
+  .categories {
+    max-width: 1000px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .cat-card {
+    position: relative; overflow: hidden; cursor: pointer; text-decoration: none;
+    aspect-ratio: 3/4; display: block;
+  }
+  .cat-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .cat-card:hover img { transform: scale(1.05); }
+  .cat-card .cat-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 40px 28px;
+    background: linear-gradient(to top, rgba(26,31,46,0.85), transparent);
+    color: var(--white);
+  }
+  .cat-label h3 { font-size: 26px; letter-spacing: 3px; margin-bottom: 8px; }
+  .cat-label span { font-size: 14px; opacity: 0.85; letter-spacing: 1px; }
+  .cat-label .arrow { font-size: 20px; margin-left: 6px; transition: transform 0.3s; display: inline-block; }
+  .cat-card:hover .cat-label .arrow { transform: translateX(6px); }
+
+  @media (max-width: 768px) {
+    .categories { grid-template-columns: 1fr; }
+  }
+
   .product-grid {
     max-width: 1200px; margin: 0 auto;
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
