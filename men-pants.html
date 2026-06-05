@@ -217,12 +217,11 @@ if(!products.length){
 }catch(e){
   document.getElementById('productGrid').innerHTML='<p style=\"text-align:center;color:var(--gray);padding:40px\">Error: '+e.message+'</p>';
 }
-}
 
-var observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){ if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);} });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
 })();
 </script>
 </body>
