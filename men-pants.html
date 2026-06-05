@@ -191,11 +191,12 @@ function isShirt(p) {
 (async () => {
 try {
 var resp=await fetch('data/products.json');
-if(!resp.ok) throw new Error('Load failed');
+if(!resp.ok) throw new Error('Load failed '+resp.status);
 var data=await resp.json();
 var all=data.products_list||[];
 var men=all.filter(function(p){return p.category==='men';});
 var products=men.filter(function(p){return isPants(p)||(!isPants(p)&&!isShirt(p));});
+document.getElementById('productGrid').innerHTML='<p>DEBUG: men='+men.length+' pants='+products.length+'</p>';
 
 // Also load company for nav/footer
 try{var cr=await fetch('/api/data/company');if(cr.ok)COMPANY=await cr.json();}catch(e){}
