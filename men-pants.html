@@ -190,8 +190,8 @@ function isShirt(p) {
 
 (async () => {
 try {
-var resp=await fetch('/api/data/products');
-if(!resp.ok) throw new Error('API '+resp.status);
+var resp=await fetch('data/products.json');
+if(!resp.ok) throw new Error('Load failed');
 var data=await resp.json();
 var all=data.products_list||[];
 var men=all.filter(function(p){return p.category==='men';});
