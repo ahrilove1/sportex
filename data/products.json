@@ -622,6 +622,34 @@
       "sizes": "SIZES",
       "moq": "MOQ",
       "care": "CARE"
+    },
+    {
+      "id": "pants-2",
+      "name": "name",
+      "category": "men",
+      "tags": "TAGS",
+      "thumbnail": "/images/uploads/1780561461702_pants2_front.jpg",
+      "images": [
+        {
+          "url": "/images/uploads/1780561454246_pants2_back.jpg"
+        },
+        {
+          "url": "/images/uploads/1780561461702_pants2_front.jpg"
+        },
+        {
+          "url": "/images/uploads/1780561508405_pants2_side.jpg"
+        }
+      ],
+      "description": "Description",
+      "features": [
+        {
+          "text": "Features (one per line)"
+        }
+      ],
+      "fabric": "Fabric",
+      "sizes": "SIZES",
+      "moq": "MOQ",
+      "care": "Care"
     }
   ]
 }
