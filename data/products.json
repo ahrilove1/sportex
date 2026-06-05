@@ -621,7 +621,8 @@
       "fabric": "FABRIC",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "CARE"
+      "care": "CARE",
+      "subcat": "pants"
     },
     {
       "id": "pants-2",
@@ -649,7 +650,8 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care"
+      "care": "Care",
+      "subcat": "pants"
     },
     {
       "id": "pants-3",
@@ -677,7 +679,8 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care"
+      "care": "Care",
+      "subcat": "pants"
     },
     {
       "id": "pants-4",
@@ -705,7 +708,8 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care"
+      "care": "Care",
+      "subcat": "pants"
     },
     {
       "id": "pants-5",
@@ -733,7 +737,8 @@
       "fabric": "Fabric",
       "sizes": "SIZES",
       "moq": "MOQ",
-      "care": "Care"
+      "care": "Care",
+      "subcat": "pants"
     }
   ]
 }

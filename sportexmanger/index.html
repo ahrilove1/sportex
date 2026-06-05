@@ -318,7 +318,7 @@ function renderProducts(){
   document.getElementById('prod-count').textContent=filtered.length+' products';
 
   // Table
-  var h='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Tags</th><th style="width:130px"></th></tr></thead><tbody>';
+  var h='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th style="width:130px"></th></tr></thead><tbody>';
   if(!pageItems.length){h+='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">No products found</td></tr>'}
   else{pageItems.forEach(function(p,i){var realIdx=productsData.indexOf(p);h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td><button class="btn-xs" onclick="editProduct('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delProduct('+realIdx+')">Del</button></td></tr>'})}
   h+='</tbody></table>';
@@ -345,6 +345,10 @@ function jumpPage(){var v=parseInt(document.getElementById('prod-jump').value);i
 function delProduct(idx){if(!confirm('Delete '+productsData[idx].name+'?'))return;productsData.splice(idx,1);saveProducts()}
 document.getElementById('btn-add-product').onclick=function(){editProduct(-1)};
 
+function toggleSubcat(){
+  var cat=document.getElementById('ep-category').value;
+  document.getElementById('subcat-group').style.display=cat==='men'?'':'none';
+}
 function editProduct(idx){
   // Hide toolbar + list, show edit
   document.getElementById('prod-toolbar').style.display='none';
@@ -354,7 +358,9 @@ function editProduct(idx){
   if(idx>=0&&typeof p.images[0]==='object')p._imgs=p.images.map(function(x){return x.url||x.image||x}).join('\n');else p._imgs=(p.images||[]).join('\n');
   if(idx>=0&&typeof p.features[0]==='object')p._feats=p.features.map(function(x){return x.text||x.feature||x}).join('\n');else p._feats=(p.features||[]).join('\n');
   var h='<h3>'+(idx>=0?'Edit':'Add')+' Product</h3>';
-  h+='<div class="form-row col3"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+esc(p.id)+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+esc(p.name)+'"></div><div class="form-group"><label>Category</label><select id="ep-category"><option value="men"'+(p.category==='men'?' selected':'')+'>Men</option><option value="women"'+(p.category==='women'?' selected':'')+'>Women</option></select></div></div>';
+  h+='<div class="form-row col3"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+esc(p.id)+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+esc(p.name)+'"></div><div class="form-group"><label>Category</label><select id="ep-category" onchange="toggleSubcat()"><option value="men"'+(p.category==='men'?' selected':'')+'>Men</option><option value="women"'+(p.category==='women'?' selected':'')+'>Women</option></select></div></div>';
+var subcat=(p.subcat||'');
+h+='<div class="form-group" id="subcat-group" style="'+(p.category!=='men'?'display:none':'')+'"><label>Sub Category</label><select id="ep-subcat"><option value="">-- Select --</option><option value="shirts"'+(subcat==='shirts'?' selected':'')+'>Shirts</option><option value="jackets"'+(subcat==='jackets'?' selected':'')+'>Jackets</option><option value="workwear"'+(subcat==='workwear'?' selected':'')+'>Workwear</option><option value="tshirts"'+(subcat==='tshirts'?' selected':'')+'>T-Shirts</option><option value="pants"'+(subcat==='pants'?' selected':'')+'>Pants</option></select></div>';
   h+='<div class="form-group"><label>Thumbnail</label><div class="input-with-btn"><input id="ep-thumbnail" value="'+esc(p.thumbnail)+'"><button class="btn-sm" onclick="uploadFileAndSet(\'ep-thumbnail\')">📸 Upload</button><button class="btn-sm" onclick="openImgPicker(\'ep-thumbnail\')">🖼 Browse</button></div></div>';
   h+='<div class="form-group"><label>Gallery Images (one per line)</label><textarea id="ep-images" rows="3">'+esc(p._imgs)+'</textarea><div class="btn-group" style="margin-top:6px"><button class="btn btn-secondary btn-sm" onclick="uploadFileAndSet(\'ep-images\')" style="font-size:11px;padding:8px 16px">📸 Upload</button><button class="btn btn-secondary btn-sm" onclick="openImgPicker(\'ep-images\')" style="font-size:11px;padding:8px 16px">🖼 Browse</button></div></div>';
   h+='<div class="form-group"><label>Description</label><textarea id="ep-desc" rows="3">'+esc(p.description)+'</textarea></div>';
@@ -367,7 +373,7 @@ function editProduct(idx){
 function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 async function saveProduct(){
   var idx=parseInt(document.getElementById('btn-save-product').dataset.idx);
-  var p={id:document.getElementById('ep-id').value,name:document.getElementById('ep-name').value,category:document.getElementById('ep-category').value,thumbnail:document.getElementById('ep-thumbnail').value,images:document.getElementById('ep-images').value.split('\n').filter(function(x){return x.trim()}).map(function(u){return{url:u.trim()}}),description:document.getElementById('ep-desc').value,features:document.getElementById('ep-features').value.split('\n').filter(function(x){return x.trim()}).map(function(t){return{text:t.trim()}}),fabric:document.getElementById('ep-fabric').value,sizes:document.getElementById('ep-sizes').value,moq:document.getElementById('ep-moq').value};
+  var p={id:document.getElementById('ep-id').value,name:document.getElementById('ep-name').value,category:document.getElementById('ep-category').value,subcat:document.getElementById('ep-subcat').value,thumbnail:document.getElementById('ep-thumbnail').value,images:document.getElementById('ep-images').value.split('\n').filter(function(x){return x.trim()}).map(function(u){return{url:u.trim()}}),description:document.getElementById('ep-desc').value,features:document.getElementById('ep-features').value.split('\n').filter(function(x){return x.trim()}).map(function(t){return{text:t.trim()}}),fabric:document.getElementById('ep-fabric').value,sizes:document.getElementById('ep-sizes').value,moq:document.getElementById('ep-moq').value};
   if(idx>=0)productsData[idx]=p;else productsData.push(p);
   document.getElementById('product-edit').querySelector('.btn-primary').disabled=true;
   await saveProducts();

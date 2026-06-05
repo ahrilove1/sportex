@@ -45,7 +45,7 @@ body{font-family:"Helvetica Neue",Arial,sans-serif;background:var(--white);color
 <footer id="siteFooter" class="footer"></footer>
 <script src="products.js"></script><script src="common.js"></script><script src="lang.js"></script>
 <script>
-function isPants(p){var n=(p.name||'').toLowerCase();return /pants|trouser|chino|short|cargo|jean/.test(n);}
+function isPants(p){if(p.subcat==='pants')return true;var n=(p.name||'').toLowerCase();return /pants|trouser|chino|short|cargo|jean/.test(n);}
 (async function(){
 try{
 var r=await fetch('data/products.json');var d=await r.json();var all=d.products_list||[];
