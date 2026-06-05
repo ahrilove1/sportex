@@ -150,12 +150,22 @@
   <a href="index.html">Home</a> / <span data-lkey="menBreadcrumb">Men's Collection</span>
 </div>
 
-<section class="section">
+<!-- SHIRTS -->
+<section class="section" id="shirts-section">
   <div class="section-header reveal">
-    <h2 data-lkey="menSectionTitle">Men's Outdoor Resort Wear</h2>
-    <p data-lkey="menSectionSub">Lightweight, breathable designs engineered for warm climates</p>
+    <h2>Shirts</h2>
+    <p>Lightweight outdoor shirts &mdash; breathable, UPF 50+</p>
   </div>
-  <div class="product-grid" id="productGrid"></div>
+  <div class="product-grid" id="shirtsGrid"></div>
+</section>
+
+<!-- PANTS -->
+<section class="section" style="background:var(--off-white)" id="pants-section">
+  <div class="section-header reveal">
+    <h2>Pants</h2>
+    <p>Trousers & shorts &mdash; quick-dry, stretch comfort</p>
+  </div>
+  <div class="product-grid" id="pantsGrid"></div>
 </section>
 
 <div class="back-link reveal">
@@ -168,30 +178,48 @@
 <script src="common.js"></script>
 <script src="lang.js"></script>
 <script>
+function isPants(p) {
+  var name = (p.name||'').toLowerCase();
+  var tags = (p.tags||'').toLowerCase();
+  return /pants|trouser|chino|short|cargo|jean/.test(name) || /pants/.test(tags);
+}
+function isShirt(p) {
+  var name = (p.name||'').toLowerCase();
+  var tags = (p.tags||'').toLowerCase();
+  return /shirt|polo|windbreaker|jacket|top/.test(name) || /shirt/.test(tags);
+}
+
+function renderCards(products, gridId) {
+  var grid = document.getElementById(gridId);
+  if (!products.length) {
+    grid.innerHTML = '<p style=\"text-align:center;color:var(--gray);grid-column:1/-1;padding:40px\">No products yet</p>';
+    return;
+  }
+  products.forEach(function(p) {
+    var card = document.createElement('a');
+    card.className = 'product-card reveal';
+    card.href = 'product.html?id=' + p.id;
+    card.style.textDecoration = 'none';
+    card.style.color = 'inherit';
+    card.style.display = 'block';
+    card.innerHTML = '<div class=\"img-wrap\">'+imgTag(p.thumbnail, p.name, '', 'card')+'</div><div class=\"info\"><div class=\"p-name\">'+p.name+'</div><div class=\"p-cat\">'+p.tags+'</div></div>';
+    grid.appendChild(card);
+  });
+}
+
 (async () => {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('men');
 renderFooter();
 
-const grid = document.getElementById('productGrid');
-getProductsByCategory('men').forEach((p) => {
-  const card = document.createElement('a');
-  card.className = 'product-card reveal';
-  card.href = 'product.html?id=' + p.id;
-  card.style.textDecoration = 'none';
-  card.style.color = 'inherit';
-  card.style.display = 'block';
-  card.innerHTML = `
-    <div class="img-wrap">
-      ${imgTag(p.thumbnail, p.name, '', 'card')}
-    </div>
-    <div class="info">
-      <div class="p-name">${p.name}</div>
-      <div class="p-cat">${p.tags}</div>
-    </div>
-  `;
-  grid.appendChild(card);
-});
+var men = getProductsByCategory('men');
+var shirts = men.filter(function(p){ return isShirt(p); });
+var pants  = men.filter(function(p){ return isPants(p); });
+// Any remaining go to shirts
+men.forEach(function(p){ if (!isShirt(p) && !isPants(p)) shirts.push(p); });
+
+renderCards(shirts, 'shirtsGrid');
+renderCards(pants, 'pantsGrid');
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
