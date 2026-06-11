@@ -2,10 +2,10 @@
   Cache-Control: public, max-age=2592000
 
 /data/*
-  Cache-Control: public, max-age=2592000
+  Cache-Control: public, max-age=300
 
 *.js
-  Cache-Control: public, max-age=2592000
+  Cache-Control: public, max-age=300
 
 *.css
   Cache-Control: public, max-age=2592000
