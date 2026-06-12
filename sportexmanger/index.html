@@ -525,7 +525,19 @@ async function uploadFiles(files){
     var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);
     imagesSha=r.content.sha;
     kvWrite('images',{images:imagesData});
-    document.getElementById('save-status').textContent='Ready';renderImages();
+    // Wait for GitHub Pages to deploy images before showing gallery
+    document.getElementById('save-status').textContent='Waiting for deployment…';
+    var firstImg=items[0].thumbPath||items[0].path;
+    var deployed=false;
+    for(var w=0;w<20;w++){
+      await new Promise(function(o){setTimeout(o,1500)});
+      try{
+        var cr=await fetch(firstImg,{method:'HEAD',cache:'no-store'});
+        if(cr.ok&&(cr.headers.get('content-type')||'').indexOf('image/')===0){deployed=true;break}
+      }catch(e){}
+    }
+    document.getElementById('save-status').textContent=deployed?'Ready':'Deploying…';
+    renderImages();
     toast(total+' image(s) uploaded ✅');
     _uploadBusy=false;
   }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message;_uploadBusy=false}
