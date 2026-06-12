@@ -516,7 +516,7 @@ async function uploadFiles(files){
     items.forEach(function(it){allBlobs.push(it.fullBase64,it.thumbBase64);allPaths.push(it.path,it.thumbPath)});
     var blobTasks=allBlobs.map(function(b){return ghAPI('/repos/'+REPO+'/git/blobs',{method:'POST',body:JSON.stringify({content:b,encoding:'base64'})}).then(function(r){return r.json()})});
     var blobs=await Promise.all(blobTasks);
-    var treeEntries=allPaths.map(function(p,i){return {path:p,mode:'100644',type:'blob',sha:blobs[i].sha}});
+    var treeEntries=allPaths.map(function(p,i){return {path:p.replace(/^\//,''),mode:'100644',type:'blob',sha:blobs[i].sha}});
     var newTreeResp=await ghAPI('/repos/'+REPO+'/git/trees',{method:'POST',body:JSON.stringify({base_tree:baseTreeSha,tree:treeEntries})});
     var newTree=await newTreeResp.json();
     var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs',tree:newTree.sha,parents:[baseCommitSha]})});
