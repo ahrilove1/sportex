@@ -421,8 +421,9 @@ function renderImages(){
   var h='';
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
   imagesData.forEach(function(img,i){
-    var src=RAW+img.url;
-    h+='<div class="img-card"><img src="'+src+'" alt="'+img.name+'" onclick="viewImage(\''+src+'\')" style="cursor:pointer"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
+    var thumbSrc=RAW+(img.thumb||img.url);
+    var fullSrc=img.url;
+    h+='<div class="img-card"><img src="'+thumbSrc+'" alt="'+img.name+'" onclick="viewImage(\''+fullSrc+'\')" style="cursor:pointer"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
   });
   g.innerHTML=h;
 }
@@ -457,8 +458,8 @@ function openImgPicker(targetId){
   var h='';
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
   imagesData.forEach(function(img,i){
-    var src=RAW+img.url;
-    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+src+'" alt="'+img.name+'" onclick="event.stopPropagation();viewImage(\''+src+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
+    var src=RAW+(img.thumb||img.url);
+    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+src+'" alt="'+img.name+'" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
   });
   if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
   g.innerHTML=h;
