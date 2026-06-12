@@ -240,7 +240,7 @@ document.getElementById('token-input').onkeydown=function(e){if(e.key==='Enter')
 async function checkToken(){var t=document.getElementById('token-input').value.trim();if(!t)return;document.getElementById('token-btn').disabled=true;document.getElementById('token-error').style.display='none';try{var r=await fetch('https://api.github.com/repos/'+REPO,{headers:{'Authorization':'Bearer '+t}});if(r.ok){localStorage.setItem(LS,t);token=t;document.getElementById('token-ok').style.display='block';setTimeout(loadData,400);return}}catch(e){}document.getElementById('token-btn').disabled=false;document.getElementById('token-error').style.display='block'}
 
 // ═══ GITHUB API ═══
-function ghAPI(path,opts){opts=opts||{};opts.headers=opts.headers||{};opts.headers['Authorization']='Bearer '+token;opts.headers['Accept']='application/vnd.github.v3+json';return fetch('https://api.github.com'+path,opts)}
+function ghAPI(path,opts){opts=opts||{};opts.headers=opts.headers||{};opts.headers['Authorization']='Bearer '+token;opts.headers['Accept']='application/vnd.github.v3+json';var f=fetch('https://api.github.com'+path,opts);f.then(function(r){if(!r.ok)r.clone().json().then(function(e){console.error('GH '+r.status+': '+path+' - '+e.message)}).catch(function(){})});return f}
 async function ghRead(filePath){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath);if(!r.ok)throw new Error('Read '+r.status);var d=await r.json();return{sha:d.sha,content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}}
 async function ghWrite(filePath,content,msg,sha,retry){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(r.status===409&&(!retry||retry<3)){await new Promise(function(ok){setTimeout(ok,500)});var fresh=await ghRead(filePath);return ghWrite(filePath,content,msg,fresh.sha,(retry||1)+1)}if(!r.ok)throw new Error('Write '+r.status);return r.json()}
 async function ghUploadBuf(filePath,base64,msg){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify({message:msg,content:base64})});if(!r.ok)throw new Error('Upload '+r.status);return r.json()}
@@ -521,7 +521,7 @@ async function uploadFiles(files){
     var newTree=await newTreeResp.json();
     var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs',tree:newTree.sha,parents:[baseCommitSha]})});
     var newCommit=await commitResp.json();
-    await (async function(){for(var _r=0;_r<5;_r++){var _ref=await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});if(_ref.ok)return _ref;if((_ref.status!==422&&_ref.status!==409)||_r>=4)throw new Error('Git push: '+_ref.status);await new Promise(function(o){setTimeout(o,600)});var _h=await ghAPI('/repos/'+REPO+'/git/ref/heads/main');var _hd=await _h.json();var _bs=_hd.object.sha;var _cr=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs [retry]',tree:newTree.sha,parents:[_bs]})});var _nc=await _cr.json();newCommit=_nc}})();
+    await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});
     items.forEach(function(it,i){imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:blobs[i*2].sha,date:new Date().toISOString()})});
     toast(total+' image(s) uploaded with thumbnails ✅');
     document.getElementById('save-status').textContent='Saving database…';
@@ -582,5 +582,67 @@ document.getElementById('btn-save-settings').onclick=async function(){
 };
 
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0a5494beec1db48',t:'MTc4MTIyOTg4Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
+</html>var _retryOk=false;for(var _t=0;_t<5&&!_retryOk;_t++){if(_t>0){await new Promise(function(o){setTimeout(o,800)});console.warn('Retry '+_t+'/4...')}if(!_retryOk)console.warn('Retry '+_t+' failed, retrying...')}if(!_retryOk){throw new Error('Git push failed after 5 retries')}
+    items.forEach(function(it,i){imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:blobs[i*2].sha,date:new Date().toISOString()})});
+    toast(total+' image(s) uploaded with thumbnails ✅');
+    document.getElementById('save-status').textContent='Saving database…';
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);imagesSha=r.content.sha;
+    kvWrite('images',{images:imagesData});
+    document.getElementById('save-status').textContent='Ready';renderImages();
+  }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message}
+}
+async function uploadFileAndSet(fieldId){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=(fieldId==='ep-images');
+  inp.onchange=async function(){
+    var f=inp.files;if(!f.length)return;
+    document.getElementById('save-status').textContent='Compressing...';
+    for(var i=0;i<f.length;i++){
+      try{
+        var full=await resizeImage(f[i],1200,.82);
+        var thumb=await resizeImage(f[i],400,.75);
+        var ts=Date.now()+Math.floor(Math.random()*99999);
+        var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
+        var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
+        var base=f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
+        var path=IMG_DIR+ts+'_'+base+'.jpg';
+        var thumbPath=IMG_DIR+'thumb_'+ts+'_'+base+'.jpg';
+        var r1=await ghUploadBuf(path,fullBase64,'content: upload '+f[i].name);
+        var r2=await ghUploadBuf(thumbPath,thumbBase64,'content: upload thumb '+f[i].name);
+        var url=path;
+        imagesData.push({name:f[i].name,url:url,path:path,thumb:thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
+        var el=document.getElementById(fieldId);
+        if(fieldId==='ep-images')el.value=el.value+'\n'+url;else el.value=url;
+      }catch(e){toast('Upload failed: '+e.message,'err')}
+    }
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
+    kvWrite('images',{images:imagesData});
+    document.getElementById('save-status').textContent='Ready';
+  };
+  inp.click();
+}
+
+// ═══ SETTINGS ═══
+function renderSettings(){
+  var h='';
+  ['hero','men_hero','women_hero'].forEach(function(k){
+    h+='<div class="form-group"><label>'+k.replace('_',' ').toUpperCase()+'</label><div class="input-with-btn"><input id="es-'+k+'" value="'+esc(settingsData[k]||'')+'"><button class="btn-sm" onclick="uploadFileAndSet(\'es-'+k+'\')">📸 Upload</button><button class="btn-sm" onclick="openImgPicker(\'es-'+k+'\')">🖼 Browse</button></div></div>';
+  });
+  document.getElementById('settings-form').innerHTML=h;
+}
+document.getElementById('btn-save-settings').onclick=async function(){
+  var d={};
+  ['hero','men_hero','women_hero'].forEach(function(k){d[k]=document.getElementById('es-'+k).value});
+  document.getElementById('save-status').textContent='Saving…';
+  try{
+    var r=await ghWrite(SETTINGS_FILE,d,'content: update site settings',settingsSha);
+    settingsSha=r.content.sha;settingsData=d;
+    var kvOk=await kvWrite('settings',d);
+    document.getElementById('save-status').textContent=kvOk?'Ready':'Deploying…';
+    trackDeploy(r.commit.sha);toast(kvOk?'Settings saved ✅ (instant sync)':'Settings saved ✅');
+  }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
+};
+
+</script>
+</body>
 </html>
