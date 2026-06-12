@@ -1,5 +1,5 @@
 /images/*
-  Cache-Control: public, max-age=2592000
+  Cache-Control: public, max-age=2592000, must-revalidate
 
 /data/*
   Cache-Control: public, max-age=300
