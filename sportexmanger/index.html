@@ -444,8 +444,16 @@ async function delImage(idx){
   if(!confirm('Delete '+img.name+'?'+warn))return;
   while(_uploadBusy){await new Promise(function(o){setTimeout(o,300)})}
   _uploadBusy=true;
-  try{await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+imagesData[idx].name.replace(/[^a-zA-Z0-9._-]/g,'_'),{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})});
-  imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;kvWrite('images',{images:imagesData});renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}
+  try{
+    var delPath=imagesData[idx].path.replace(/^\//,'');
+    var delTasks=[ghAPI('/repos/'+REPO+'/contents/'+delPath,{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})})];
+    if(imagesData[idx].thumb)delTasks.push(ghAPI('/repos/'+REPO+'/contents/'+imagesData[idx].thumb.replace(/^\//,''),{method:'DELETE',body:JSON.stringify({message:'content: delete thumb '+imagesData[idx].name,sha:imagesData[idx].sha})}));
+    imagesData.splice(idx,1);
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);
+    imagesSha=r.content.sha;kvWrite('images',{images:imagesData});renderImages();toast('Deleted ✅');
+    // Background: delete files from repo (don't block UI)
+    Promise.all(delTasks.map(function(t){return t.then(function(r){if(!r.ok)console.warn('Del file failed: '+r.status)})}));
+  }catch(e){toast('Delete failed: '+e.message,'err')}
   _uploadBusy=false;
 }
 
@@ -510,22 +518,38 @@ async function uploadFiles(files){
   if(_uploadBusy){toast('Upload in progress, please wait…','warn');return}
   _uploadBusy=true;
   var total=files.length;
-  document.getElementById('save-status').textContent='Compressing & generating thumbnails…';
+  document.getElementById('save-status').textContent='Compressing…';
   try{
     var items=await uploadWithThumbs(files);
-    document.getElementById('save-status').textContent='Uploading '+(items.length*2)+' files…';
-    // Upload sequentially — each Contents API call creates a git commit, can't race
-    for(var i=0;i<items.length;i++){
-      var it=items[i];
-      document.getElementById('save-status').textContent='Uploading '+(i+1)+'/'+total+'…';
-      var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
-      var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
-      imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
+    document.getElementById('save-status').textContent='Uploading batch…';
+    // Build new imagesData + encode images.json
+    var newImagesData=imagesData.slice();
+    items.forEach(function(it,i){newImagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,date:new Date().toISOString()})});
+    var imagesJsonB64=btoa(unescape(encodeURIComponent(JSON.stringify({images:newImagesData},null,2))));
+    // All blobs: images + images.json (parallel creation)
+    var allB64=[];
+    items.forEach(function(it){allB64.push(it.fullBase64,it.thumbBase64)});
+    allB64.push(imagesJsonB64);
+    var blobs=await Promise.all(allB64.map(function(b){return ghAPI('/repos/'+REPO+'/git/blobs',{method:'POST',body:JSON.stringify({content:b,encoding:'base64'})}).then(function(r){return r.json()})}));
+    // Tree entries
+    var entries=[];
+    items.forEach(function(it,i){entries.push({path:it.path.replace(/^\//,''),mode:'100644',type:'blob',sha:blobs[i*2].sha});entries.push({path:it.thumbPath.replace(/^\//,''),mode:'100644',type:'blob',sha:blobs[i*2+1].sha})});
+    entries.push({path:'data/images.json',mode:'100644',type:'blob',sha:blobs[blobs.length-1].sha});
+    // Single commit (retry safety net for concurrent pushes)
+    var ok=false;
+    for(var t=0;t<3&&!ok;t++){
+      if(t>0)await new Promise(function(o){setTimeout(o,600)});
+      try{
+        var head=await (await ghAPI('/repos/'+REPO+'/git/ref/heads/main')).json();
+        var tree=await (await ghAPI('/repos/'+REPO+'/git/commits/'+head.object.sha)).json();
+        var nt=await (await ghAPI('/repos/'+REPO+'/git/trees',{method:'POST',body:JSON.stringify({base_tree:tree.tree.sha,tree:entries})})).json();
+        var nc=await (await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s)',tree:nt.sha,parents:[head.object.sha]})})).json();
+        var pr=await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:nc.sha,force:false})});
+        if(pr.ok)ok=true;
+      }catch(e){}
     }
-    // Save images.json
-    document.getElementById('save-status').textContent='Saving database…';
-    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);
-    imagesSha=r.content.sha;
+    if(!ok)throw new Error('Upload failed after 3 attempts, please retry');
+    imagesData=newImagesData;imagesSha=blobs[blobs.length-1].sha;
     kvWrite('images',{images:imagesData});
     document.getElementById('save-status').textContent='Ready';renderImages();
     toast(total+' image(s) uploaded ✅');
