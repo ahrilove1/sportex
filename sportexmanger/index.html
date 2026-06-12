@@ -512,17 +512,14 @@ async function uploadFiles(files){
   try{
     var items=await uploadWithThumbs(files);
     document.getElementById('save-status').textContent='Uploading '+(items.length*2)+' files…';
-    // Upload via Contents API — GitHub handles ref update internally, no 422
-    var tasks=[];
-    items.forEach(function(it){
-      tasks.push(ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name));
-      tasks.push(ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name));
-    });
-    var results=await Promise.all(tasks);
-    // Update local imagesData
-    items.forEach(function(it,i){
-      imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:results[i*2].content.sha,date:new Date().toISOString()});
-    });
+    // Upload sequentially — each Contents API call creates a git commit, can't race
+    for(var i=0;i<items.length;i++){
+      var it=items[i];
+      document.getElementById('save-status').textContent='Uploading '+(i+1)+'/'+total+'…';
+      var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
+      var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
+      imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
+    }
     // Save images.json
     document.getElementById('save-status').textContent='Saving database…';
     var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);
