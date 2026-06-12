@@ -420,7 +420,7 @@ function renderImages(){
   if(!imagesData.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:32px">No images yet — upload some!</p>';return}
   var h='';
   imagesData.forEach(function(img,i){
-    var src=img.thumb||img.url;
+    var src=(img.thumb||img.url)+'?v='+(img.date||'').replace(/[^0-9]/g,'').slice(0,12);
     h+='<div class="img-card"><img src="'+src+'" alt="'+img.name+'" loading="lazy" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
   });
   g.innerHTML=h;
@@ -455,7 +455,7 @@ function openImgPicker(targetId){
   var g=document.getElementById('img-select-grid');
   var h='';
   imagesData.forEach(function(img,i){
-    var src=img.thumb||img.url;
+    var src=(img.thumb||img.url)+'?v='+(img.date||'').replace(/[^0-9]/g,'').slice(0,12);
     h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+src+'" alt="'+img.name+'" loading="lazy" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
   });
   if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
