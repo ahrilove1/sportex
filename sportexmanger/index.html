@@ -451,8 +451,10 @@ function openImgPicker(targetId){
   pickerTarget=targetId;
   var g=document.getElementById('img-select-grid');
   var h='';
+  var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
   imagesData.forEach(function(img,i){
-    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+img.url+'" alt="'+img.name+'" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
+    var src=RAW+img.url;
+    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+src+'" alt="'+img.name+'" onclick="event.stopPropagation();viewImage(\''+src+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
   });
   if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
   g.innerHTML=h;
