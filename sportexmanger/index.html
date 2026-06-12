@@ -481,7 +481,7 @@ function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;ret
 
 async function uploadWithThumbs(fileList){
   var total=fileList.length;
-  return await Promise.all(fileList.map(function(f,i){
+  return await Promise.all(Array.from(fileList).map(function(f,i){
     return (async function(){
       // Run full+thumb resize in parallel
       var full=resizeImage(f,1200,.82);
