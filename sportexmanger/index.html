@@ -503,8 +503,11 @@ async function uploadWithThumbs(fileList){
   }));
 }
 
+var _uploadBusy=false;
 async function uploadFiles(files){
   if(!files.length)return;
+  if(_uploadBusy){toast('Upload in progress, please wait…','warn');return}
+  _uploadBusy=true;
   var total=files.length;
   document.getElementById('save-status').textContent='Compressing & generating thumbnails…';
   try{
@@ -549,7 +552,8 @@ async function uploadFiles(files){
     kvWrite('images',{images:imagesData});
     document.getElementById('save-status').textContent='Ready';renderImages();
     toast(total+' image(s) uploaded ✅');
-  }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message}
+    _uploadBusy=false;
+  }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message;_uploadBusy=false}
 }
 async function uploadFileAndSet(fieldId){
   var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=(fieldId==='ep-images');
