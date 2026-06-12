@@ -1,0 +1,10 @@
+# Temp / working files
+*.py
+*.txt
+prompts.json
+*.png
+
+# OS files
+Thumbs.db
+.DS_Store
+Desktop.ini

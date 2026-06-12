@@ -484,21 +484,18 @@ document.getElementById('file-input').onchange=function(){uploadFiles(this.files
 function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;var rw=w,rh=h;if(w>maxW){var ratio=maxW/w;rw=maxW;rh=Math.round(h*ratio)}var c=document.createElement('canvas');c.width=rw;c.height=rh;var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,rw,rh);c.toBlob(function(b){URL.revokeObjectURL(u);ok(new File([b],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}))},'image/jpeg',quality)};img.src=u})}
 
 async function uploadWithThumbs(fileList){
-  var total=fileList.length;
   return await Promise.all(Array.from(fileList).map(function(f,i){
     return (async function(){
-      // Run full+thumb resize in parallel
       var full=resizeImage(f,1200,.82);
       var thumb=resizeImage(f,400,.75);
       var ts=Date.now()+Math.floor(Math.random()*99999);
-      // Wait for both resizes to complete
-      var fullBlob=await full;
-      var thumbBlob=await thumb;
-      // Encode both in parallel
-      var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(fullBlob)});
-      var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumbBlob)});
+      var [fullBlob,thumbBlob]=await Promise.all([full,thumb]);
+      var [fullB64,thumbB64]=await Promise.all([
+        new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(fullBlob)}),
+        new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumbBlob)})
+      ]);
       var base=f.name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
-      return {name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullBase64,thumbBase64:thumbBase64};
+      return {name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64};
     })();
   }));
 }
@@ -530,8 +527,8 @@ async function uploadFiles(files){
     var imagesJsonBlobSha=blobResults[blobResults.length-1].sha;
     // Retry loop for ref update
     var pushed=false,retry=0;
-    while(!pushed&&retry<5){
-      if(retry>0){document.getElementById('save-status').textContent='Git busy, retrying '+(retry+1)+'/5…';await new Promise(function(o){setTimeout(o,1500+retry*1000)})}
+    while(!pushed&&retry<3){
+      if(retry>0){document.getElementById('save-status').textContent='Git busy, retrying '+(retry+1)+'/3…';await new Promise(function(o){setTimeout(o,800+retry*400)})}
       try{
         var headRef=await ghAPI('/repos/'+REPO+'/git/ref/heads/main');
         var headData=await headRef.json();
@@ -546,7 +543,7 @@ async function uploadFiles(files){
         if(patchResp.ok){pushed=true}else{retry++;console.warn('GH ref patch '+patchResp.status+', retry '+retry)}
       }catch(e){retry++;console.warn('GH ref patch err: '+e.message+', retry '+retry)}
     }
-    if(!pushed){throw new Error('Git push failed after 5 retries, please try again')}
+    if(!pushed){throw new Error('Git push failed after 3 retries, please try again')}
     // Update local state
     imagesData=newImagesData;imagesSha=imagesJsonBlobSha;
     kvWrite('images',{images:imagesData});
