@@ -27,15 +27,23 @@ if (scriptCount === 0) {
   errors.push(`Too many <script> tags: ${scriptCount} (expected 1-2)`);
 }
 
-// ═══ 2. 语法检查 ═══
-// 包裹在函数中避免顶层 return 等问题
-const wrappedJS = `(function(){\n${allJS}\n})()`;
-
+// ═══ 2. 语法检查 (支持 async/await) ═══
+const vm = require('vm');
 try {
-  new Function(wrappedJS);
+  new vm.Script(allJS);
   console.log('✅ JavaScript syntax: OK');
 } catch (e) {
   errors.push(`JS SYNTAX ERROR: ${e.message}`);
+}
+
+// ═══ 2b. 括号平衡检查 ═══
+let braceDepth = 0;
+for (const ch of allJS) {
+  if (ch === '{') braceDepth++;
+  if (ch === '}') braceDepth--;
+}
+if (braceDepth !== 0) {
+  errors.push(`BRACE MISMATCH: depth=${braceDepth} (should be 0)`);
 }
 
 // ═══ 3. 关键模式检查 ═══

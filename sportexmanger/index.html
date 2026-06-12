@@ -442,8 +442,12 @@ async function delImage(idx){
   if(settingsData.women_hero===img.url)usedIn.push('Women page banner');
   var warn=usedIn.length?'\n\n⚠ Used in: '+usedIn.join(', '):'';
   if(!confirm('Delete '+img.name+'?'+warn))return;
+  while(_uploadBusy){await new Promise(function(o){setTimeout(o,300)})}
+  _uploadBusy=true;
   try{await ghAPI('/repos/'+REPO+'/contents/'+IMG_DIR+imagesData[idx].name.replace(/[^a-zA-Z0-9._-]/g,'_'),{method:'DELETE',body:JSON.stringify({message:'content: delete '+imagesData[idx].name,sha:imagesData[idx].sha})});
-  imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;kvWrite('images',{images:imagesData});renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}}
+  imagesData.splice(idx,1);var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;kvWrite('images',{images:imagesData});renderImages();toast('Deleted ✅')}catch(e){toast('Delete failed: '+e.message,'err')}
+  _uploadBusy=false;
+}
 
 // ═══ IMAGE PICKER ═══
 var pickerTarget=null;
