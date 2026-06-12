@@ -511,13 +511,7 @@ async function _processUploadQueue(){
       document.getElementById('save-status').textContent='Deleting…';
       try{
         var didx=task.idx;
-        var img=imagesData[didx];
-        if(img){
-          var dp=img.path.replace(/^\//,'');
-          ghAPI('/repos/'+REPO+'/contents/'+dp,{method:'DELETE',body:JSON.stringify({message:'content: delete '+task.name,sha:img.sha})});
-          if(img.thumb)ghAPI('/repos/'+REPO+'/contents/'+img.thumb.replace(/^\//,''),{method:'DELETE',body:JSON.stringify({message:'content: delete thumb '+task.name,sha:img.sha})});
-          imagesData.splice(didx,1);
-        }
+        if(imagesData[didx])imagesData.splice(didx,1);
         var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);
         imagesSha=r.content.sha;kvWrite('images',{images:imagesData});
         toast('Deleted ✅');
@@ -528,9 +522,12 @@ async function _processUploadQueue(){
         for(var i=0;i<items.length;i++){
           document.getElementById('save-status').textContent='Uploading '+(i+1)+'/'+total+'…';
           var it=items[i];
-          var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
-          var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
-          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
+          // Full + thumb in parallel — different files, no race
+          var results=await Promise.all([
+            ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name),
+            ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name)
+          ]);
+          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:results[0].content.sha,date:new Date().toISOString()});
         }
         document.getElementById('save-status').textContent='Saving…';
         var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);
