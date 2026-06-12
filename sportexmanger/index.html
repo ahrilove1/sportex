@@ -552,6 +552,7 @@ async function _processUploadQueue(){
         imagesData=newImagesData;imagesSha=blobs[blobs.length-1].sha;
         kvWrite('images',{images:imagesData});
         toast(total+' image(s) uploaded ✅');
+        if(task.callback){var urls=[];items.forEach(function(it){urls.push(it.path)});task.callback(urls)}
       }catch(e){toast('Upload failed: '+e.message,'err');}
     }
   }
@@ -572,27 +573,25 @@ async function uploadFileAndSet(fieldId){
   inp.onchange=async function(){
     var f=inp.files;if(!f.length)return;
     document.getElementById('save-status').textContent='Compressing...';
+    var items=[];
     for(var i=0;i<f.length;i++){
       try{
         var full=await resizeImage(f[i],1200,.82);
         var thumb=await resizeImage(f[i],400,.75);
         var ts=Date.now()+Math.floor(Math.random()*99999);
-        var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
-        var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
+        var fullB64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
+        var thumbB64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
         var base=f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
-        var path=IMG_DIR+ts+'_'+base+'.jpg';
-        var thumbPath=IMG_DIR+'thumb_'+ts+'_'+base+'.jpg';
-        var r1=await ghUploadBuf(path,fullBase64,'content: upload '+f[i].name);
-        var r2=await ghUploadBuf(thumbPath,thumbBase64,'content: upload thumb '+f[i].name);
-        var url=path;
-        imagesData.push({name:f[i].name,url:url,path:path,thumb:thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
-        var el=document.getElementById(fieldId);
-        if(fieldId==='ep-images')el.value=el.value+'\n'+url;else el.value=url;
-      }catch(e){toast('Upload failed: '+e.message,'err')}
+        items.push({name:f[i].name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64});
+      }catch(e){toast('Compress failed: '+e.message,'err')}
     }
-    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
-    kvWrite('images',{images:imagesData});
-    document.getElementById('save-status').textContent='Ready';
+    if(!items.length)return;
+    _uploadQueue.push({items:items,total:items.length,callback:function(urls){
+      var el=document.getElementById(fieldId);
+      urls.forEach(function(u){if(fieldId==='ep-images')el.value=el.value+'\n'+u;else el.value=u});
+    }});
+    if(_uploadQueue.length>1)toast('Queued ('+(_uploadQueue.length-1)+' ahead) ⏳');
+    _processUploadQueue();
   };
   inp.click();
 }
