@@ -509,37 +509,46 @@ async function uploadFiles(files){
   document.getElementById('save-status').textContent='Compressing & generating thumbnails…';
   try{
     var items=await uploadWithThumbs(files);
-    document.getElementById('save-status').textContent='Uploading '+(items.length*2)+' images…';
-    var allBlobs=[],allPaths=[];
-    items.forEach(function(it){allBlobs.push(it.fullBase64,it.thumbBase64);allPaths.push(it.path,it.thumbPath)});
-    var blobTasks=allBlobs.map(function(b){return ghAPI('/repos/'+REPO+'/git/blobs',{method:'POST',body:JSON.stringify({content:b,encoding:'base64'})}).then(function(r){return r.json()})});
-    var blobs=await Promise.all(blobTasks);
-    var treeEntries=allPaths.map(function(p,i){return {path:p.replace(/^\//,''),mode:'100644',type:'blob',sha:blobs[i].sha}});
+    document.getElementById('save-status').textContent='Preparing atomic commit…';
+    // Build new imagesData snapshot
+    var newImagesData=imagesData.slice();
+    items.forEach(function(it,i){newImagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,date:new Date().toISOString()})});
+    var imagesJsonStr=JSON.stringify({images:newImagesData},null,2);
+    var imagesJsonB64=btoa(unescape(encodeURIComponent(imagesJsonStr)));
+    // Collect all blobs: image files + images.json
+    var allB64=[];
+    items.forEach(function(it){allB64.push(it.fullBase64,it.thumbBase64)});
+    allB64.push(imagesJsonB64);
+    var blobResults=await Promise.all(allB64.map(function(b){return ghAPI('/repos/'+REPO+'/git/blobs',{method:'POST',body:JSON.stringify({content:b,encoding:'base64'})}).then(function(r){return r.json()})}));
+    // Build tree entries: image files + data/images.json
+    var treeEntries=[];
+    items.forEach(function(it,i){treeEntries.push({path:it.path.replace(/^\//,''),mode:'100644',type:'blob',sha:blobResults[i*2].sha});treeEntries.push({path:it.thumbPath.replace(/^\//,''),mode:'100644',type:'blob',sha:blobResults[i*2+1].sha})});
+    treeEntries.push({path:'data/images.json',mode:'100644',type:'blob',sha:blobResults[blobResults.length-1].sha});
+    var imagesJsonBlobSha=blobResults[blobResults.length-1].sha;
+    // Retry loop for ref update
     var pushed=false,retry=0;
     while(!pushed&&retry<5){
-      if(retry>0){document.getElementById('save-status').textContent='Git busy, retrying '+(retry+1)+'/5…';await new Promise(function(o){setTimeout(o,1000+retry*500)})}
+      if(retry>0){document.getElementById('save-status').textContent='Git busy, retrying '+(retry+1)+'/5…';await new Promise(function(o){setTimeout(o,1500+retry*1000)})}
       try{
         var headRef=await ghAPI('/repos/'+REPO+'/git/ref/heads/main');
         var headData=await headRef.json();
-        var baseCommitSha=headData.object.sha;
-        var baseCommit=await ghAPI('/repos/'+REPO+'/git/commits/'+baseCommitSha);
-        var baseCommitData=await baseCommit.json();
-        var baseTreeSha=baseCommitData.tree.sha;
-        var newTreeResp=await ghAPI('/repos/'+REPO+'/git/trees',{method:'POST',body:JSON.stringify({base_tree:baseTreeSha,tree:treeEntries})});
+        var headSha=headData.object.sha;
+        var headCommit=await ghAPI('/repos/'+REPO+'/git/commits/'+headSha);
+        var headCommitData=await headCommit.json();
+        var newTreeResp=await ghAPI('/repos/'+REPO+'/git/trees',{method:'POST',body:JSON.stringify({base_tree:headCommitData.tree.sha,tree:treeEntries})});
         var newTree=await newTreeResp.json();
-        var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs',tree:newTree.sha,parents:[baseCommitSha]})});
+        var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs',tree:newTree.sha,parents:[headSha]})});
         var newCommit=await commitResp.json();
-        var patchResp=await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});
+        var patchResp=await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha,force:false})});
         if(patchResp.ok){pushed=true}else{retry++;console.warn('GH ref patch '+patchResp.status+', retry '+retry)}
       }catch(e){retry++;console.warn('GH ref patch err: '+e.message+', retry '+retry)}
     }
     if(!pushed){throw new Error('Git push failed after 5 retries, please try again')}
-    items.forEach(function(it,i){imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:blobs[i*2].sha,date:new Date().toISOString()})});
-    toast(total+' image(s) uploaded with thumbnails ✅');
-    document.getElementById('save-status').textContent='Saving database…';
-    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);imagesSha=r.content.sha;
+    // Update local state
+    imagesData=newImagesData;imagesSha=imagesJsonBlobSha;
     kvWrite('images',{images:imagesData});
     document.getElementById('save-status').textContent='Ready';renderImages();
+    toast(total+' image(s) uploaded ✅');
   }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message}
 }
 async function uploadFileAndSet(fieldId){
