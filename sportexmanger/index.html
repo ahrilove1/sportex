@@ -521,7 +521,7 @@ async function uploadFiles(files){
     var newTree=await newTreeResp.json();
     var commitResp=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs',tree:newTree.sha,parents:[baseCommitSha]})});
     var newCommit=await commitResp.json();
-    await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});
+    await (async function(){for(var _r=0;_r<5;_r++){var _ref=await ghAPI('/repos/'+REPO+'/git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha:newCommit.sha})});if(_ref.ok)return _ref;if((_ref.status!==422&&_ref.status!==409)||_r>=4)throw new Error('Git push: '+_ref.status);await new Promise(function(o){setTimeout(o,600)});var _h=await ghAPI('/repos/'+REPO+'/git/ref/heads/main');var _hd=await _h.json();var _bs=_hd.object.sha;var _cr=await ghAPI('/repos/'+REPO+'/git/commits',{method:'POST',body:JSON.stringify({message:'content: upload '+total+' image(s) with thumbs [retry]',tree:newTree.sha,parents:[_bs]})});var _nc=await _cr.json();newCommit=_nc}})();
     items.forEach(function(it,i){imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:blobs[i*2].sha,date:new Date().toISOString()})});
     toast(total+' image(s) uploaded with thumbnails ✅');
     document.getElementById('save-status').textContent='Saving database…';
@@ -582,5 +582,5 @@ document.getElementById('btn-save-settings').onclick=async function(){
 };
 
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0a5494beec1db48',t:'MTc4MTIyOTg4Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
