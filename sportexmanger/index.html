@@ -528,31 +528,8 @@ async function uploadFiles(files){
     document.getElementById('save-status').textContent='Ready';renderImages();
   }catch(e){toast('Upload failed: '+e.message,'err');document.getElementById('save-status').textContent='Error: '+e.message}
 }
-async function uploadFileAndSet(fieldId){
-  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=(fieldId==='ep-images');
-  inp.onchange=async function(){
-    var f=inp.files;if(!f.length)return;
-    document.getElementById('save-status').textContent='Uploading…';
-    for(var i=0;i<f.length;i++){
-      try{
-        var optimized=await resizeImage(f[i]);
-        var base64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(optimized)});
-        var ts=Date.now()+Math.floor(Math.random()*9999),safeName=ts+'_'+f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=IMG_DIR+safeName;
-        var result=await ghUploadBuf(path,base64,'content: upload '+f[i].name);
-        var url=path;
-        imagesData.push({name:f[i].name,url:url,path:path,sha:result.content.sha,date:new Date().toISOString()});
-        var el=document.getElementById(fieldId);
-        if(fieldId==='ep-images')el.value=el.value+'\n'+url;else el.value=url;
-      }catch(e){toast('Upload failed: '+e.message,'err')}
-    }
-    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;
-    kvWrite('images',{images:imagesData});
-    document.getElementById('save-status').textContent='Ready';
-  };
-  inp.click();
-}
-
-// ═══ SETTINGS ═══
+async function uploadFileAndSet(fieldId){var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=(fieldId==='ep-images');inp.onchange=async function(){var f=inp.files;if(!f.length)return;document.getElementById('save-status').textContent='Compressing...';for(var i=0;i<f.length;i++){try{var full=await resizeImage(f[i],1200,.82);var thumb=await resizeImage(f[i],400,.75);var ts=Date.now()+Math.floor(Math.random()*99999);var fullBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});var thumbBase64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});var base=f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');var path=IMG_DIR+ts+'_'+base+'.jpg';var thumbPath=IMG_DIR+'thumb_'+ts+'_'+base+'.jpg';var r1=await ghUploadBuf(path,fullBase64,'content: upload '+f[i].name);var r2=await ghUploadBuf(thumbPath,thumbBase64,'content: upload thumb '+f[i].name);var url=path;imagesData.push({name:f[i].name,url:url,path:path,thumb:thumbPath,sha:r1.content.sha,date:new Date().toISOString()});var el=document.getElementById(fieldId);if(fieldId==='ep-images')el.value=el.value+'
+'+url;else el.value=url}catch(e){toast('Upload failed: '+e.message,'err')}}var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);imagesSha=r.content.sha;kvWrite('images',{images:imagesData});document.getElementById('save-status').textContent='Ready'};inp.click()}// ═══ SETTINGS ═══
 function renderSettings(){
   var h='';
   ['hero','men_hero','women_hero'].forEach(function(k){
