@@ -507,6 +507,7 @@ async function _processUploadQueue(){
   _uploadRunning=true;
   while(_uploadQueue.length){
     var task=_uploadQueue.shift();
+    if(!task)continue;
     if(task.type==='del'){
       document.getElementById('save-status').textContent='Deleting…';
       try{
@@ -522,12 +523,9 @@ async function _processUploadQueue(){
         for(var i=0;i<items.length;i++){
           document.getElementById('save-status').textContent='Uploading '+(i+1)+'/'+total+'…';
           var it=items[i];
-          // Full + thumb in parallel — different files, no race
-          var results=await Promise.all([
-            ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name),
-            ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name)
-          ]);
-          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:results[0].content.sha,date:new Date().toISOString()});
+          var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
+          var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
+          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
         }
         document.getElementById('save-status').textContent='Saving…';
         var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);
@@ -537,7 +535,8 @@ async function _processUploadQueue(){
       }catch(e){toast('Upload failed: '+e.message,'err');}
     }
   }
-  document.getElementById('save-status').textContent='Ready';renderImages();
+  try{renderImages();}catch(e){}
+  document.getElementById('save-status').textContent='Ready';
   _uploadRunning=false;
 }
 async function uploadFiles(files){
