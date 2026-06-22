@@ -435,7 +435,7 @@ function renderImages(){
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
   imagesData.forEach(function(img,i){
     var thumb=img.thumb||img.url;
-    h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+i+'" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event)" ondragend="dragEnd(event)">';
+    h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+i+'" ondragstart="dragStart.call(this,event)" ondragover="dragOver.call(this,event)" ondragenter="dragEnter.call(this,event)" ondragleave="dragLeave.call(this,event)" ondrop="dragDrop.call(this,event)" ondragend="dragEnd.call(this,event)">';
     h+='<div class="drag-handle" title="Drag to reorder">⋮⋮</div>';
     h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+RAW+thumb+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer">';
     h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div>';
