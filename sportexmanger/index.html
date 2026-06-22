@@ -111,6 +111,17 @@ tr:hover{background:var(--off-white)}
 .img-grid .img-card .img-url{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;font-size:9px;padding:2px 6px;cursor:pointer;opacity:0;transition:opacity .15s}
 .img-grid .img-card:hover .img-url{opacity:1}
 
+/* REORDER MODE */
+.img-grid.reorder-mode .img-card{cursor:grab}
+.img-grid.reorder-mode .img-card:active{cursor:grabbing}
+.img-grid.reorder-mode .img-card.dragging{opacity:.35;transform:scale(.94);transition:opacity .15s,transform .15s}
+.img-grid.reorder-mode .img-card.drag-over{border:2px solid var(--accent);box-shadow:0 0 14px rgba(212,148,78,.45);transform:scale(1.03);transition:all .15s}
+.img-grid .img-card .drag-handle{display:none;position:absolute;top:4px;left:4px;width:26px;height:26px;background:rgba(0,0,0,.55);border-radius:4px;cursor:grab;z-index:6;align-items:center;justify-content:center;color:#fff;font-size:14px;line-height:1;user-select:none}
+.img-grid.reorder-mode .img-card .drag-handle{display:flex}
+.img-grid.reorder-mode .img-card .img-actions{display:none}
+#btn-reorder{font-size:11px;padding:6px 16px}
+#btn-reorder.active{background:var(--accent);color:var(--white);border-color:var(--accent)}
+
 /* UPLOAD ZONE */
 .upload-zone{border:2px dashed var(--gray-light);border-radius:2px;padding:32px;text-align:center;cursor:pointer;margin-bottom:16px;transition:all .2s;background:var(--white)}
 .upload-zone:hover{border-color:var(--accent);background:var(--off-white)}
@@ -182,7 +193,7 @@ tr:hover{background:var(--off-white)}
 
 <!-- IMAGES PANEL -->
 <div id="panel-images" class="panel">
-<div class="card"><h2>Image Library</h2>
+<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><h2 style="margin-bottom:0">Image Library</h2><button class="btn-xs" id="btn-reorder" onclick="toggleReorder()">🔀 Reorder</button></div>
 <div class="upload-zone" id="upload-zone"><p>📸 Click or drag & drop images here to upload</p><input type="file" id="file-input" multiple accept="image/*" style="display:none"></div>
 <div class="img-grid" id="img-grid"></div>
 </div>
@@ -242,7 +253,7 @@ async function checkToken(){var t=document.getElementById('token-input').value.t
 // ═══ GITHUB API ═══
 function ghAPI(path,opts){opts=opts||{};opts.headers=opts.headers||{};opts.headers['Authorization']='Bearer '+token;opts.headers['Accept']='application/vnd.github.v3+json';var f=fetch('https://api.github.com'+path,opts);f.then(function(r){if(!r.ok)r.clone().json().then(function(e){console.error('GH '+r.status+': '+path+' - '+e.message)}).catch(function(){})});return f}
 async function ghRead(filePath){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath);if(!r.ok)throw new Error('Read '+r.status);var d=await r.json();return{sha:d.sha,content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}}
-async function ghWrite(filePath,content,msg,sha,retry){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(r.status===409&&(!retry||retry<3)){await new Promise(function(ok){setTimeout(ok,500)});var fresh=await ghRead(filePath);return ghWrite(filePath,content,msg,fresh.sha,(retry||1)+1)}if(!r.ok)throw new Error('Write '+r.status);return r.json()}
+async function ghWrite(filePath,content,msg,sha,retry,onConflict){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(r.status===409&&(!retry||retry<5)){await new Promise(function(ok){setTimeout(ok,400+(retry||0)*200)});var fresh=await ghRead(filePath);var merged=onConflict?onConflict(content,fresh.content):content;return ghWrite(filePath,merged,msg,fresh.sha,(retry||1)+1,onConflict)}if(!r.ok)throw new Error('Write '+r.status);return r.json()}
 async function ghUploadBuf(filePath,base64,msg){var p=filePath.replace(/^\/+/,'');var r=await ghAPI('/repos/'+REPO+'/contents/'+p,{method:'PUT',body:JSON.stringify({message:msg,content:base64})});if(!r.ok)throw new Error('Upload '+r.status);return r.json()}
 
 // ═══ TOAST ═══
@@ -417,12 +428,18 @@ document.getElementById('btn-save-company').onclick=async function(){
 // ═══ IMAGE DATABASE ═══
 function renderImages(){
   var g=document.getElementById('img-grid');
+  var btn=document.getElementById('btn-reorder');
+  if(reorderMode){g.classList.add('reorder-mode');btn.textContent='✅ Done';btn.classList.add('active')}else{g.classList.remove('reorder-mode');btn.textContent='🔀 Reorder';btn.classList.remove('active')}
   if(!imagesData.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:32px">No images yet — upload some!</p>';return}
   var h='';
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
   imagesData.forEach(function(img,i){
     var thumb=img.thumb||img.url;
-    h+='<div class="img-card"><img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+RAW+thumb+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer"><div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div><div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
+    h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+i+'" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event)" ondragend="dragEnd(event)">';
+    h+='<div class="drag-handle" title="Drag to reorder">⋮⋮</div>';
+    h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+RAW+thumb+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer">';
+    h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div>';
+    h+='<div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
   });
   g.innerHTML=h;
 }
@@ -474,6 +491,85 @@ function confirmImgPick(){
 }
 function closeImgPicker(){document.getElementById('img-picker-modal').classList.remove('on');pickerTarget=null}
 
+// ═══ REORDER ═══
+// ═══ MERGE HELPER ═══
+// Called by ghWrite on 409 conflict — merges our imagesData with server's version
+// so concurrent uploads from other clients are not lost
+function mergeImages(ourContent, serverContent){
+  var ourUrls={};
+  (ourContent.images||[]).forEach(function(img){ if(img.url)ourUrls[img.url]=true; });
+  var added=0;
+  (serverContent.images||[]).forEach(function(img){
+    if(img.url&&!ourUrls[img.url]){ ourContent.images.push(img); added++; }
+  });
+  if(added){ imagesData=ourContent.images; console.log('[mergeImages] +'+added+' from other client'); }
+  return ourContent;
+}
+
+function toggleReorder(){
+  reorderMode=!reorderMode;
+  renderImages();
+  if(!reorderMode)toast('Reorder mode off');
+}
+
+var _dragSrcIdx=null;
+
+function dragStart(e){
+  if(!reorderMode)return;
+  _dragSrcIdx=parseInt(this.dataset.idx);
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',_dragSrcIdx);
+}
+
+function dragOver(e){
+  if(!reorderMode)return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+}
+
+function dragEnter(e){
+  if(!reorderMode)return;
+  e.preventDefault();
+  this.classList.add('drag-over');
+}
+
+function dragLeave(e){
+  this.classList.remove('drag-over');
+}
+
+function dragDrop(e){
+  if(!reorderMode)return;
+  e.preventDefault();
+  e.stopPropagation();
+  this.classList.remove('drag-over');
+  var fromIdx=_dragSrcIdx;
+  var toIdx=parseInt(this.dataset.idx);
+  if(fromIdx===toIdx||fromIdx===null)return;
+  var item=imagesData.splice(fromIdx,1)[0];
+  imagesData.splice(toIdx,0,item);
+  _dragSrcIdx=null;
+  renderImages();
+  saveImageOrder();
+}
+
+function dragEnd(e){
+  this.classList.remove('dragging');
+  document.querySelectorAll('#img-grid .img-card.drag-over').forEach(function(el){el.classList.remove('drag-over')});
+}
+
+async function saveImageOrder(){
+  document.getElementById('save-status').textContent='Saving order…';
+  try{
+    var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: reorder image database',imagesSha,0,mergeImages);
+    imagesSha=r.content.sha;
+    var kvOk=await kvWrite('images',{images:imagesData});
+    document.getElementById('save-status').textContent=kvOk?'Ready':'Deploying…';
+    toast(kvOk?'Order saved ✅ (instant sync)':'Order saved ✅');
+    if(!kvOk)trackDeploy(r.commit.sha);
+  }catch(e){document.getElementById('save-status').textContent='Error';toast('Save order failed: '+e.message,'err')}
+}
+
 // ═══ UPLOAD ═══
 document.getElementById('upload-zone').onclick=function(){document.getElementById('file-input').click()};
 document.getElementById('upload-zone').ondragover=function(e){e.preventDefault();this.style.borderColor='var(--accent)'};
@@ -484,9 +580,31 @@ document.getElementById('file-input').onchange=function(){uploadFiles(this.files
 // ═══ IMAGE RESIZE ═══
 function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;var rw=w,rh=h;if(w>maxW){var ratio=maxW/w;rw=maxW;rh=Math.round(h*ratio)}var c=document.createElement('canvas');c.width=rw;c.height=rh;var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,rw,rh);c.toBlob(function(b){URL.revokeObjectURL(u);ok(new File([b],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}))},'image/jpeg',quality)};img.src=u})}
 
+// ═══ IMAGE DEDUP ═══
+async function computeFileHash(file){
+  try{
+    var buf=await file.arrayBuffer();
+    var hashBuf=await crypto.subtle.digest('SHA-256',buf);
+    return Array.from(new Uint8Array(hashBuf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+  }catch(e){
+    // Fallback: use name+size+lastModified combo
+    return file.name+'|'+file.size+'|'+file.lastModified;
+  }
+}
+function findDuplicateImage(hash){
+  for(var i=0;i<imagesData.length;i++){
+    if(imagesData[i].hash&&imagesData[i].hash===hash)return i;
+  }
+  return -1;
+}
+
 async function uploadWithThumbs(fileList){
   return await Promise.all(Array.from(fileList).map(function(f,i){
     return (async function(){
+      // ═══ DEDUP CHECK ═══
+      var hash=await computeFileHash(f);
+      var dupIdx=findDuplicateImage(hash);
+      if(dupIdx!==-1){return {skip:true,name:f.name,hash:hash,dupIdx:dupIdx}}
       var full=resizeImage(f,1200,.82);
       var thumb=resizeImage(f,400,.75);
       var ts=Date.now()+Math.floor(Math.random()*99999);
@@ -496,11 +614,12 @@ async function uploadWithThumbs(fileList){
         new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumbBlob)})
       ]);
       var base=f.name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
-      return {name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64};
+      return {name:f.name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64,hash:hash};
     })();
   }));
 }
 
+var reorderMode=false;
 var _uploadQueue=[],_uploadRunning=false;
 async function _processUploadQueue(){
   if(_uploadRunning){return}
@@ -513,7 +632,7 @@ async function _processUploadQueue(){
       try{
         var didx=task.idx;
         if(imagesData[didx])imagesData.splice(didx,1);
-        var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha);
+        var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database',imagesSha,0,mergeImages);
         imagesSha=r.content.sha;kvWrite('images',{images:imagesData});
         toast('Deleted ✅');
       }catch(e){toast('Delete failed: '+e.message,'err')}
@@ -525,10 +644,10 @@ async function _processUploadQueue(){
           var it=items[i];
           var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
           var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
-          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,date:new Date().toISOString()});
+          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,hash:it.hash,date:new Date().toISOString()});
         }
         document.getElementById('save-status').textContent='Saving…';
-        var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha);
+        var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha,0,mergeImages);
         imagesSha=r.content.sha;kvWrite('images',{images:imagesData});
         toast(total+' image(s) uploaded ✅');
         if(task.callback){var urls=[];items.forEach(function(it){urls.push(it.path)});task.callback(urls)}
@@ -544,7 +663,19 @@ async function uploadFiles(files){
   var total=files.length;
   document.getElementById('save-status').textContent='Compressing…';
   var items=await uploadWithThumbs(files);
-  _uploadQueue.push({items:items,total:total});
+  var skipped=items.filter(function(x){return x.skip});
+  var valid=items.filter(function(x){return !x.skip});
+  if(skipped.length){
+    var names=skipped.map(function(x){return x.name}).join(', ');
+    toast('⏭ Skipped '+skipped.length+' duplicate(s): '+names);
+    console.log('[dedup] skipped:',skipped.map(function(x){return x.name+' (hash matches #'+x.dupIdx+')'}).join(', '));
+  }
+  if(!valid.length){
+    document.getElementById('save-status').textContent='Ready';
+    if(!skipped.length)toast('No files to upload','err');
+    return;
+  }
+  _uploadQueue.push({items:valid,total:valid.length});
   if(_uploadQueue.length>1)toast('Queued ('+(_uploadQueue.length-1)+' ahead) ⏳');
   _processUploadQueue();
 }
@@ -556,13 +687,21 @@ async function uploadFileAndSet(fieldId){
     var items=[];
     for(var i=0;i<f.length;i++){
       try{
+        // ═══ DEDUP CHECK ═══
+        var hash=await computeFileHash(f[i]);
+        var dupIdx=findDuplicateImage(hash);
+        if(dupIdx!==-1){
+          toast('⏭ Skipped duplicate: '+f[i].name);
+          console.log('[dedup] uploadFileAndSet skipped: '+f[i].name+' (hash matches #'+dupIdx+')');
+          continue;
+        }
         var full=await resizeImage(f[i],1200,.82);
         var thumb=await resizeImage(f[i],400,.75);
         var ts=Date.now()+Math.floor(Math.random()*99999);
         var fullB64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
         var thumbB64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
         var base=f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
-        items.push({name:f[i].name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64});
+        items.push({name:f[i].name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64,hash:hash});
       }catch(e){toast('Compress failed: '+e.message,'err')}
     }
     if(!items.length)return;
