@@ -4,11 +4,11 @@
 /data/*
   Cache-Control: public, max-age=300, stale-while-revalidate=86400
 
-*.js
+/*.js
   Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
 
-*.css
+/*.css
   Cache-Control: public, max-age=2592000
 
-*.svg
+/*.svg
   Cache-Control: public, max-age=2592000
