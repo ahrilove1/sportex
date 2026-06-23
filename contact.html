@@ -178,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
 await companyLoaded;
 renderNav('contact');
 renderFooter();
+  if(typeof applyLang==='function') applyLang(currentLang);
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
