@@ -72,6 +72,7 @@ var r=await fetch('data/products.json');var d=await r.json();var all=d.products_
 var products=all.filter(function(p){return p.category==='men'&&isPants(p);});
 try{var cr=await fetch('/api/data/company');if(cr.ok)COMPANY=await cr.json();}catch(e){}
 renderNav('men');renderFooter();
+  if(typeof applyLang==='function') applyLang(currentLang);
 var g=document.getElementById('productGrid');
 if(!products.length){g.innerHTML='<p style="text-align:center;color:var(--gray);grid-column:1/-1;padding:40px">No pants yet.</p>';return;}
 products.forEach(function(p){
