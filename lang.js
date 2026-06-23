@@ -232,4 +232,5 @@ function toggleLang() {
 }
 
 // Apply saved language on load
-document.addEventListener('DOMContentLoaded', () => applyLang(currentLang));
+// Apply immediately (deferred scripts run after HTML parse)
+applyLang(currentLang);
