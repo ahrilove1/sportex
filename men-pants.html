@@ -4,6 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Men's Pants | SPORTEX</title>
 <link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://raw.githubusercontent.com">
 <style>
 :root{--navy:#1a1f2e;--navy-light:#2a3348;--white:#fff;--off-white:#f5f4f1;--gray:#6b7280;--gray-light:#e5e7eb;--accent:#d4944e;--accent-dark:#b87830;--text:#1f2937}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -59,8 +61,10 @@ body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-ser
 </section>
 <div class="back-link reveal"><a href="men">&larr; Back to Men</a></div>
 <footer id="siteFooter" class="footer"></footer>
-<script src="products.js"></script><script src="common.js"></script><script src="lang.js"></script>
+<script src="products.js" defer></script><script src="common.js" defer></script><script src="lang.js" defer></script>
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+
 function isPants(p){if(p.subcat==='pants')return true;var n=(p.name||'').toLowerCase();return /pants|trouser|chino|short|cargo|jean/.test(n);}
 (async function(){
 try{
@@ -80,6 +84,8 @@ var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isInters
 document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
 }catch(e){document.getElementById('productGrid').innerHTML='<p style="text-align:center;color:var(--gray);padding:40px">'+e.message+'</p>';}
 })();
+
+});
 </script>
 </body>
 </html>
