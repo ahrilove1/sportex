@@ -176,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('women');
 renderFooter();
+  if(typeof applyLang==='function') applyLang(currentLang);
 
 const grid = document.getElementById('productGrid');
 getProductsByCategory('women').forEach((p) => {
