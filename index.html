@@ -266,6 +266,7 @@ document.addEventListener("DOMContentLoaded", function() {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('home');
 renderFooter();
+  if(typeof applyLang==='function') applyLang(currentLang);
 
 // Featured products — 4 picks (2 men, 2 women)
 const featuredIds = ['m-01', 'm-04', 'w-01', 'w-04'];
