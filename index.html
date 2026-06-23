@@ -9,6 +9,8 @@
 <meta property="og:description" content="Premium outdoor resort wear manufacturer. AATCC certified. Lightweight, breathable, UPF 50+ protection.">
 <meta property="og:type" content="website">
 <link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://raw.githubusercontent.com">
 <style>
   :root {
     --navy: #1a1f2e; --navy-light: #2a3348;
@@ -254,10 +256,12 @@
 
 <footer id="siteFooter" class="footer"></footer>
 
-<script src="products.js"></script>
-<script src="common.js"></script>
-<script src="lang.js"></script>
+<script src="products.js" defer></script>
+<script src="common.js" defer></script>
+<script src="lang.js" defer></script>
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+
 (async () => {
 await Promise.all([productsLoaded, companyLoaded]);
 renderNav('home');
@@ -297,6 +301,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 })();
+
+});
 </script>
 </body>
 </html>
