@@ -149,7 +149,7 @@ tr:hover{background:var(--off-white)}
 <!-- ═══ LOGIN ═══ -->
 <div id="login-screen">
 <div class="login-box">
-<div id="step-pw"><div class="logo">SPORTEX</div><div class="sub">Content Manager <span style="font-size:10px;opacity:.45;letter-spacing:0">v1.1.1</span></div><input type="password" id="pw-input" placeholder="Enter password" autofocus><button class="btn" id="pw-btn">Unlock</button><div class="error" id="pw-error">Incorrect password</div></div>
+<div id="step-pw"><div class="logo">SPORTEX</div><div class="sub">Content Manager <span style="font-size:10px;opacity:.45;letter-spacing:0">v1.1.2</span></div><input type="password" id="pw-input" placeholder="Enter password" autofocus><button class="btn" id="pw-btn">Unlock</button><div class="error" id="pw-error">Incorrect password</div></div>
 <div id="step-token"><div class="logo">SPORTEX</div><div class="sub">GitHub Access Token</div><input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus><button class="btn" id="token-btn">Save & Enter</button><div class="error" id="token-error">Invalid token — requires <b>repo</b> scope</div><div class="ok" id="token-ok">Validated! Loading…</div><div class="hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">Create a GitHub token →</a></div></div>
 </div>
 </div>
@@ -165,7 +165,7 @@ tr:hover{background:var(--off-white)}
 <a href="#" data-tab="images">Images</a>
 <a href="#" data-tab="settings">Settings</a>
 </span>
-<span class="status" id="save-status"></span><span style="font-size:10px;color:rgba(255,255,255,.25);margin-left:8px;letter-spacing:0">v1.1.1</span>
+<span class="status" id="save-status"></span><span style="font-size:10px;color:rgba(255,255,255,.25);margin-left:8px;letter-spacing:0">v1.1.2</span>
 </div>
 </div>
 <div class="deploy-wrap" id="deploy-wrap"><div class="deploy-bar"><div class="deploy-fill" id="deploy-fill"></div></div><div class="deploy-info" id="deploy-info"></div></div>
@@ -426,6 +426,7 @@ document.getElementById('btn-save-company').onclick=async function(){
 };
 
 // ═══ IMAGE DATABASE ═══
+var imgPage=1,imgPerPage=30;
 function renderImages(){
   var g=document.getElementById('img-grid');
   var btn=document.getElementById('btn-reorder');
@@ -433,14 +434,40 @@ function renderImages(){
   if(!imagesData.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:32px">No images yet — upload some!</p>';return}
   var h='';
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
-  imagesData.forEach(function(img,i){
+  // Reorder mode: show all. Normal mode: paginate 30/page
+  var items=reorderMode?imagesData:function(){
+    var total=Math.max(1,Math.ceil(imagesData.length/imgPerPage));
+    if(imgPage>total)imgPage=total;
+    var s=(imgPage-1)*imgPerPage;
+    return imagesData.slice(s,s+imgPerPage);
+  }();
+  items.forEach(function(img,i){
+    var absIdx=reorderMode?i:(imgPage-1)*imgPerPage+i;
     var thumb=img.thumb||img.url;
-    h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+i+'" ondragstart="dragStart.call(this,event)" ondragover="dragOver.call(this,event)" ondragenter="dragEnter.call(this,event)" ondragleave="dragLeave.call(this,event)" ondrop="dragDrop.call(this,event)" ondragend="dragEnd.call(this,event)">';
+    h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+absIdx+'" ondragstart="dragStart.call(this,event)" ondragover="dragOver.call(this,event)" ondragenter="dragEnter.call(this,event)" ondragleave="dragLeave.call(this,event)" ondrop="dragDrop.call(this,event)" ondragend="dragEnd.call(this,event)">';
     h+='<div class="drag-handle" title="Drag to reorder">⋮⋮</div>';
     h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+RAW+thumb+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer">';
-    h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+i+')" title="Delete">×</button></div>';
+    h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+absIdx+')" title="Delete">×</button></div>';
     h+='<div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
   });
+  // Pagination controls (only in normal mode)
+  if(!reorderMode){
+    var total=Math.max(1,Math.ceil(imagesData.length/imgPerPage));
+    if(total>1){
+      h+='<div style="grid-column:1/-1;display:flex;gap:6px;align-items:center;justify-content:center;margin-top:12px;font-size:12px">';
+      h+='<button class="btn-xs" onclick="imgPage=1;renderImages()" '+(imgPage===1?'disabled':'')+'>First</button>';
+      h+='<button class="btn-xs" onclick="imgPage=Math.max(1,imgPage-1);renderImages()" '+(imgPage===1?'disabled':'')+'>Prev</button>';
+      var ms=7,ps=Math.max(1,imgPage-Math.floor(ms/2)),pe=Math.min(total,ps+ms-1);
+      if(pe-ps<ms-1)ps=Math.max(1,pe-ms+1);
+      for(var pi=ps;pi<=pe;pi++){h+='<button class="btn-xs" onclick="imgPage='+pi+';renderImages()" style="'+(pi===imgPage?'background:var(--navy);color:#fff;border-color:var(--navy)':'')+'">'+pi+'</button>'}
+      h+='<button class="btn-xs" onclick="imgPage=Math.min(total,imgPage+1);renderImages()" '+(imgPage===total?'disabled':'')+'>Next</button>';
+      h+='<button class="btn-xs" onclick="imgPage='+total+';renderImages()" '+(imgPage===total?'disabled':'')+'>Last</button>';
+      h+='<span style="margin-left:8px;color:var(--gray)">'+imagesData.length+' images | Page '+imgPage+' of '+total+'</span>';
+      h+='</div>';
+    } else {
+      h+='<div style="grid-column:1/-1;text-align:center;color:var(--gray);font-size:11px;margin-top:8px">'+imagesData.length+' images</div>';
+    }
+  }
   g.innerHTML=h;
 }
 function viewImage(url){document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('on')}
