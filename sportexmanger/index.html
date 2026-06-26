@@ -434,6 +434,7 @@ function renderImages(){
   if(!imagesData.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:32px">No images yet — upload some!</p>';return}
   var h='';
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
+	  var IMG_API='/api/image?p=';
   // Reorder mode: show all. Normal mode: paginate 30/page
   var items=reorderMode?imagesData:function(){
     var total=Math.max(1,Math.ceil(imagesData.length/imgPerPage));
@@ -446,7 +447,7 @@ function renderImages(){
     var thumb=img.thumb||img.url;
     h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+absIdx+'" ondragstart="dragStart.call(this,event)" ondragover="dragOver.call(this,event)" ondragenter="dragEnter.call(this,event)" ondragleave="dragLeave.call(this,event)" ondrop="dragDrop.call(this,event)" ondragend="dragEnd.call(this,event)">';
     h+='<div class="drag-handle" title="Drag to reorder">⋮⋮</div>';
-    h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+RAW+thumb+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer">';
+    h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+IMG_API+encodeURIComponent(thumb)+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer">';
     h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+absIdx+')" title="Delete">×</button></div>';
     h+='<div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
   });
@@ -497,9 +498,10 @@ function openImgPicker(targetId){
   var g=document.getElementById('img-select-grid');
   var h='';
   var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
+	  var IMG_API='/api/image?p=';
   imagesData.forEach(function(img,i){
     var thumb=img.thumb||img.url;
-    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+RAW+thumb+'\'" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
+    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'"><img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+IMG_API+encodeURIComponent(thumb)+'\'" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Click to enlarge"><div class="img-name" onclick="toggleImgPick(this.parentElement)">'+img.name+'</div></div>';
   });
   if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
   g.innerHTML=h;
