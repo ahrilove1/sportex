@@ -30,8 +30,8 @@ export async function onRequest(context) {
     return new Response('Invalid image path', { status: 400 });
   }
 
-  // Sanitize — prevent path traversal
-  const safe = imgPath.replace(/\.\./g, '').replace(/\/\//g, '/');
+  // Sanitize — prevent path traversal (only strip .. as a path segment, not in filenames like ....jpg)
+  const safe = imgPath.replace(/(^|\/)\.\.(?=\/|$)/g, '$1').replace(/\/\//g, '/');
   if (!safe.startsWith('/')) {
     return new Response('Path must be absolute', { status: 400 });
   }
