@@ -13,9 +13,10 @@ export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
 
-  // ═══ Cache check ═══
+  // ═══ Cache check (use URL-only key to avoid header variance) ═══
+  const cacheKey = new Request(request.url, { method: 'GET' });
   const cache = caches.default;
-  let cached = await cache.match(request);
+  let cached = await cache.match(cacheKey);
   if (cached) return cached;
 
   // Get image path from query param: /api/image?p=/images/uploads/thumb_xxx.jpg
@@ -60,7 +61,7 @@ export async function onRequest(context) {
     });
 
     // Edge-cache for 30 days — subsequent requests skip Worker entirely
-    context.waitUntil(cache.put(request, response.clone()));
+    context.waitUntil(cache.put(cacheKey, response.clone()));
 
     return response;
   } catch (e) {
