@@ -13,6 +13,11 @@ export async function onRequest(context) {
   const { request } = context;
   const url = new URL(request.url);
 
+  // ═══ Cache check ═══
+  const cache = caches.default;
+  let cached = await cache.match(request);
+  if (cached) return cached;
+
   // Get image path from query param: /api/image?p=/images/uploads/thumb_xxx.jpg
   const imgPath = url.searchParams.get('p');
   if (!imgPath) {
@@ -45,7 +50,7 @@ export async function onRequest(context) {
     const body = await ghResp.arrayBuffer();
     const contentType = ghResp.headers.get('Content-Type') || 'image/jpeg';
 
-    return new Response(body, {
+    const response = new Response(body, {
       status: 200,
       headers: {
         'Content-Type': contentType,
@@ -53,6 +58,11 @@ export async function onRequest(context) {
         'Access-Control-Allow-Origin': '*'
       }
     });
+
+    // Edge-cache for 30 days — subsequent requests skip Worker entirely
+    context.waitUntil(cache.put(request, response.clone()));
+
+    return response;
   } catch (e) {
     return new Response('Proxy error', { status: 502 });
   }
