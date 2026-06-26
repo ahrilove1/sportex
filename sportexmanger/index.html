@@ -217,7 +217,7 @@ tr:hover{background:var(--off-white)}
 </div>
 </div>
 
-<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><span class="lb-close">&times;</span><img id="lightbox-img" src=""></div>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><span class="lb-close">&times;</span><img id="lightbox-img" src="" onerror="var t=this;if(!t.dataset.r){t.dataset.r='1';t.src='/api/image?p='+encodeURIComponent(t.dataset.orig||t.getAttribute('src'))}"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -471,7 +471,7 @@ function renderImages(){
   }
   g.innerHTML=h;
 }
-function viewImage(url){document.getElementById('lightbox-img').src=url;document.getElementById('lightbox').classList.add('on')}
+function viewImage(url){var i=document.getElementById('lightbox-img');i.dataset.orig=url;i.removeAttribute('data-r');i.src=url;document.getElementById('lightbox').classList.add('on')}
 function copyUrl(url){navigator.clipboard.writeText(url).then(function(){toast('URL copied! 📋')})}
 async function delImage(idx){
   var img=imagesData[idx];
