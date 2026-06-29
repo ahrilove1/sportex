@@ -4,16 +4,16 @@
       "id": "m-02",
       "name": "Linen Resort Shirt",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&q=80",
+      "thumbnail": "images/stock/shirts.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"
+          "url": "images/stock/shirts.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80"
+          "url": "images/stock/workwear.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+          "url": "images/stock/stock-01.jpg"
         }
       ],
       "description": "A relaxed-fit resort shirt crafted from breathable linen-blend fabric. Perfect for beachside evenings and tropical getaways, with a soft hand feel and effortless drape.",
@@ -37,23 +37,23 @@
       "fabric": "55% Linen / 45% Polyester",
       "sizes": "S / M / L / XL / XXL",
       "moq": "500 pcs per color",
-      "_imgs": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80\nhttps://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80\nhttps://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80",
+      "_imgs": "images/stock/shirts.jpg",
       "_feats": "Breathable linen-polyester blend\nRelaxed camp collar design\nSide-slit hem for ease of movement\nNatural wrinkle texture for casual look\nCoconut button detailing"
     },
     {
       "id": "m-03",
       "name": "UV Protection Polo",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
+      "thumbnail": "images/stock/tshirts.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=1200&q=80"
+          "url": "images/stock/tshirts.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+          "url": "images/stock/stock-01.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=1200&q=80"
+          "url": "images/stock/mens-fashion.jpg"
         }
       ],
       "description": "A performance polo built for the outdoor lifestyle. Anti-bacterial treatment keeps odors at bay, while the UPF 50+ rating provides serious sun protection on the course or the deck.",
@@ -82,16 +82,16 @@
       "id": "m-04",
       "name": "Lightweight Cargo Pants",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&q=80",
+      "thumbnail": "images/stock/pants.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"
+          "url": "images/stock/pants.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200&q=80"
+          "url": "images/stock/stock-02.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"
+          "url": "images/stock/stock-03.jpg"
         }
       ],
       "description": "Versatile cargo pants designed for travel and outdoor exploration. Ultra-lightweight fabric with quick-dry properties makes them ideal for humid climates and active days.",
@@ -120,7 +120,7 @@
       "id": "m-05",
       "name": "Adventure Shorts",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=80",
+      "thumbnail": "images/stock/stock-03.jpg",
       "images": [],
       "description": "Built for hiking, swimming, and everything in between. These amphibious shorts dry in minutes and pack down to nothing — the ultimate adventure companion.",
       "features": [
@@ -148,16 +148,16 @@
       "id": "m-06",
       "name": "Packable Windbreaker",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
+      "thumbnail": "images/stock/jackets.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200&q=80"
+          "url": "images/stock/jackets.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"
+          "url": "images/stock/stock-04.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+          "url": "images/stock/stock-01.jpg"
         }
       ],
       "description": "A packable windbreaker that weighs less than 200g and folds into its own pocket. Essential protection against unexpected weather, always ready in your daypack.",
@@ -189,16 +189,16 @@
       "id": "m-07",
       "name": "Resort Camp Shirt",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&q=80",
+      "thumbnail": "images/stock/workwear.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=1200&q=80"
+          "url": "images/stock/workwear.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=1200&q=80"
+          "url": "images/stock/shirts.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=1200&q=80"
+          "url": "images/stock/stock-01.jpg"
         }
       ],
       "description": "A bold printed camp shirt for those who want to make a statement. The relaxed silhouette and lightweight fabric make it the go-to choice for resort evenings and tropical vacations.",
@@ -227,16 +227,16 @@
       "id": "m-08",
       "name": "Travel Chinos",
       "category": "men",
-      "thumbnail": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&q=80",
+      "thumbnail": "images/stock/stock-02.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200&q=80"
+          "url": "images/stock/stock-02.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=1200&q=80"
+          "url": "images/stock/pants.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=1200&q=80"
+          "url": "images/stock/stock-03.jpg"
         }
       ],
       "description": "Smart-casual chinos engineered for travel. Wrinkle-resistant fabric keeps you looking sharp straight out of the suitcase, while the stretch construction moves with you.",
@@ -265,16 +265,16 @@
       "id": "w-01",
       "name": "Outdoor Light Blouse",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=600&q=80",
+      "thumbnail": "images/stock/stock-05.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+          "url": "images/stock/stock-05.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+          "url": "images/stock/stock-06.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1200&q=80"
+          "url": "images/stock/womens-fashion.jpg"
         }
       ],
       "description": "A lightweight outdoor blouse that blends feminine style with technical performance. UPF 50+ protection and anti-bacterial treatment make it perfect for resort wear in sunny destinations.",
@@ -303,16 +303,16 @@
       "id": "w-02",
       "name": "Floral Midi Dress",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
+      "thumbnail": "images/stock/stock-06.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+          "url": "images/stock/stock-06.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"
+          "url": "images/stock/stock-07.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+          "url": "images/stock/stock-05.jpg"
         }
       ],
       "description": "An elegant floral midi dress designed for warm-weather escapes. The breathable fabric drapes beautifully while keeping you cool, from beachside brunch to sunset dinners.",
@@ -341,16 +341,16 @@
       "id": "w-03",
       "name": "Sun Protection Top",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=600&q=80",
+      "thumbnail": "images/stock/stock-07.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"
+          "url": "images/stock/stock-07.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+          "url": "images/stock/stock-05.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+          "url": "images/stock/stock-06.jpg"
         }
       ],
       "description": "A versatile sun protection top engineered for extended outdoor wear. The high neckline and longer back hem provide extra coverage without sacrificing style.",
@@ -379,16 +379,16 @@
       "id": "w-04",
       "name": "Linen Blend Trousers",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
+      "thumbnail": "images/stock/stock-08.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"
+          "url": "images/stock/stock-08.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"
+          "url": "images/stock/stock-09.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"
+          "url": "images/stock/stock-04.jpg"
         }
       ],
       "description": "Effortlessly elegant linen-blend trousers with a relaxed wide-leg cut. The breathable fabric and elastic waistband deliver comfort without compromising on resort-ready style.",
@@ -417,16 +417,16 @@
       "id": "w-05",
       "name": "Resort Maxi Skirt",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=600&q=80",
+      "thumbnail": "images/stock/stock-09.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"
+          "url": "images/stock/stock-09.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"
+          "url": "images/stock/stock-08.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80"
+          "url": "images/stock/stock-06.jpg"
         }
       ],
       "description": "A flowy maxi skirt that moves with the breeze. Lightweight and effortlessly chic, it pairs perfectly with any of our resort tops for a complete vacation look.",
@@ -455,16 +455,16 @@
       "id": "w-06",
       "name": "Lightweight Jacket",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&q=80",
+      "thumbnail": "images/stock/stock-04.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=1200&q=80"
+          "url": "images/stock/stock-04.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=1200&q=80"
+          "url": "images/stock/jackets.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+          "url": "images/stock/stock-05.jpg"
         }
       ],
       "description": "A packable lightweight jacket that combines UV protection with wind resistance. Stows in its own pocket for unpredictable weather days — stylish protection that goes anywhere.",
@@ -493,16 +493,16 @@
       "id": "w-07",
       "name": "Boho Beach Top",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&q=80",
+      "thumbnail": "images/stock/stock-10.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=1200&q=80"
+          "url": "images/stock/stock-10.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1551048632-24e444b48a3e?w=1200&q=80"
+          "url": "images/stock/stock-05.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1434389677669-e08b4cdaa1ba?w=1200&q=80"
+          "url": "images/stock/stock-07.jpg"
         }
       ],
       "description": "A bohemian-inspired beach top with delicate embroidery details. The relaxed fit and soft cotton blend make it an easy throw-on piece for seaside days.",
@@ -531,16 +531,16 @@
       "id": "w-08",
       "name": "Adventure Capris",
       "category": "women",
-      "thumbnail": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=600&q=80",
+      "thumbnail": "images/stock/stock-11.jpg",
       "images": [
         {
-          "url": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=1200&q=80"
+          "url": "images/stock/stock-11.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&q=80"
+          "url": "images/stock/stock-08.jpg"
         },
         {
-          "url": "https://images.unsplash.com/photo-1583496661160-fb5886a0a5fa?w=1200&q=80"
+          "url": "images/stock/stock-09.jpg"
         }
       ],
       "description": "Performance capris built for active outdoor days. The stretch-fit fabric moves with you on hikes and trails, while the quick-dry finish handles unexpected splashes.",
