@@ -56,12 +56,15 @@
   .lang-toggle button:hover { border-color: var(--accent-dark); color: var(--accent-dark); }
 
   .hero {
-    position: relative; height: 85vh; min-height: 600px;
-    background: url('images/stock/beach-hero.webp') center/cover no-repeat;
+    position: relative; height: 85vh; min-height: 600px; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
   }
-  .hero::before {
-    content: ''; position: absolute; inset: 0;
+  .hero-bg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
     background: linear-gradient(to bottom, rgba(26,31,46,0.35), rgba(26,31,46,0.55));
   }
   .hero-content { position: relative; text-align: center; color: var(--white); max-width: 720px; padding: 0 20px; }
@@ -167,6 +170,8 @@
 <header id="siteNav"></header>
 
 <section class="hero">
+  <img class="hero-bg" src="images/stock/beach-hero.webp" alt="" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src=this.src.replace('.webp','.jpg')">
+  <div class="hero-overlay"></div>
   <div class="hero-content reveal">
     <h1 data-lkey="homeHeroTitle">OUTDOOR<br>RESORT WEAR</h1>
     <p data-lkey="homeHeroSub">Engineered for sun, sea, and adventure — lightweight, breathable, UPF 50+ protection.</p>

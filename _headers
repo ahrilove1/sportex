@@ -12,3 +12,6 @@
 
 /*.svg
   Cache-Control: public, max-age=2592000
+
+/*.html
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
