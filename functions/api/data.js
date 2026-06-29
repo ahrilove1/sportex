@@ -58,6 +58,21 @@ export async function onRequest(context) {
             }
           } catch(e) { /* return raw if parse fails */ }
         }
+        // Slim products: strip CMS helper fields, flatten objects to strings
+        if (path === 'products') {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed.products_list) {
+              parsed.products_list = parsed.products_list.map(p => ({
+                ...p,
+                _imgs: undefined, _feats: undefined,  // CMS-only helpers
+                images: (p.images || []).map(i => typeof i === 'string' ? i : (i.url || i.image || '')).filter(Boolean),
+                features: (p.features || []).map(f => typeof f === 'string' ? f : (f.text || f.feature || '')).filter(Boolean),
+              }));
+              data = JSON.stringify(parsed);
+            }
+          } catch(e) { /* return raw if parse fails */ }
+        }
         return new Response(data, {
           status: 200,
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' }
