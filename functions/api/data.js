@@ -2,8 +2,6 @@
 // GET  /api/data/:key  → read from KV, fallback 404
 // PUT  /api/data/:key  → write to KV (requires X-KV-Secret)
 
-const KV_SECRET = 'spex_kv_2026'; // must match CMS KV_SECRET
-
 export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -21,6 +19,7 @@ export async function onRequest(context) {
   // ═══ PUT: Write to KV ═══
   if (method === 'PUT') {
     const secret = request.headers.get('X-KV-Secret') || '';
+    const KV_SECRET = env.KV_SECRET || 'spex_kv_2026'; // Cloudflare env var, fallback for dev
     if (secret !== KV_SECRET) {
       return new Response(JSON.stringify({ error: 'unauthorized' }), {
         status: 401,
