@@ -75,7 +75,7 @@ export async function onRequest(context) {
         }
         return new Response(data, {
           status: 200,
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' }
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=300' }
         });
       }
       // Not in KV — let client fallback to static JSON

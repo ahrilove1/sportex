@@ -10,6 +10,8 @@
 <meta property="og:type" content="website">
 <link rel="icon" href="favicon.svg">
 <link rel="preconnect" href="https://raw.githubusercontent.com">
+<link rel="preload" href="/api/data/products" as="fetch">
+<link rel="preload" href="/api/data/images" as="fetch">
 <link rel="preload" href="products.js" as="script">
 <link rel="preload" href="images/stock/beach-hero.webp" as="image" imagesrcset="images/stock/beach-hero.webp 1920w">
 <style>
@@ -147,6 +149,23 @@
   .product-card .info .p-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; margin-bottom: 2px; }
   .product-card .info .p-cat { font-size: 12px; color: var(--gray); letter-spacing: 0.5px; }
 
+  /* Skeleton loading */
+  .skeleton-card .sk-img {
+    width: 100%; aspect-ratio: 3/4; border-radius: 2px;
+    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+    background-size: 200% 100%; animation: shimmer 1.5s infinite;
+  }
+  .skeleton-card .sk-text {
+    height: 14px; margin: 14px 0;
+    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+    background-size: 200% 100%; animation: shimmer 1.5s infinite;
+    border-radius: 4px; width: 70%;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   .footer { background: var(--navy); color: var(--white); padding: 64px 40px 40px; }
   .footer-grid {
     max-width: 1100px; margin: 0 auto;
@@ -257,7 +276,12 @@
     <h2 data-lkey="homeFeaturedTitle">Featured Products</h2>
     <p data-lkey="homeFeaturedSub">Explore our best-selling outdoor resort wear</p>
   </div>
-  <div class="featured-grid" id="featuredGrid"></div>
+  <div class="featured-grid" id="featuredGrid">
+  <div class="skeleton-card"><div class="sk-img"></div><div class="sk-text"></div></div>
+  <div class="skeleton-card"><div class="sk-img"></div><div class="sk-text"></div></div>
+  <div class="skeleton-card"><div class="sk-img"></div><div class="sk-text"></div></div>
+  <div class="skeleton-card"><div class="sk-img"></div><div class="sk-text"></div></div>
+</div>
 </section>
 
 <footer id="siteFooter" class="footer"></footer>
@@ -277,6 +301,7 @@ renderFooter();
 // Featured products — 4 picks (2 men, 2 women)
 const featuredIds = ['m-01', 'm-04', 'w-01', 'w-04'];
 const featuredGrid = document.getElementById('featuredGrid');
+featuredGrid.innerHTML = ''; // clear skeleton cards
 featuredIds.forEach(id => {
   const p = getProductById(id);
   if (!p) return;
