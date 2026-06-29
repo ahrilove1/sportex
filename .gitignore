@@ -8,3 +8,5 @@ prompts.json
 Thumbs.db
 .DS_Store
 Desktop.ini
+_orig/
+node_modules/

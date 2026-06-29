@@ -4,6 +4,7 @@
 // Changes sync automatically: CMS → GitHub → Cloudflare → Frontend
 
 const PLACEHOLDER = 'images/placeholder.svg';
+const PLACEHOLDER_WEBP = 'images/placeholder.svg';
 const RAW_PREFIX = 'https://raw.githubusercontent.com/ahrilove1/sportex/main/';
 // Convert GitHub raw URLs to local paths for Cloudflare CDN + caching
 function cdn(src) {
@@ -72,5 +73,5 @@ function imgTag(src, alt, cls, hint) {
   if (window._imageThumbs && window._imageThumbs[url]) thumb = window._imageThumbs[url];
   var sizes = hint === 'card' ? '(max-width:640px) 50vw, 300px' : hint === 'gallery' ? '(max-width:640px) 100vw, 600px' : hint === 'detail' ? '(max-width:640px) 100vw, 1200px' : '(max-width:640px) 50vw, 300px';
   var srcset = thumb !== url ? thumb + ' 400w, ' + url + ' 1200w' : '';
-  return '<img src="' + url + '"' + (srcset ? ' srcset="' + srcset + '" sizes="' + sizes + '"' : ' sizes="' + sizes + '"') + ' alt="' + (alt || '') + '" decoding="async" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
+  return '<img src="' + url + '"' + (srcset ? ' srcset="' + srcset + '" sizes="' + sizes + '"' : ' sizes="' + sizes + '"') + ' alt="' + (alt || '') + '" decoding="async" onerror="var t=this;if(!t.dataset.fr){t.dataset.fr=1;t.src=t.src.replace(/.webp$/,\'.jpg\')}else{t.onerror=null;t.src=\'' + PLACEHOLDER + '\'}"' + (cls ? ' class="' + cls + '"' : '') + ' loading="lazy">';
 }
