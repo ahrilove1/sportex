@@ -47,7 +47,18 @@ export async function onRequest(context) {
     try {
       const raw = await env.SPORTEX_DATA.get(path);
       if (raw) {
-        return new Response(raw, {
+        let data = raw;
+        // Slim images response: frontend only needs path→thumb mapping
+        if (path === 'images') {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed.images) {
+              parsed.images = parsed.images.map(({path, thumb}) => ({path, thumb}));
+              data = JSON.stringify(parsed);
+            }
+          } catch(e) { /* return raw if parse fails */ }
+        }
+        return new Response(data, {
           status: 200,
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' }
         });
