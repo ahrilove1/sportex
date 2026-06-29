@@ -17,8 +17,9 @@ body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-ser
 .nav-links a:hover{color:var(--accent-dark)}.nav-links a.active{color:var(--accent-dark);border-bottom:2px solid var(--accent-dark);padding-bottom:4px}
 .lang-toggle button{background:none;border:1px solid var(--gray-light);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--gray);letter-spacing:.5px;transition:all .2s}
 .lang-toggle button:hover{border-color:var(--accent-dark);color:var(--accent-dark)}
-.page-hero{position:relative;height:45vh;min-height:360px;background:url('images/stock/pants.webp') center 30%/cover no-repeat;display:flex;align-items:center;justify-content:center}
-.page-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,31,46,.3),rgba(26,31,46,.6))}
+.page-hero{position:relative;height:45vh;min-height:360px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.page-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,31,46,.3),rgba(26,31,46,.6))}
 .page-hero-content{position:relative;text-align:center;color:var(--white)}
 .page-hero-content h1{font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:4px;margin-bottom:8px}
 .page-hero-content p{font-size:16px;opacity:.85;letter-spacing:2px}
@@ -52,7 +53,7 @@ body{font-family:"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-ser
 </head>
 <body>
 <header id="siteNav"></header>
-<section class="page-hero"><div class="page-hero-content"><h1>MEN'S PANTS</h1><p>Trousers & Shorts</p></div></section>
+<section class="page-hero"><img class="page-hero-bg" src="images/stock/pants.webp" alt="" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src=this.src.replace('.webp','.jpg')"><div class="page-hero-overlay"></div><div class="page-hero-content"><h1>MEN'S PANTS</h1><p>Trousers & Shorts</p></div></section>
 <div class="breadcrumb"><a href="index">Home</a> / <a href="men">Men</a> / <span>Pants</span></div>
 <section class="section">
 <div class="section-header reveal"><h2>All Men's Pants</h2><p>Trousers, shorts & chinos for warm climates</p></div>
