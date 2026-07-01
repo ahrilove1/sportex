@@ -228,7 +228,7 @@ if (!product) {
     galleryHTML = `
       <div class="gallery">
         <div class="gallery-main">
-          <img src="${product.images[0] || 'images/placeholder.svg'}" alt="${product.name}" id="mainImg" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          <img src="${product.images[0] || 'images/placeholder.svg'}" alt="${product.name}" id="mainImg" decoding="async" onerror="var t=this;if(!t.dataset.fr){t.dataset.fr=1;t.src=t.src.replace(/.webp$/,'.jpg')}else{t.onerror=null;t.src='images/placeholder.svg'}">
         </div>
         ${product.images.length > 1 ? `
           <div class="gallery-thumbs">

@@ -70,8 +70,8 @@ document.addEventListener("DOMContentLoaded", function() {
 function isPants(p){if(p.subcat==='pants')return true;var n=(p.name||'').toLowerCase();return /pants|trouser|chino|short|cargo|jean/.test(n);}
 (async function(){
 try{
-var r=await fetch('data/products.json');var d=await r.json();var all=d.products_list||[];
-var products=all.filter(function(p){return p.category==='men'&&isPants(p);});
+await productsLoaded;
+var products=allProducts.filter(function(p){return p.category==='men'&&isPants(p);});
 try{var cr=await fetch('/api/data/company');if(cr.ok)COMPANY=await cr.json();}catch(e){}
 renderNav('men');renderFooter();
   if(typeof applyLang==='function') applyLang(currentLang);
