@@ -299,7 +299,7 @@ function renderAll(){
 document.querySelectorAll('.nav-links a').forEach(function(a){a.onclick=function(e){e.preventDefault();document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active')});this.classList.add('active');document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});document.getElementById('panel-'+this.dataset.tab).classList.add('on');if(this.dataset.tab==='products')renderProducts()}});
 
 // ═══ PRODUCTS ═══
-var prodSearch='',prodCat='all',prodPage=1,prodPerPage=10;
+var prodSearch='',prodCat='all',prodPage=1,prodPerPage=10,prodSort='id',prodSortDir=1;
 
 function renderProducts(){
   // Show toolbar + list, hide edit
@@ -323,13 +323,25 @@ function renderProducts(){
   }
   var totalPages=Math.max(1,Math.ceil(filtered.length/prodPerPage));
   if(prodPage>totalPages)prodPage=totalPages;
+
+  // Sort
+  filtered=filtered.slice().sort(function(a,b){
+    var va=(a[prodSort]||'').toString().toLowerCase();
+    var vb=(b[prodSort]||'').toString().toLowerCase();
+    if(va<vb)return -1*prodSortDir;
+    if(va>vb)return 1*prodSortDir;
+    return 0;
+  });
+
   var start=(prodPage-1)*prodPerPage;
   var pageItems=filtered.slice(start,start+prodPerPage);
 
   document.getElementById('prod-count').textContent=filtered.length+' products';
 
   // Table
-  var h='<table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th style="width:130px"></th></tr></thead><tbody>';
+  function sortArrow(key){return prodSort===key?(prodSortDir===1?' ▲':' ▼'):'';}
+  function th(key,label,style){return '<th style="cursor:pointer;'+(style||'')+'" onclick="prodSort=\''+key+'\';prodSortDir=prodSort===\''+key+'\'?-prodSortDir:1;prodPage=1;renderProducts()">'+label+sortArrow(key)+'</th>';}
+  var h='<table><thead><tr>'+th('id','ID')+th('name','Name')+th('category','Category')+'<th style="width:130px"></th></tr></thead><tbody>';
   if(!pageItems.length){h+='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">No products found</td></tr>'}
   else{pageItems.forEach(function(p,i){var realIdx=productsData.indexOf(p);h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td><button class="btn-xs" onclick="editProduct('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delProduct('+realIdx+')">Del</button></td></tr>'})}
   h+='</tbody></table>';
