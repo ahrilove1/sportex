@@ -206,14 +206,14 @@
     <p data-lkey="homeCollectionsSub">Premium resort wear categories for international buyers</p>
   </div>
   <div class="categories">
-    <a href="men.html" class="cat-card reveal">
+    <a href="men" class="cat-card reveal">
       <img src="images/stock/mens-fashion.webp" alt="Men's" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace('.webp','.jpg')">
       <div class="cat-label">
         <h3>Men's Collection <span class="arrow">&rarr;</span></h3>
         <span>Outdoor Shirts &middot; Trousers &middot; Outerwear</span>
       </div>
     </a>
-    <a href="women.html" class="cat-card reveal">
+    <a href="women" class="cat-card reveal">
       <img src="images/stock/womens-fashion.webp" alt="Women's" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace('.webp','.jpg')">
       <div class="cat-label">
         <h3>Women's Collection <span class="arrow">&rarr;</span></h3>
@@ -256,7 +256,7 @@
   <div class="reveal">
     <h2 data-lkey="homeCtaTitle">PARTNER WITH SPORTEX</h2>
     <p data-lkey="homeCtaSub">Premium outdoor resort wear manufacturing for global brands</p>
-    <a href="about.html" class="btn" data-lkey="homeCtaBtn">Learn More</a>
+    <a href="about" class="btn" data-lkey="homeCtaBtn">Learn More</a>
   </div>
 </section>
 
@@ -307,7 +307,7 @@ featuredIds.forEach(id => {
   if (!p) return;
   const card = document.createElement('a');
   card.className = 'product-card reveal';
-  card.href = 'product.html?id=' + p.id;
+  card.href = 'product?id=' + p.id;
   card.innerHTML = `
     <div class="img-wrap">
       ${imgTag(p.thumbnail, p.name, '', 'card')}

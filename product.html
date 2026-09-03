@@ -177,13 +177,13 @@
 <header id="siteNav"></header>
 
 <div class="breadcrumb" id="breadcrumb">
-  <a href="index.html">Home</a> / <a href="men.html" id="bcCat">Collection</a> / <span id="bcName">Product</span>
+  <a href="/">Home</a> / <a href="men" id="bcCat">Collection</a> / <span id="bcName">Product</span>
 </div>
 
 <section id="productSection"></section>
 
 <div class="back-link" id="backLink" style="padding:20px 40px 80px">
-  <a href="men.html">&larr; Back to Collection</a>
+  <a href="men">&larr; Back to Collection</a>
 </div>
 
 <footer id="siteFooter" class="footer"></footer>
@@ -209,7 +209,7 @@ if (!product) {
     <div class="not-found">
       <h2 data-lkey="pdNotFoundTitle">Product Not Found</h2>
       <p data-lkey="pdNotFoundText">The product you are looking for does not exist or has been removed.</p>
-      <a href="index.html" data-lkey="pdNotFoundBtn" style="display:inline-block;padding:14px 36px;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;color:var(--navy);border:2px solid var(--navy);">Back to Home</a>
+      <a href="/" data-lkey="pdNotFoundBtn" style="display:inline-block;padding:14px 36px;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;color:var(--navy);border:2px solid var(--navy);">Back to Home</a>
     </div>
   `;
   document.getElementById('backLink').style.display = 'none';
@@ -217,7 +217,7 @@ if (!product) {
   document.title = product.name + ' | SPORTEX';
 
   const catName = product.category === 'men' ? 'Men\'s Collection' : 'Women\'s Collection';
-  const catPage = product.category === 'men' ? (product.subcat ? 'men-'+product.subcat+'.html' : 'men.html') : 'women.html';
+  const catPage = product.category === 'men' ? (product.subcat ? 'men-'+product.subcat : 'men') : 'women';
   document.getElementById('bcCat').href = catPage;
   document.getElementById('bcCat').textContent = catName;
   document.getElementById('bcName').textContent = product.name;

@@ -155,7 +155,7 @@
 </section>
 
 <div class="breadcrumb">
-  <a href="index.html">Home</a> / <span data-lkey="womenBreadcrumb">Women's Collection</span>
+  <a href="/">Home</a> / <span data-lkey="womenBreadcrumb">Women's Collection</span>
 </div>
 
 <section class="section">
@@ -167,7 +167,7 @@
 </section>
 
 <div class="back-link reveal">
-  <a href="index.html" data-lkey="backHome">&larr; Back to Home</a>
+  <a href="/" data-lkey="backHome">&larr; Back to Home</a>
 </div>
 
 <footer id="siteFooter" class="footer"></footer>
@@ -188,7 +188,7 @@ const grid = document.getElementById('productGrid');
 getProductsByCategory('women').forEach((p) => {
   const card = document.createElement('a');
   card.className = 'product-card reveal';
-  card.href = 'product.html?id=' + p.id;
+  card.href = 'product?id=' + p.id;
   card.style.textDecoration = 'none';
   card.style.color = 'inherit';
   card.style.display = 'block';

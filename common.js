@@ -19,11 +19,11 @@ let companyLoaded = (async () => {
 
 function renderNav(currentPage) {
   const pages = [
-    { id: 'home', label: 'Home', href: 'index.html' },
-    { id: 'men', label: 'Men', href: 'men.html' },
-    { id: 'women', label: 'Women', href: 'women.html' },
-    { id: 'about', label: 'About', href: 'about.html' },
-    { id: 'contact', label: 'Contact', href: 'contact.html' },
+    { id: 'home', label: 'Home', href: '/' },
+    { id: 'men', label: 'Men', href: 'men' },
+    { id: 'women', label: 'Women', href: 'women' },
+    { id: 'about', label: 'About', href: 'about' },
+    { id: 'contact', label: 'Contact', href: 'contact' },
   ];
 
   const links = pages.map(p => {
@@ -34,7 +34,7 @@ function renderNav(currentPage) {
   document.getElementById('siteNav').innerHTML = `
     <div class="top-bar" data-lkey="topBar">Premium Outdoor Apparel Manufacturer | AATCC Certified | Jiangsu, China</div>
     <nav class="nav">
-      <a href="index.html" class="nav-logo">SPORTEX</a>
+      <a href="/" class="nav-logo">SPORTEX</a>
       <ul class="nav-links">
         ${links}
         <li class="lang-toggle"><button onclick="toggleLang()" data-lkey="langToggle">中文</button></li>
@@ -52,13 +52,13 @@ function renderFooter() {
       </div>
       <div class="footer-col">
         <h4 data-lkey="footerCollections">Collections</h4>
-        <a href="men.html" data-lkey="footerMen">Men's Wear</a>
-        <a href="women.html" data-lkey="footerWomen">Women's Wear</a>
+        <a href="men" data-lkey="footerMen">Men's Wear</a>
+        <a href="women" data-lkey="footerWomen">Women's Wear</a>
       </div>
       <div class="footer-col">
         <h4 data-lkey="footerCompany">Company</h4>
-        <a href="about.html" data-lkey="footerAbout">About Us</a>
-        <a href="contact.html" data-lkey="footerContact">Contact</a>
+        <a href="about" data-lkey="footerAbout">About Us</a>
+        <a href="contact" data-lkey="footerContact">Contact</a>
       </div>
       <div class="footer-col">
         <h4 data-lkey="footerInfo">Info</h4>
