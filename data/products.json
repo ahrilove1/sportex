@@ -1,44 +1,42 @@
 {
   "products_list": [
     {
-      "id": "m-02",
-      "name": "Linen Resort Shirt",
+      "id": "SPX-SM01",
+      "name": "Men's long sleeve shirt",
       "category": "men",
-      "thumbnail": "images/stock/shirts.webp",
-      "images": [
-        {
-          "url": "images/stock/shirts.webp"
-        },
-        {
-          "url": "images/stock/workwear.webp"
-        },
-        {
-          "url": "images/stock/stock-01.webp"
-        }
-      ],
-      "description": "A relaxed-fit resort shirt crafted from breathable linen-blend fabric. Perfect for beachside evenings and tropical getaways, with a soft hand feel and effortless drape.",
+      "subcat": "shirts",
+      "thumbnail": "",
+      "images": [],
+      "description": "Men's long sleeve shirt\n",
       "features": [
         {
-          "text": "Breathable linen-polyester blend"
+          "text": "Regular fit for breathability, comfort, and freedom of movement"
         },
         {
-          "text": "Relaxed camp collar design"
+          "text": "Broad-spectrum UPF 50 protection helps protect your skin from harmful UVA and UVB rays"
         },
         {
-          "text": "Side-slit hem for ease of movement"
+          "text": "Quick-drying treatment helps moisture evaporate faster from the fabric surface, keeping you comfortable during outdoor activities"
         },
         {
-          "text": "Natural wrinkle texture for casual look"
+          "text": "Back ventilation enhances airflow and breathability"
         },
         {
-          "text": "Coconut button detailing"
+          "text": "Roll-up sleeves with button-tab closures offer versatile styling and added comfort"
+        },
+        {
+          "text": "Utility loop for sunglasses"
+        },
+        {
+          "text": "Integrated lens-cleaning cloth at the hem for convenient cleaning of sunglasses or eyeglasses"
+        },
+        {
+          "text": "Ideal for all kinds of outdoor activities"
         }
       ],
-      "fabric": "55% Linen / 45% Polyester",
-      "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "_imgs": "images/stock/shirts.webp",
-      "_feats": "Breathable linen-polyester blend\nRelaxed camp collar design\nSide-slit hem for ease of movement\nNatural wrinkle texture for casual look\nCoconut button detailing"
+      "fabric": "90%Polyester / 10%Spandex, 120gsm",
+      "sizes": "S / M / L / XL / 2XL / 3XL",
+      "moq": "2,000 pcs"
     },
     {
       "id": "m-03",
