@@ -5,8 +5,18 @@
       "name": "Men's long sleeve shirt",
       "category": "men",
       "subcat": "shirts",
-      "thumbnail": "",
-      "images": [],
+      "thumbnail": "/images/uploads/1782267348647_jimeng-2026-06-24-7319-________________________________________....jpg",
+      "images": [
+        {
+          "url": "/images/uploads/1782267348647_jimeng-2026-06-24-7319-________________________________________....jpg"
+        },
+        {
+          "url": "/images/uploads/1782267329925_jimeng-2026-06-24-4259-________________________________________....jpg"
+        },
+        {
+          "url": "/images/uploads/1782267342070_jimeng-2026-06-24-6125-________________________________________....jpg"
+        }
+      ],
       "description": "Men's long sleeve shirt\n",
       "features": [
         {
@@ -74,7 +84,9 @@
       ],
       "fabric": "100% Polyester Piqué, 120 g/m²",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color"
+      "moq": "500 pcs per color",
+      "_imgs": "images/stock/tshirts.webp\nimages/stock/stock-01.webp\nimages/stock/mens-fashion.webp",
+      "_feats": "UPF 50+ UV protection\nAnti-bacterial AATCC 100-2019 certified\nRib-knit collar retains shape\nMoisture-wicking finish\nSide-slit hem"
     },
     {
       "id": "m-04",
