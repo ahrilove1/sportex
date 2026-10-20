@@ -52,6 +52,7 @@
       "id": "m-03",
       "name": "UV Protection Polo",
       "category": "men",
+      "subcat": "",
       "thumbnail": "images/stock/tshirts.webp",
       "images": [
         {
@@ -61,7 +62,7 @@
           "url": "images/stock/stock-01.webp"
         },
         {
-          "url": "images/stock/mens-fashion.webp"
+          "url": "/images/uploads/1780561508405_pants2_side.jpg"
         }
       ],
       "description": "A performance polo built for the outdoor lifestyle. Anti-bacterial treatment keeps odors at bay, while the UPF 50+ rating provides serious sun protection on the course or the deck.",
@@ -84,9 +85,7 @@
       ],
       "fabric": "100% Polyester Piqué, 120 g/m²",
       "sizes": "S / M / L / XL / XXL",
-      "moq": "500 pcs per color",
-      "_imgs": "images/stock/tshirts.webp\nimages/stock/stock-01.webp\nimages/stock/mens-fashion.webp",
-      "_feats": "UPF 50+ UV protection\nAnti-bacterial AATCC 100-2019 certified\nRib-knit collar retains shape\nMoisture-wicking finish\nSide-slit hem"
+      "moq": "500 pcs per color"
     },
     {
       "id": "m-04",
