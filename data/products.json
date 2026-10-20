@@ -722,19 +722,6 @@
       "fabric": "",
       "sizes": "",
       "moq": ""
-    },
-    {
-      "id": "ZZ-TEST-DELETE",
-      "name": "ZZ TEST DELETE",
-      "category": "men",
-      "subcat": "shirts",
-      "thumbnail": "",
-      "images": [],
-      "description": "",
-      "features": [],
-      "fabric": "",
-      "sizes": "",
-      "moq": ""
     }
   ]
 }
