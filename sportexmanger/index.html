@@ -232,7 +232,7 @@ tr:hover{background:var(--off-white)}
 </div>
 </div>
 
-<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><span class="lb-close">&times;</span><img id="lightbox-img" src="" onerror="var t=this;if(!t.dataset.r){t.dataset.r='1';t.src='/api/image?p='+encodeURIComponent(t.dataset.orig||t.getAttribute('src'))}"></div>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('on')"><span class="lb-close">&times;</span><img id="lightbox-img" alt="" onerror="var t=this;var u=t.dataset.orig||'';if(!u||t.dataset.r)return;t.dataset.r='1';t.src='/api/image?p='+encodeURIComponent(u)"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -453,6 +453,9 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/<
 function normImgUrl(u){
   u=String(u||'').trim();
   if(!u)return '';
+  // Legacy records may store a GitHub Raw URL — turn it back into a site path
+  var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
+  if(u.indexOf(RAW)===0)return u.slice(RAW.length);
   if(/^(https?:)?\/\//i.test(u)||u.indexOf('data:')===0)return u;
   if(u.charAt(0)==='/')return u;
   return '/'+u.replace(/^\.?\//,'');
@@ -565,12 +568,13 @@ function renderImages(){
   }();
   items.forEach(function(img,i){
     var absIdx=reorderMode?i:(imgPage-1)*imgPerPage+i;
-    var thumb=img.thumb||img.url;
+    var thumb=normImgUrl(img.thumb||img.url);
+    var full=normImgUrl(img.url);
     h+='<div class="img-card" draggable="'+(reorderMode?'true':'false')+'" data-idx="'+absIdx+'" ondragstart="dragStart.call(this,event)" ondragover="dragOver.call(this,event)" ondragenter="dragEnter.call(this,event)" ondragleave="dragLeave.call(this,event)" ondrop="dragDrop.call(this,event)" ondragend="dragEnd.call(this,event)">';
     h+='<div class="drag-handle" title="Drag to reorder">⋮⋮</div>';
-    h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+IMG_API+encodeURIComponent(thumb)+'\'" onclick="viewImage(\''+img.url+'\')" style="cursor:pointer">';
-    h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+img.url+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+absIdx+')" title="Delete">×</button></div>';
-    h+='<div class="img-url" onclick="copyUrl(\''+img.url+'\')">'+img.url.substring(img.url.lastIndexOf('/')+1)+'</div></div>';
+    h+='<img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+IMG_API+encodeURIComponent(thumb)+'\'" onclick="viewImage(\''+full+'\')" style="cursor:pointer">';
+    h+='<div class="img-actions"><button style="background:var(--accent)" onclick="copyUrl(\''+full+'\')" title="Copy URL">📋</button><button style="background:#dc2626" onclick="delImage('+absIdx+')" title="Delete">×</button></div>';
+    h+='<div class="img-url" onclick="copyUrl(\''+full+'\')">'+full.substring(full.lastIndexOf('/')+1)+'</div></div>';
   });
   // Pagination controls (only in normal mode)
   if(!reorderMode){
@@ -620,10 +624,11 @@ function openImgPicker(targetId){
   var h='';
 	  var IMG_API='/api/image?p=';
   imagesData.forEach(function(img,i){
-    var thumb=img.thumb||img.url;
+    var full=normImgUrl(img.url);
+    var thumb=normImgUrl(img.thumb||img.url);
     // No inline handlers: URLs/names may contain quotes or spaces (new uploads),
     // which used to break the generated onclick and make cards unclickable.
-    h+='<div class="img-item" data-url="'+esc(String(img.url||''))+'" data-idx="'+i+'" title="Click to select">'
+    h+='<div class="img-item" data-url="'+esc(String(full||''))+'" data-idx="'+i+'" title="Click to select">'
       +'<img src="'+esc(String(thumb||''))+'" alt="'+esc(String(img.name||''))+'" loading="lazy" data-fb="'+esc(IMG_API+encodeURIComponent(thumb||''))+'">'
       +'<button type="button" class="img-zoom" title="Preview large">&#x26F6;</button>'
       +'<div class="img-name">'+esc(String(img.name||''))+'</div>'
