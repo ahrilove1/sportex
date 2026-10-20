@@ -143,6 +143,16 @@ tr:hover{background:var(--off-white)}
 .toast.ok{background:var(--accent-dark)}
 .toast.err{background:#dc2626}
 
+/* PRODUCT IMAGE PREVIEWS */
+.ep-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin-top:10px}
+.ep-thumbs:empty{display:none}
+.ep-thumb{position:relative;aspect-ratio:1;border:1px solid var(--gray-light);border-radius:2px;overflow:hidden;background:var(--off-white);cursor:zoom-in}
+.ep-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ep-thumb .ep-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border:0;border-radius:10px;background:rgba(0,0,0,.62);color:#fff;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.ep-thumb .ep-del:hover{background:#dc2626}
+.ep-thumb.ep-broken::after{content:'⚠';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:16px}
+.prod-thumb{width:40px;height:40px;object-fit:cover;border-radius:2px;background:var(--off-white);display:block;cursor:zoom-in}
+
 /* BACK */
 .back-link{text-align:center;margin:32px 0}
 .back-link a{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-decoration:none;color:var(--navy);border:1px solid var(--navy);padding:10px 24px;border-radius:2px;transition:all .2s}
@@ -235,10 +245,17 @@ var PRODUCTS_FILE='data/products.json', COMPANY_FILE='data/company.json', IMAGES
 var KV_SECRET='spex_kv_2026'; // match env.KV_SECRET in Worker
 
 async function kvWrite(key, jsonData){
-  try {
-    var resp=await fetch('/api/data/'+key, {method:'PUT', headers:{'Content-Type':'application/json','X-KV-Secret':KV_SECRET}, body:JSON.stringify(jsonData)});
-    return resp.ok;
-  } catch(e){ return false; }
+  // Retry: a single blip used to leave KV stale while the site kept serving
+  // the old JSON for everyone (GitHub was updated, the live page was not).
+  for(var i=0;i<3;i++){
+    try {
+      var resp=await fetch('/api/data/'+key, {method:'PUT', cache:'no-store', headers:{'Content-Type':'application/json','X-KV-Secret':KV_SECRET}, body:JSON.stringify(jsonData)});
+      if(resp.ok)return true;
+      if(resp.status>=400&&resp.status<500)break; // bad secret / bad request — retrying won't help
+    } catch(e){}
+    await new Promise(function(ok){setTimeout(ok,400*(i+1))});
+  }
+  return false;
 }
 
 // ═══ DATA ═══
@@ -259,7 +276,20 @@ async function checkToken(){var t=document.getElementById('token-input').value.t
 function ghAPI(path,opts){opts=opts||{};opts.headers=opts.headers||{};opts.headers['Authorization']='Bearer '+token;opts.headers['Accept']='application/vnd.github.v3+json';var f=fetch('https://api.github.com'+path,opts);f.then(function(r){if(!r.ok)r.clone().json().then(function(e){console.error('GH '+r.status+': '+path+' - '+e.message)}).catch(function(){})});return f}
 async function ghRead(filePath){var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath);if(!r.ok)throw new Error('Read '+r.status);var d=await r.json();return{sha:d.sha,content:JSON.parse(decodeURIComponent(escape(atob(d.content))))}}
 async function ghWrite(filePath,content,msg,sha,retry,onConflict){var body={message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2))))};if(sha)body.sha=sha;var r=await ghAPI('/repos/'+REPO+'/contents/'+filePath,{method:'PUT',body:JSON.stringify(body)});if(r.status===409&&(!retry||retry<5)){await new Promise(function(ok){setTimeout(ok,400+(retry||0)*200)});var fresh=await ghRead(filePath);var merged=onConflict?onConflict(content,fresh.content):content;return ghWrite(filePath,merged,msg,fresh.sha,(retry||1)+1,onConflict)}if(!r.ok)throw new Error('Write '+r.status);return r.json()}
-async function ghUploadBuf(filePath,base64,msg){var p=filePath.replace(/^\/+/,'');var r=await ghAPI('/repos/'+REPO+'/contents/'+p,{method:'PUT',body:JSON.stringify({message:msg,content:base64})});if(!r.ok)throw new Error('Upload '+r.status);return r.json()}
+async function ghUploadBuf(filePath,base64,msg){
+  var p=filePath.replace(/^\/+/,'');
+  for(var attempt=0;attempt<4;attempt++){
+    var r=await ghAPI('/repos/'+REPO+'/contents/'+p,{method:'PUT',body:JSON.stringify({message:msg,content:base64})});
+    if(r.ok)return r.json();
+    // 409/422 = another upload landed first; 5xx/429 = transient. Retry instead of losing the file.
+    if(r.status===409||r.status===422||r.status===429||r.status>=500){
+      await new Promise(function(ok){setTimeout(ok,300*(attempt+1))});
+      continue;
+    }
+    throw new Error('Upload '+r.status);
+  }
+  throw new Error('Upload conflict — please retry');
+}
 
 // ═══ TOAST ═══
 function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'ok');t.style.display='block';setTimeout(function(){t.style.display='none'},2500)}
@@ -346,9 +376,9 @@ function renderProducts(){
   // Table
   function sortArrow(key){return prodSort===key?(prodSortDir===1?' ▲':' ▼'):'';}
   function th(key,label,style){return '<th style="cursor:pointer;'+(style||'')+'" onclick="prodSort=\''+key+'\';prodSortDir=prodSort===\''+key+'\'?-prodSortDir:1;prodPage=1;renderProducts()">'+label+sortArrow(key)+'</th>';}
-  var h='<table><thead><tr>'+th('id','ID')+th('name','Name')+th('category','Category')+'<th style="width:130px"></th></tr></thead><tbody>';
+  var h='<table><thead><tr><th style="width:56px">Image</th>'+th('id','ID')+th('name','Name')+th('category','Category')+'<th style="width:130px"></th></tr></thead><tbody>';
   if(!pageItems.length){h+='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:24px">No products found</td></tr>'}
-  else{pageItems.forEach(function(p,i){var realIdx=productsData.indexOf(p);h+='<tr><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td><button class="btn-xs" onclick="editProduct('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delProduct('+realIdx+')">Del</button></td></tr>'})}
+  else{pageItems.forEach(function(p,i){var realIdx=productsData.indexOf(p);var full=normImgUrl(p.thumbnail);var tu=full?imgThumbFor(full):'/images/placeholder.svg';h+='<tr><td><img class="prod-thumb" src="'+esc(tu)+'" data-full="'+esc(full||tu)+'" alt="" loading="lazy"></td><td>'+p.id+'</td><td>'+p.name+'</td><td>'+p.category+'</td><td><button class="btn-xs" onclick="editProduct('+realIdx+')">Edit</button><button class="btn-xs red" onclick="delProduct('+realIdx+')">Del</button></td></tr>'})}
   h+='</tbody></table>';
 
   // Pagination
@@ -366,6 +396,15 @@ function renderProducts(){
   } else { h+=''; }
 
   document.getElementById('product-list').innerHTML=h;
+  // Preview thumbnails: click to enlarge, proxy fallback when Pages hasn't deployed yet
+  document.querySelectorAll('#product-list .prod-thumb').forEach(function(img){
+    var u=img.getAttribute('src');
+    var full=img.dataset.full||u;
+    img.addEventListener('error',function(){
+      if(img.dataset.r)return;img.dataset.r='1';img.src='/api/image?p='+encodeURIComponent(u);
+    });
+    img.addEventListener('click',function(){viewImage(full)});
+  });
 }
 var _prodTimer=null;
 function onProdSearch(){clearTimeout(_prodTimer);_prodTimer=setTimeout(function(){prodPage=1;renderProducts()},300)}
@@ -382,23 +421,82 @@ function editProduct(idx){
   document.getElementById('prod-toolbar').style.display='none';
   document.getElementById('product-list').style.display='none';
   document.getElementById('product-edit').style.display='block';
-  var p=idx>=0?productsData[idx]:{id:'',name:'',category:'men',tags:'',thumbnail:'',images:[],description:'',features:[],fabric:'',sizes:'',moq:'',care:''};
+  // Copy so CMS-only helper fields (_imgs/_feats) never leak back into products.json
+  var p=idx>=0?Object.assign({},productsData[idx]):{id:'',name:'',category:'men',tags:'',thumbnail:'',images:[],description:'',features:[],fabric:'',sizes:'',moq:'',care:''};
   if(idx>=0&&typeof p.images[0]==='object')p._imgs=p.images.map(function(x){return x.url||x.image||x}).join('\n');else p._imgs=(p.images||[]).join('\n');
   if(idx>=0&&typeof p.features[0]==='object')p._feats=p.features.map(function(x){return x.text||x.feature||x}).join('\n');else p._feats=(p.features||[]).join('\n');
   var h='<h3>'+(idx>=0?'Edit':'Add')+' Product</h3>';
   h+='<div class="form-row col3"><div class="form-group"><label>Product ID</label><input id="ep-id" value="'+esc(p.id)+'"></div><div class="form-group"><label>Name</label><input id="ep-name" value="'+esc(p.name)+'"></div><div class="form-group"><label>Category</label><select id="ep-category" onchange="toggleSubcat()"><option value="men"'+(p.category==='men'?' selected':'')+'>Men</option><option value="women"'+(p.category==='women'?' selected':'')+'>Women</option></select></div></div>';
 var subcat=(p.subcat||'');
 h+='<div class="form-group" id="subcat-group" style="'+(p.category!=='men'?'display:none':'')+'"><label>Sub Category</label><select id="ep-subcat"><option value="">-- Select --</option><option value="shirts"'+(subcat==='shirts'?' selected':'')+'>Shirts</option><option value="jackets"'+(subcat==='jackets'?' selected':'')+'>Jackets</option><option value="workwear"'+(subcat==='workwear'?' selected':'')+'>Workwear</option><option value="tshirts"'+(subcat==='tshirts'?' selected':'')+'>T-Shirts</option><option value="pants"'+(subcat==='pants'?' selected':'')+'>Pants</option></select></div>';
-  h+='<div class="form-group"><label>Thumbnail</label><div class="input-with-btn"><input id="ep-thumbnail" value="'+esc(p.thumbnail)+'"><button class="btn-sm" onclick="uploadFileAndSet(\'ep-thumbnail\')">📸 Upload</button><button class="btn-sm" onclick="openImgPicker(\'ep-thumbnail\')">🖼 Browse</button></div></div>';
-  h+='<div class="form-group"><label>Gallery Images (one per line)</label><textarea id="ep-images" rows="3">'+esc(p._imgs)+'</textarea><div class="btn-group" style="margin-top:6px"><button class="btn btn-secondary btn-sm" onclick="uploadFileAndSet(\'ep-images\')" style="font-size:11px;padding:8px 16px">📸 Upload</button><button class="btn btn-secondary btn-sm" onclick="openImgPicker(\'ep-images\')" style="font-size:11px;padding:8px 16px">🖼 Browse</button></div></div>';
+  h+='<div class="form-group"><label>Thumbnail</label><div class="input-with-btn"><input id="ep-thumbnail" value="'+esc(String(p.thumbnail||''))+'"><button class="btn-sm" onclick="uploadFileAndSet(\'ep-thumbnail\')">📸 Upload</button><button class="btn-sm" onclick="openImgPicker(\'ep-thumbnail\')">🖼 Browse</button></div><div class="ep-thumbs" id="ep-thumb-preview"></div></div>';
+  h+='<div class="form-group"><label>Gallery Images (one per line)</label><textarea id="ep-images" rows="3">'+esc(p._imgs)+'</textarea><div class="btn-group" style="margin-top:6px"><button class="btn btn-secondary btn-sm" onclick="uploadFileAndSet(\'ep-images\')" style="font-size:11px;padding:8px 16px">📸 Upload</button><button class="btn btn-secondary btn-sm" onclick="openImgPicker(\'ep-images\')" style="font-size:11px;padding:8px 16px">🖼 Browse</button></div><div class="ep-thumbs" id="ep-imgs-preview"></div></div>';
   h+='<div class="form-group"><label>Description</label><textarea id="ep-desc" rows="3">'+esc(p.description)+'</textarea></div>';
   h+='<div class="form-group"><label>Features (one per line)</label><textarea id="ep-features" rows="4">'+esc(p._feats)+'</textarea></div>';
   h+='<div class="form-row col3"><div class="form-group"><label>Fabric</label><input id="ep-fabric" value="'+esc(p.fabric)+'"></div><div class="form-group"><label>Sizes</label><input id="ep-sizes" value="'+esc(p.sizes)+'"></div><div class="form-group"><label>MOQ</label><input id="ep-moq" value="'+esc(p.moq)+'"></div></div>';
   h+='<div class="btn-group"><button class="btn btn-primary" id="btn-save-product" data-idx="'+idx+'">Save Product</button><button class="btn btn-secondary" onclick="renderProducts()">Cancel</button></div>';
   document.getElementById('product-edit').innerHTML=h;
   document.getElementById('btn-save-product').onclick=saveProduct;
+  document.getElementById('ep-thumbnail').addEventListener('input',updateEpThumbPreview);
+  document.getElementById('ep-images').addEventListener('input',updateEpImgsPreview);
+  updateEpThumbPreview();updateEpImgsPreview();
 }
 function esc(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ═══ PRODUCT IMAGE PREVIEWS ═══
+// CMS paths are stored either absolute (/images/...) or site-relative (images/...).
+// From /sportexmanger/ the latter must be rooted to avoid a 404.
+function normImgUrl(u){
+  u=String(u||'').trim();
+  if(!u)return '';
+  if(/^(https?:)?\/\//i.test(u)||u.indexOf('data:')===0)return u;
+  if(u.charAt(0)==='/')return u;
+  return '/'+u.replace(/^\.?\//,'');
+}
+function imgThumbFor(url){
+  var u=normImgUrl(url);
+  for(var i=0;i<imagesData.length;i++){
+    var ip=normImgUrl(imagesData[i].path||imagesData[i].url);
+    if(ip===u)return normImgUrl(imagesData[i].thumb||imagesData[i].url||u);
+  }
+  return u;
+}
+function epThumbEl(url,badge){
+  var d=document.createElement('div');d.className='ep-thumb';
+  var shown=imgThumbFor(url)||url;
+  var img=document.createElement('img');img.alt=badge||'';img.loading='lazy';img.src=shown;
+  img.addEventListener('error',function(){
+    if(img.dataset.r){d.classList.add('ep-broken');return}
+    img.dataset.r='1';img.src='/api/image?p='+encodeURIComponent(shown);
+  });
+  img.addEventListener('click',function(){viewImage(url)});
+  d.appendChild(img);
+  return d;
+}
+function updateEpThumbPreview(){
+  var box=document.getElementById('ep-thumb-preview');if(!box)return;
+  box.innerHTML='';
+  var u=normImgUrl(document.getElementById('ep-thumbnail').value);
+  if(u)box.appendChild(epThumbEl(u,'Thumbnail'));
+}
+function epGalleryUrls(){
+  var ta=document.getElementById('ep-images');if(!ta)return [];
+  return ta.value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
+}
+function updateEpImgsPreview(){
+  var box=document.getElementById('ep-imgs-preview');if(!box)return;
+  box.innerHTML='';
+  epGalleryUrls().forEach(function(u,idx){
+    var d=epThumbEl(normImgUrl(u),'Image '+(idx+1));
+    var del=document.createElement('button');del.type='button';del.className='ep-del';del.title='Remove';del.textContent='×';
+    del.addEventListener('click',function(e){e.stopPropagation();removeEpImage(idx)});
+    d.appendChild(del);box.appendChild(d);
+  });
+}
+function removeEpImage(idx){
+  var ta=document.getElementById('ep-images');if(!ta)return;
+  var arr=epGalleryUrls();arr.splice(idx,1);ta.value=arr.join('\n');updateEpImgsPreview();
+}
 async function saveProduct(){
   var idx=parseInt(document.getElementById('btn-save-product').dataset.idx);
   var p={id:document.getElementById('ep-id').value,name:document.getElementById('ep-name').value,category:document.getElementById('ep-category').value,subcat:document.getElementById('ep-subcat').value,thumbnail:document.getElementById('ep-thumbnail').value,images:document.getElementById('ep-images').value.split('\n').filter(function(x){return x.trim()}).map(function(u){return{url:u.trim()}}),description:document.getElementById('ep-desc').value,features:document.getElementById('ep-features').value.split('\n').filter(function(x){return x.trim()}).map(function(t){return{text:t.trim()}}),fabric:document.getElementById('ep-fabric').value,sizes:document.getElementById('ep-sizes').value,moq:document.getElementById('ep-moq').value};
@@ -413,8 +511,10 @@ async function saveProducts(){
     var r=await ghWrite(PRODUCTS_FILE,{products_list:productsData},'content: update products',productsSha);
     productsSha=r.content.sha;document.getElementById('save-status').textContent='Syncing…';
     var kvOk=await kvWrite('products',{products_list:productsData});
-    document.getElementById('save-status').textContent=kvOk?'Ready':'Deploying…';
-    trackDeploy(r.commit.sha);renderProducts();toast(kvOk?'Products saved ✅ (instant sync)':'Products saved ✅');
+    document.getElementById('save-status').textContent=kvOk?'Ready':'KV sync failed ⚠';
+    trackDeploy(r.commit.sha);renderProducts();
+    if(kvOk)toast('Products saved ✅ (instant sync)');
+    else toast('GitHub saved, but KV sync failed — live page may show old data. Try saving again.','err');
   }catch(e){document.getElementById('save-status').textContent='Error';toast('Save failed: '+e.message,'err')}
 }
 
@@ -551,7 +651,7 @@ function confirmImgPick(){
   var urls=[];sel.forEach(function(s){urls.push(s.dataset.url)});
   if(!urls.length){toast('Select at least one image','err');return}
   var el=document.getElementById(pickerTarget);
-  if(pickerTarget==='ep-images'){el.value=el.value+'\n'+urls.join('\n')}else{el.value=urls[0]}
+  if(pickerTarget==='ep-images'){applyImageField('ep-images',urls)}else{el.value=urls[0];updateEpThumbPreview()}
   closeImgPicker();toast('Image(s) inserted ✅');
 }
 function closeImgPicker(){document.getElementById('img-picker-modal').classList.remove('on');pickerTarget=null}
@@ -643,7 +743,10 @@ document.getElementById('upload-zone').ondrop=function(e){e.preventDefault();thi
 document.getElementById('file-input').onchange=function(){uploadFiles(this.files);this.value=''};
 
 // ═══ IMAGE RESIZE ═══
-function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;var rw=w,rh=h;if(w>maxW){var ratio=maxW/w;rw=maxW;rh=Math.round(h*ratio)}var c=document.createElement('canvas');c.width=rw;c.height=rh;var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,rw,rh);c.toBlob(function(b){URL.revokeObjectURL(u);ok(new File([b],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}))},'image/jpeg',quality)};img.src=u})}
+function resizeImage(file,maxW,quality){maxW=maxW||1200;quality=quality||.82;return new Promise(function(ok){var u=URL.createObjectURL(file);var img=new Image();img.onload=function(){var w=img.width,h=img.height;
+  // Already small enough JPEG: skip the re-encode (saves seconds per photo)
+  if(maxW>=1000&&file.type==='image/jpeg'&&w<=maxW&&file.size<=250*1024){URL.revokeObjectURL(u);ok(file);return}
+  var rw=w,rh=h;if(w>maxW){var ratio=maxW/w;rw=maxW;rh=Math.round(h*ratio)}var c=document.createElement('canvas');c.width=rw;c.height=rh;var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,rw,rh);c.toBlob(function(b){URL.revokeObjectURL(u);ok(new File([b],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'}))},'image/jpeg',quality)};img.src=u})}
 
 // ═══ IMAGE DEDUP ═══
 async function computeFileHash(file){
@@ -669,7 +772,9 @@ async function uploadWithThumbs(fileList){
       // ═══ DEDUP CHECK ═══
       var hash=await computeFileHash(f);
       var dupIdx=findDuplicateImage(hash);
-      if(dupIdx!==-1){return {skip:true,name:f.name,hash:hash,dupIdx:dupIdx}}
+      // Reuse the existing image instead of silently dropping the file —
+      // otherwise "Upload" on a product field left it empty and saved no picture.
+      if(dupIdx!==-1){return {skip:true,name:f.name,hash:hash,dupIdx:dupIdx,url:imagesData[dupIdx].url||''}}
       var full=resizeImage(f,1200,.82);
       var thumb=resizeImage(f,400,.75);
       var ts=Date.now()+Math.floor(Math.random()*99999);
@@ -704,18 +809,24 @@ async function _processUploadQueue(){
     }else{
       var items=task.items, total=task.total;
       try{
-        for(var i=0;i<items.length;i++){
-          document.getElementById('save-status').textContent='Uploading '+(i+1)+'/'+total+'…';
-          var it=items[i];
-          var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
-          var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
-          imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,hash:it.hash,date:new Date().toISOString()});
+        var done=0,nextIdx=0;
+        // 2 uploads in flight — GitHub allows concurrent new-file PUTs; ghUploadBuf retries on 409
+        async function uploadWorker(){
+          while(nextIdx<items.length){
+            var it=items[nextIdx++];
+            var r1=await ghUploadBuf(it.path,it.fullBase64,'content: upload '+it.name);
+            var r2=await ghUploadBuf(it.thumbPath,it.thumbBase64,'content: upload thumb '+it.name);
+            imagesData.push({name:it.name,url:it.path,path:it.path,thumb:it.thumbPath,sha:r1.content.sha,hash:it.hash,date:new Date().toISOString()});
+            done++;
+            document.getElementById('save-status').textContent='Uploading '+done+'/'+total+'…';
+          }
         }
+        await Promise.all([uploadWorker(),uploadWorker()]);
         document.getElementById('save-status').textContent='Saving…';
         var r=await ghWrite(IMAGES_FILE,{images:imagesData},'content: update image database ('+total+' images)',imagesSha,0,mergeImages);
         imagesSha=r.content.sha;kvWrite('images',{images:imagesData});
         toast(total+' image(s) uploaded ✅');
-        if(task.callback){var urls=[];items.forEach(function(it){urls.push(it.path)});task.callback(urls)}
+        if(task.callback){var urls=task.urls||items.map(function(it){return it.path});task.callback(urls)}
       }catch(e){toast('Upload failed: '+e.message,'err');}
     }
   }
@@ -744,35 +855,41 @@ async function uploadFiles(files){
   if(_uploadQueue.length>1)toast('Queued ('+(_uploadQueue.length-1)+' ahead) ⏳');
   _processUploadQueue();
 }
+function applyImageField(fieldId,urls){
+  var el=document.getElementById(fieldId);if(!el)return;
+  if(fieldId==='ep-images'){
+    urls.forEach(function(u){
+      if(!u)return;
+      if(el.value.split('\n').indexOf(u)!==-1)return; // already in gallery
+      el.value=(el.value.trim()?el.value.replace(/\s+$/,'')+'\n':'')+u;
+    });
+  }else if(urls[0]){el.value=urls[0]}
+  if(fieldId==='ep-images')updateEpImgsPreview();else updateEpThumbPreview();
+}
 async function uploadFileAndSet(fieldId){
   var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=(fieldId==='ep-images');
   inp.onchange=async function(){
     var f=inp.files;if(!f.length)return;
-    document.getElementById('save-status').textContent='Compressing...';
-    var items=[];
-    for(var i=0;i<f.length;i++){
-      try{
-        // ═══ DEDUP CHECK ═══
-        var hash=await computeFileHash(f[i]);
-        var dupIdx=findDuplicateImage(hash);
-        if(dupIdx!==-1){
-          toast('⏭ Skipped duplicate: '+f[i].name);
-          console.log('[dedup] uploadFileAndSet skipped: '+f[i].name+' (hash matches #'+dupIdx+')');
-          continue;
-        }
-        var full=await resizeImage(f[i],1200,.82);
-        var thumb=await resizeImage(f[i],400,.75);
-        var ts=Date.now()+Math.floor(Math.random()*99999);
-        var fullB64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(full)});
-        var thumbB64=await new Promise(function(ok){var r=new FileReader();r.onload=function(){ok(r.result.split(',')[1])};r.readAsDataURL(thumb)});
-        var base=f[i].name.replace(/[^a-zA-Z0-9._-]/g,'_').replace(/\.[^.]+$/,'');
-        items.push({name:f[i].name,base:base,path:IMG_DIR+ts+'_'+base+'.jpg',thumbPath:IMG_DIR+'thumb_'+ts+'_'+base+'.jpg',fullBase64:fullB64,thumbBase64:thumbB64,hash:hash});
-      }catch(e){toast('Compress failed: '+e.message,'err')}
+    document.getElementById('save-status').textContent='Compressing…';
+    var prepared;
+    try{
+      // Compress + hash all files in parallel (used to be one-by-one)
+      prepared=await uploadWithThumbs(f);
+    }catch(e){toast('Compress failed: '+e.message,'err');document.getElementById('save-status').textContent='Ready';return}
+    var items=prepared.filter(function(x){return !x.skip});
+    var dups=prepared.filter(function(x){return x.skip});
+    if(dups.length)toast('♻️ Reused '+dups.length+' existing image(s)');
+    var urls=prepared.map(function(x){return x.skip?x.url:x.path});
+    if(!items.length){
+      // Everything was already uploaded — just fill the field with the existing URLs
+      applyImageField(fieldId,urls);
+      document.getElementById('save-status').textContent='Ready';
+      toast('Image applied ✅');
+      return;
     }
-    if(!items.length)return;
-    _uploadQueue.push({items:items,total:items.length,callback:function(urls){
-      var el=document.getElementById(fieldId);
-      urls.forEach(function(u){if(fieldId==='ep-images')el.value=el.value+'\n'+u;else el.value=u});
+    _uploadQueue.push({items:items,total:items.length,urls:urls,callback:function(){
+      applyImageField(fieldId,urls);
+      toast('Image(s) added to field ✅');
     }});
     if(_uploadQueue.length>1)toast('Queued ('+(_uploadQueue.length-1)+' ahead) ⏳');
     _processUploadQueue();
