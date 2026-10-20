@@ -249,7 +249,11 @@ async function kvWrite(key, jsonData){
   // the old JSON for everyone (GitHub was updated, the live page was not).
   for(var i=0;i<3;i++){
     try {
-      var resp=await fetch('/api/data/'+key, {method:'PUT', cache:'no-store', headers:{'Content-Type':'application/json','X-KV-Secret':KV_SECRET}, body:JSON.stringify(jsonData)});
+      var payload=JSON.stringify(jsonData);
+      // keepalive: finish the KV write even if the admin tab is closed right after saving.
+      // Browser limit is 64KB, so skip it for large payloads (would reject outright).
+      var small=new Blob([payload]).size<60000;
+      var resp=await fetch('/api/data/'+key, {method:'PUT', cache:'no-store', keepalive:small, headers:{'Content-Type':'application/json','X-KV-Secret':KV_SECRET}, body:payload});
       if(resp.ok)return true;
       if(resp.status>=400&&resp.status<500)break; // bad secret / bad request — retrying won't help
     } catch(e){}
