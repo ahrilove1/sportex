@@ -641,15 +641,6 @@
       "sha": "f520e38a275059a453378af75e14a2cf3ba3d47e",
       "hash": "63dcf6cf2c017921785cb4fb9860b75318adddfa623dd4e9389e0a8ddfa5c825",
       "date": "2026-06-24T02:15:52.379Z"
-    },
-    {
-      "name": "test-dedup.jpg",
-      "url": "/images/uploads/1792471962583_test-dedup.jpg",
-      "path": "/images/uploads/1792471962583_test-dedup.jpg",
-      "thumb": "/images/uploads/thumb_1792471962583_test-dedup.jpg",
-      "sha": "bead489c1270ab4ddd326f57ff18e19d23de8970",
-      "hash": "9dacf9b93ef343cb1b10d45dcd84959c4448a68d0859d818cc3decfb7dbf619f",
-      "date": "2026-10-20T04:51:12.715Z"
     }
   ]
 }
