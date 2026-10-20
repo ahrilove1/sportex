@@ -154,7 +154,7 @@ tr:hover{background:var(--off-white)}
 <!-- ═══ LOGIN ═══ -->
 <div id="login-screen">
 <div class="login-box">
-<div id="step-pw"><div class="logo">SPORTEX</div><div class="sub">Content Manager <span style="font-size:10px;opacity:.45;letter-spacing:0">v1.2.1</span></div><input type="password" id="pw-input" placeholder="Enter password" autofocus><button class="btn" id="pw-btn">Unlock</button><div class="error" id="pw-error">Incorrect password</div></div>
+<div id="step-pw"><div class="logo">SPORTEX</div><div class="sub">Content Manager <span style="font-size:10px;opacity:.45;letter-spacing:0">v1.2.2</span></div><input type="password" id="pw-input" placeholder="Enter password" autofocus><button class="btn" id="pw-btn">Unlock</button><div class="error" id="pw-error">Incorrect password</div></div>
 <div id="step-token"><div class="logo">SPORTEX</div><div class="sub">GitHub Access Token</div><input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autofocus><button class="btn" id="token-btn">Save & Enter</button><div class="error" id="token-error">Invalid token — requires <b>repo</b> scope</div><div class="ok" id="token-ok">Validated! Loading…</div><div class="hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=SPORTEX%20CMS" target="_blank">Create a GitHub token →</a></div></div>
 </div>
 </div>
@@ -170,7 +170,7 @@ tr:hover{background:var(--off-white)}
 <a href="#" data-tab="images">Images</a>
 <a href="#" data-tab="settings">Settings</a>
 </span>
-<span class="status" id="save-status"></span><span style="font-size:10px;color:rgba(255,255,255,.25);margin-left:8px;letter-spacing:0">v1.2.1</span>
+<span class="status" id="save-status"></span><span style="font-size:10px;color:rgba(255,255,255,.25);margin-left:8px;letter-spacing:0">v1.2.2</span>
 </div>
 </div>
 <div class="deploy-wrap" id="deploy-wrap"><div class="deploy-bar"><div class="deploy-fill" id="deploy-fill"></div></div><div class="deploy-info" id="deploy-info"></div></div>
@@ -514,14 +514,33 @@ function openImgPicker(targetId){
   pickerTarget=targetId;
   var g=document.getElementById('img-select-grid');
   var h='';
-  var RAW='https://raw.githubusercontent.com/'+REPO+'/main';
 	  var IMG_API='/api/image?p=';
   imagesData.forEach(function(img,i){
     var thumb=img.thumb||img.url;
-    h+='<div class="img-item" data-url="'+img.url+'" data-idx="'+i+'" onclick="toggleImgPick(this)" title="Click to select"><img src="'+thumb+'" alt="'+img.name+'" loading="lazy" onerror="this.onerror=null;this.src=\''+IMG_API+encodeURIComponent(thumb)+'\'"><button class="img-zoom" onclick="event.stopPropagation();viewImage(\''+img.url+'\')" title="Preview large">&#x26F6;</button><div class="img-name">'+img.name+'</div><span class="img-check">&#10003;</span></div>';
+    // No inline handlers: URLs/names may contain quotes or spaces (new uploads),
+    // which used to break the generated onclick and make cards unclickable.
+    h+='<div class="img-item" data-url="'+esc(String(img.url||''))+'" data-idx="'+i+'" title="Click to select">'
+      +'<img src="'+esc(String(thumb||''))+'" alt="'+esc(String(img.name||''))+'" loading="lazy" data-fb="'+esc(IMG_API+encodeURIComponent(thumb||''))+'">'
+      +'<button type="button" class="img-zoom" title="Preview large">&#x26F6;</button>'
+      +'<div class="img-name">'+esc(String(img.name||''))+'</div>'
+      +'<span class="img-check">&#10003;</span></div>';
   });
   if(!h)h='<p style="color:var(--gray);text-align:center;grid-column:1/-1;padding:32px">No images in library — upload first!</p>';
   g.innerHTML=h;
+  // Delegated handlers survive any filename/URL and are bound only once.
+  g.onclick=function(e){
+    var z=e.target.closest('.img-zoom');
+    if(z){var it=z.closest('.img-item');if(it&&it.dataset.url)viewImage(it.dataset.url);return}
+    var card=e.target.closest('.img-item');
+    if(card)toggleImgPick(card);
+  };
+  if(!g.dataset.errBound){
+    g.dataset.errBound='1';
+    g.addEventListener('error',function(e){
+      var t=e.target;
+      if(t&&t.tagName==='IMG'&&t.dataset.fb&&!t.dataset.r){t.dataset.r='1';t.src=t.dataset.fb}
+    },true);
+  }
   document.getElementById('img-picker-title').textContent=targetId==='ep-images'?'Select images for gallery':'Select thumbnail image';
   document.getElementById('img-picker-modal').classList.add('on');
   document.getElementById('img-picker-confirm').onclick=confirmImgPick;
